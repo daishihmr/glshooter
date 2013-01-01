@@ -324,17 +324,14 @@ var patterns = {};
     patterns.boss11 = pattern({
         top: action(
             actionRef("launch"),
-            actionRef("attack1"),
-            wait(30),
-            actionRef("move2"),
             repeat(900, action(
+                actionRef("attack1"),
+                actionRef("move2"),
                 actionRef("attack2"),
                 actionRef("move2"),
                 actionRef("attack3"),
                 actionRef("move2"),
                 actionRef("attack4"),
-                actionRef("move2"),
-                actionRef("attack5"),
                 actionRef("move2")
             ))
         ),
@@ -351,7 +348,8 @@ var patterns = {};
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1, -30)),
             fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1,  30)),
             fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1, -30)),
-            wait(10+360*3/10*2)
+            wait(10+360*3/10*2),
+            wait(30)
         ),
         bit1: bullet(
             action(
@@ -463,33 +461,9 @@ var patterns = {};
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
-                fire(direction("$rand*10-5"), speed("0.8+$rank"), bullet()),
-                fire(direction(5, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction(5, "sequence"), speed(0, "sequence"), bullet()),
-                vanish()
-            )
-        ),
-        attack5: action(
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit5", -1,  30, 10)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit5", -1, -30, 7)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit5",  1,  30, 9)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit5",  1, -30, 11)),
-            wait(10+360*3/10*2)
-        ),
-        bit5: bullet(
-            action(
-                wait(12),
-                changeSpeed(0, 1),
-                fire(direction("$2"), speed("0.25+$rank"), bullet()),
-                repeat(360*4/10, action(
-                    fire(direction("$3*$1", "sequence"), speed(0.01, "sequence"), bullet()),
-                    wait(2)
-                )),
-                vanish()
-            )
-        ),
-        bitdummy: bullet(
-            action(
+                fire(direction("$rand*10-2"), speed("0.8+$rank"), bullet()),
+                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
                 vanish()
             )
         )
@@ -497,7 +471,10 @@ var patterns = {};
 
     patterns.boss12 = pattern({
         top: action(
-
+            repeat(100, action(
+                fire(bullet),
+                wait(30)
+            ))
         )
     });
 

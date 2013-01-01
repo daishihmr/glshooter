@@ -56,6 +56,7 @@ tm.main(function() {
         return;
     }
 
+    // input
     var keyboard = app.keyboard;
     var mouse = tm.input.Mouse(canvas);
     mouse.lastLeftUp = -1;
@@ -63,18 +64,25 @@ tm.main(function() {
     var titleScene = TitleScene(mouse);
     app.replaceScene(titleScene);
 
+    // main 3D scene
     var scene = new Scene(gl, scripts["vs"], scripts["fs"]);
 
+    // GL Textures
     for (var name in tm.graphics.TextureManager.textures) {
         textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
     var texture0 = Sprite.mainTexture = textures["texture0"];
 
+    // player
     var weapons = [];
     var weaponPool = [];
-
     var player = setupPlayer(app, gl, scene, weapons, weaponPool, mouse);
 
+    // bomb
+    var bombParticlePool = [];
+    app.fireBomber = fireBomber(gl, scene, texture0, bombParticlePool);
+
+    // enemy bullet setting
     var param = app.AttackParam = {
         target: player,
         rank: 0.5,
@@ -108,6 +116,7 @@ tm.main(function() {
         speedRate: BULLET_SPEED
     };
 
+    // enemy bullet
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 1000; i++) {
@@ -173,11 +182,37 @@ tm.main(function() {
         };
         return e;
     };
-    for (var i = 0; i < 10; i++) {
+    for (var i = 0; i < 500; i++) {
         var e = createEnemy();
         enemies.push(e);
         enemyPool.push(e);
     }
+    var launchEnemy = function(x, y, enemyName, pattern, flag) {
+        var data = enemyData[enemyName];
+        var e;
+        if (enemyName === "boss") {
+            e = boss;
+        } else {
+            e = enemyPool.pop();
+            if (e === void 0) {
+                e = createEnemy();
+                enemies.push(e);
+            }
+            e.texX = data.frameIndex % 8;
+            e.texY = ~~(data.frameIndex / 8);
+        }
+        e.x = x;
+        e.y = y;
+        e.hp = data.hp;
+        e.scale = data.scale;
+        e.score = data.score;
+        enemyFlags[flag] = false;
+        e.flag = flag;
+        e.update = patterns[pattern].createTicker(param);
+        scene.add(e);
+    };
+
+    // boss
     var boss = new Sprite(gl, textures["boss1"]);
     boss.scale = 8;
     boss.alpha = 0.5;
@@ -212,60 +247,11 @@ tm.main(function() {
         this.damagePoint += d;
     }
     enemies.push(boss);
-    var launchEnemy = function(x, y, enemyName, pattern, flag) {
-        var data = enemyData[enemyName];
-        var e;
-        if (enemyName === "boss") {
-            e = boss;
-        } else {
-            e = enemyPool.pop();
-            if (e === void 0) {
-                e = createEnemy();
-                enemies.push(e);
-            }
-            e.texX = data.frameIndex % 8;
-            e.texY = ~~(data.frameIndex / 8);
-        }
-        e.x = x;
-        e.y = y;
-        e.hp = data.hp;
-        e.scale = data.scale;
-        e.score = data.score;
-        enemyFlags[flag] = false;
-        e.flag = flag;
-        e.update = patterns[pattern].createTicker(param);
-        scene.add(e);
-    };
 
     // explosion
-    var explodePool = [];
-    for (var i = 0; i < 600; i++) {
-        var e = new Sprite(gl, texture0);
-        e.texX = 5;
-        e.texY = 1;
-        e.incrScale = 0.2;
-        e.update = function() {
-            this.scale += this.incrScale;
-            this.alpha *= 0.9;
-            if (this.alpha < 0.001) {
-                scene.remove(this);
-                explodePool.push(this);
-            }
-        }
-        explodePool.push(e);
-    }
-    var explode = app.explode = function(x, y, scale) {
-        for (var i = Random.randint(1, 3); i--; ) {
-            var e = explodePool.pop();
-            if (e === void 0) return;
-            e.scale = 0;
-            e.alpha = 1;
-            e.x = x + Random.randfloat(-0.2, 0.2);
-            e.y = y + Random.randfloat(-0.2, 0.2);
-            e.incrScale = scale * 0.2;
-            scene.add(e);
-        }
-    };
+    var explosion = new Explosion(gl, scene, texture0);
+    var explode = app.explode = explosion.explode;
+    var explodeS = app.explodeS = explosion.explodeS;
 
     // background
     app.background = "rgba(0,0,0,1)"
@@ -290,6 +276,7 @@ tm.main(function() {
     score.width = 320;
     gameScene.addChild(score);
 
+    // for 2d
     var canvasTexture = tm.graphics.TextureManager.get("texture0");
 
     // zanki
@@ -368,6 +355,7 @@ tm.main(function() {
     bossHp.y = 5;
     bossHp.alpha = 0.5;
     bossHp.update = function() {
+        this.visible = (boss.parent !== null);
         var hp = boss.maxHp - boss.damagePoint;
         this.width = 300 * hp/boss.maxHp;
         this.x = this.width/2 + 5;
@@ -376,6 +364,7 @@ tm.main(function() {
 
     var stageData = setupStageData(app);
 
+    // game main loop
     var glowLevel = 0;
     gameScene.update = function() {
         // launch enemy
@@ -443,6 +432,8 @@ tm.main(function() {
                     scene.remove(w);
                     glowLevel += 3;
                     e.damage(player.power);
+                    w.update();
+                    explodeS(w.x, w.y, 0.3);
                 }
             }
         }
@@ -476,7 +467,7 @@ tm.main(function() {
 
         glowLevel -= GLOW_LEVEL_DOWN;
         if (glowLevel<0) glowLevel=0;
-        else if (1500 < glowLevel) glowLevel = 1500;
+        else if (1200 < glowLevel) glowLevel = 1200;
         player.glow = glowLevel * 0.001;
     };
 
@@ -521,207 +512,4 @@ tm.main(function() {
     };
 
     app.run();
-
-    var bombParticlePool = [];
-    var createBombParticle = function() {
-        var p = new Sprite(gl, texture0);
-        p.texX = 4;
-        p.texY = 1;
-        p.radius = 0;
-        p.radiusD = -0.01;
-        p.angle = 0;
-        p.update = function() {
-            this.x = Math.cos(this.angle) * this.radius;
-            this.y = Math.sin(this.angle) * this.radius;
-            this.angle += 0.01;
-            this.radius += this.radiusD;
-            this.radiusD -= 0.002;
-            this.scale = (17 - this.radius) * 0.6;
-            this.alpha = (28 - this.scale) * 0.1;
-            if (this.alpha < 0) {
-                scene.remove(this);
-                bombParticlePool.readyCount+=1;
-            }
-        };
-        return p;
-    }
-    for (var i = 0; i < 50; i++) {
-        bombParticlePool.push(createBombParticle());
-    }
-    bombParticlePool.readyCount = bombParticlePool.length;
-    app.fireBomber = function() {
-        bombParticlePool.readyCount = 0;
-        for (var i = bombParticlePool.length; i--; ) {
-            var p = bombParticlePool[i];
-            p.radius = Random.randfloat(16, 22);
-            p.angle = (i % 12) * Math.PI*2/12 - p.radius*0.3;
-            p.radiusD = -0.01;
-            p.alpha = 1;
-            scene.add(p);
-        }
-        MUTE_SE || SoundManager.get("bomb").play();
-    };
-});
-
-var TitleScene = tm.createClass({
-    superClass: tm.app.Scene,
-    init: function(mouse) {
-        this.superInit();
-
-        this.mouse = mouse;
-
-        this.startFlag = false;
-
-        var bgGrad = tm.graphics.LinearGradient(0, 0, 0, 320);
-        bgGrad.addColorStopList([
-            { offset: 0, color: "rgba(0,0,255,0.3)" },
-            { offset: 1, color: "rgba(0,0,255,0.0)" }
-        ]);
-        var bg = this.bg = tm.app.RectangleShape(320, 320, {
-            fillStyle: bgGrad.toStyle(),
-            strokeStyle: "none"
-        });
-        bg.x = 160;
-        bg.y = 160;
-        bg.blendMode = "lighter";
-        this.addChild(bg);
-
-        var titleGrad = tm.graphics.LinearGradient(0, 0, 20, 30);
-        titleGrad.addColorStopList([
-            {offset:0.0, color:"rgba(255,255,255,1.0)"},
-            {offset:0.5, color:"rgba(120,120,255,1.0)"},
-            {offset:1.0, color:"rgba(255,255,255,1.0)"},
-        ]);
-
-        var title = this.title = tm.app.Label("GL-Shooter", 35);
-        title.fillStyle = titleGrad.toStyle();
-        title.setFontFamily("Orbitron");
-        title.setAlign("center");
-        title.setBaseline("middle");
-        title.width = 320;
-        title.x = 160;
-        title.y = 100;
-        title.alpha = 0;
-        this.addChild(title);
-
-        var version = this.version = tm.app.Label("version 1.0 beta", 10);
-        version.setFontFamily("Orbitron");
-        version.setAlign("end");
-        version.setBaseline("middle");
-        version.width = 320;
-        version.x = 270;
-        version.y = 120;
-        version.alpha = 0;
-        this.addChild(version);
-
-        var start = this.start = tm.app.Label("PRESS (Z) KEY FOR START", 15);
-        start.setFontFamily("Orbitron");
-        start.setAlign("center");
-        start.setBaseline("middle");
-        start.width = 320;
-        start.x = 160;
-        start.y = 240;
-        start.alpha = 0;
-        this.addChild(start);
-
-        this.addEventListener("enter", function() {
-            this.title.visible = true;
-            this.version.visible = true;
-            this.start.visible = true;
-            this.bg.visible = true;
-            this.title.alpha = 0;
-            this.version.alpha = 0;
-        });
-    },
-    update: function(app) {
-        this.start.alpha = Math.sin(app.frame*0.1) * 0.25 + 0.75;
-        if (app.keyboard.getKeyDown("z") || this.mouse.getPointing()) {
-            this.startFlag = true;
-            MUTE_SE || tm.sound.SoundManager.get("effect0").play();
-        }
-
-        if (this.startFlag) {
-            this.title.alpha -= 0.01;
-            this.version.alpha -= 0.01;
-            this.start.visible = false;
-
-            if (this.title.alpha < 0) {
-                this.title.visible = false;
-                this.version.visible = false;
-                this.start.visible = false;
-                this.bg.visible = false;
-                app.pushScene(app.gameScene);
-                this.startFlag = false;
-            }
-        } else {
-            this.title.alpha += 0.01;
-            this.version.alpha += 0.01;
-            if (1 < this.title.alpha) this.title.alpha = 1;
-            if (1 < this.version.alpha) this.version.alpha = 1;
-        }
-
-        var p = tm.app.Sprite(32, 32, tm.graphics.TextureManager.get("texture0"));
-        p.setFrameIndex(12, 64, 64);
-        p.dir = Math.random() * Math.PI * 2;
-        p.x = Math.cos(p.dir) * 160;
-        p.y = Math.sin(p.dir) * 160;
-        p.alpha = 0;
-        p.update = function() {
-            this.alpha += 0.01;
-            this.x -= Math.cos(this.dir);
-            this.y -= Math.sin(this.dir);
-            this.scale.x += 0.01;
-            this.scale.y += 0.01;
-            if (this.x*this.x+this.y*this.y < 2) this.remove();
-        };
-        this.bg.addChild(p);
-    }
-});
-
-var PauseScene = tm.createClass({
-    superClass: tm.app.Scene,
-    init: function() {
-        this.superInit();
-
-        var label = this.label = tm.app.Label("pause", 35);
-        label.fillStyle = "#ffffff";
-        label.setFontFamily("Orbitron");
-        label.setAlign("center");
-        label.setBaseline("middle");
-        label.width = 320;
-        label.x = 160;
-        label.y = 160;
-        this.addChild(label);
-    },
-    update: function(app) {
-        this.label.alpha = Math.sin(app.frame*0.1) * 0.25 + 0.75;
-    }
-});
-
-var GameOverScene = tm.createClass({
-    superClass: tm.app.Scene,
-    init: function() {
-        this.superInit();
-
-        var gameover = this.gameover = tm.app.Label("Game Over", 35);
-        gameover.fillStyle = "rgba(0,0,255,0.6)";
-        gameover.setFontFamily("Orbitron");
-        gameover.setAlign("center");
-        gameover.setBaseline("middle");
-        gameover.width = 320;
-        gameover.x = 160;
-        gameover.y = 160;
-        gameover.alpha = 0;
-        this.addChild(gameover);
-
-        this.addEventListener("enter", function(e) {
-            this.start = e.app.frame;
-        });
-    },
-    update: function(app) {
-        this.gameover.alpha += 0.01;
-        if (this.start + 220 === app.frame) {
-            tm.social.Nineleap.postRanking(app.score, "SCORE:" + app.score);
-        }
-    }
 });

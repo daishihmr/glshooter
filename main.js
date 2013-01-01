@@ -43,7 +43,7 @@ tm.main(function() {
         bgm.loop = true;
         MUTE_BGM || bgm.play();
     });
-    
+
     // webgl canvas
     var canvas = document.getElementById("world");
     canvas.style.position = "absolute";
@@ -110,7 +110,7 @@ tm.main(function() {
 
     var bullets = [];
     var bulletPool = [];
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 3000; i++) {
         var b = new Sprite(gl, texture0);
         b.texX = 3;
         b.texY = 1;
@@ -187,7 +187,7 @@ tm.main(function() {
     boss.damagePoint = 0;
     boss.damage = function(d) {
         this.damagePoint += d;
-        if (8000 < this.damagePoint) {
+        if (100 < this.damagePoint) {
             // 第2形態へ
             clearAllBullets(true);
             this.glow = 0.2;
@@ -369,7 +369,8 @@ tm.main(function() {
     bossHp.alpha = 0.5;
     bossHp.update = function() {
         var hp = boss.maxHp - boss.damagePoint;
-        this.width = 300 * hp/boss.maxHp;
+        if (0 <= 0) this.width = 300 * hp/boss.maxHp;
+        else this.width = 0;
         this.x = this.width/2 + 5;
     }
     gameScene.addChild(bossHp);
@@ -500,7 +501,7 @@ tm.main(function() {
             } else {
                 mouse.lastLeftUp = Date.now();
             }
-        } 
+        }
 
         if (app.currentScene === gameScene) {
             scene.update();

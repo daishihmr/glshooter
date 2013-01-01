@@ -1,6 +1,6 @@
 // config
 var MUTE_SE =  false; // if true, not play sounds.
-var MUTE_BGM = true; // if true, not play bgm.
+var MUTE_BGM = false; // if true, not play bgm.
 var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
@@ -119,7 +119,7 @@ tm.main(function() {
     // enemy bullet
     var bullets = [];
     var bulletPool = [];
-    for (var i = 0; i < 1000; i++) {
+    for (var i = 0; i < 2000; i++) {
         var b = new Sprite(gl, texture0);
         b.texX = 3;
         b.texY = 1;
@@ -357,8 +357,9 @@ tm.main(function() {
     bossHp.update = function() {
         this.visible = (boss.parent !== null);
         var hp = boss.maxHp - boss.damagePoint;
-        this.width = 300 * hp/boss.maxHp;
-        this.x = this.width/2 + 5;
+        if (0 <= hp) this.width = 300 * hp/boss.maxHp;
+        else this.width = 0;
+       this.x = this.width/2 + 5;
     }
     gameScene.addChild(bossHp);
 

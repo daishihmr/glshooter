@@ -471,10 +471,138 @@ var patterns = {};
 
     patterns.boss12 = pattern({
         top: action(
-            repeat(100, action(
-                fire(bullet),
-                wait(30)
+            changeDirection(direction(0, "absolute"), 1),
+            actionRef("move"),
+            repeat(300, action(
+                actionRef("attack1"),
+                actionRef("move"),
+                actionRef("attack2"),
+                actionRef("move")
             ))
+        ),
+        move: action(
+            changeSpeed(speed(1), 100),
+            wait(60),
+            changeSpeed(speed(-1), 100),
+            wait(64),
+            changeSpeed(speed(0), 100),
+            wait(100)
+        ),
+        attack1: action(
+            fire(speed(0), bulletRef("bit10")),
+            fire(speed(0), bulletRef("bit12")),
+            wait(1500)
+        ),
+        bit10: bullet(
+            action(
+                repeat(120, action(
+                    fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit11")),
+                    // fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit11")),
+                    fire(direction( -45, "absolute"), speed(2.7), bulletRef("bit11")),
+                    // fire(direction( 180, "absolute"), speed(2.5), bulletRef("bit11")),
+                    fire(direction(  45, "absolute"), speed(2.7), bulletRef("bit11")),
+                    // fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit11")),
+                    fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit11")),
+                    wait(10)
+                )),
+                vanish()
+            )
+        ),
+        bit11: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                fire(direction("$rand*10-5+ -150"), speed("1.8*$rank"), bullet()),
+                fire(direction("$rand*10-5+  -90"), speed("1.8*$rank"), bullet()),
+                fire(direction("$rand*10-5+  -30"), speed("1.8*$rank"), bullet()),
+                fire(direction("$rand*10-5+   30"), speed("1.8*$rank"), bullet()),
+                fire(direction("$rand*10-5+   90"), speed("1.8*$rank"), bullet()),
+                fire(direction("$rand*10-5+  150"), speed("1.8*$rank"), bullet()),
+                vanish()
+            )
+        ),
+        bit12: bullet(
+            action((function() {
+                var a = [];
+                a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 1)));
+                a.push(wait(120));
+                a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 1)));
+                a.push(wait(120));
+                for (var i = 100; 5 < i; i -= 10) {
+                    a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(wait(i+5));
+                    a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(wait(i));
+                }
+                for (var i = 0; i < 5; i++) {
+                    a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(wait(5));
+                    a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(wait(5));
+                }
+                a.push(vanish());
+                return a;
+            })())
+        ),
+        bit13: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                fire(direction("$rand*4-2"), speed("4*$rank+$1"), bullet("g")),
+                repeat(20, action(
+                    wait(1),
+                    fire(direction(0, "sequence"), speed(0.3, "sequence"), bullet("g"))
+                )),
+                vanish()
+            )
+        ),
+        attack2: action(
+            fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit21",  1)),
+            fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit20", -1)),
+            fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit20",  1)),
+            fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit21", -1)),
+            wait(4000)
+        ),
+        bit20: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                repeat(16, action(
+                    changeDirection(direction("170*$1", "relative"), 70),
+                    repeat(70/8, action(
+                        fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
+                        wait(8)
+                    )),
+                    changeDirection(direction("-170*$1", "relative"), 70),
+                    repeat(70/8, action(
+                        fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
+                        wait(8)
+                    ))
+                )),
+                vanish()
+            )
+        ),
+        bit21: bullet(
+            action((function() {
+                var a = [];
+                a.push(wait(12));
+                a.push(changeSpeed(speed(0), 1));
+                for (var i = -30; i < 0; i++) {
+                    a.push(fire(direction(i + "*$1", "aim"), speed("2.4+$rank"), bullet("g")));
+                    for (var j = 0; j < 3; j++) {
+                        a.push(wait(1));
+                        a.push(fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g")));
+                    }
+                    a.push(wait(20));
+                }
+                return a;
+            })())
         )
     });
 

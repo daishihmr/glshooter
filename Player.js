@@ -32,10 +32,11 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             }
         }
 
+        var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.20;
         for (var i = 0; i < 3; i++) {
             var z = zanzoPool.pop();
             if (z) {
-                z.x = this.x + Math.random()*0.4-0.2 - 0.5;
+                z.x = this.x + Math.random()*0.4-0.2 - zpos;
                 z.y = this.y - 1.2;
                 z.alpha = 0.8;
                 z.scale = 0.6;
@@ -43,7 +44,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             }
             z = zanzoPool.pop();
             if (z) {
-                z.x = this.x + Math.random()*0.4-0.2 + 0.5;
+                z.x = this.x + Math.random()*0.4-0.2 + zpos;
                 z.y = this.y - 1.2;
                 z.alpha = 0.8;
                 z.scale = 0.6;

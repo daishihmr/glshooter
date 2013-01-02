@@ -35,7 +35,7 @@ tm.main(function() {
 
     var bgm = SoundManager.get("bgm");
 
-    // 爆発音の音量を少し下げておく
+    // volume down
     for (var i = SoundManager.sounds["explode"].length; i--; ) {
         SoundManager.sounds["explode"][i].volume = 0.8;
     }
@@ -91,7 +91,7 @@ tm.main(function() {
     app.fireBomber = fireBomber(gl, scene, texture0, bombParticlePool);
 
     // enemy bullet setting
-    var param = app.AttackParam = {
+    var param = app.attackParam = {
         target: player,
         rank: 0.5,
         bulletFactory: function(spec) {
@@ -140,7 +140,7 @@ tm.main(function() {
         };
     }
 
-    // clear bullets
+    // clear all bullets
     app.isBulletDisable = false;
     var clearAllBullets = app.clearAllBullets = function(a) {
         for (var i = bullets.length; i--; ) {
@@ -222,7 +222,7 @@ tm.main(function() {
     };
 
     // boss
-    var boss = createBoss(app, gl, textures["boss1"], param, explosion);
+    var boss = createBoss(app, gl, textures["boss1"], explosion);
     enemies.push(boss);
 
     // background
@@ -247,9 +247,6 @@ tm.main(function() {
     score.y = 320;
     score.width = 320;
     gameScene.addChild(score);
-
-    // for 2d
-    var canvasTexture = tm.graphics.TextureManager.get("texture0");
 
     // zanki
     app.zanki = 3;
@@ -331,10 +328,13 @@ tm.main(function() {
         this.x = this.width*0.5 + 5;
     }
 
+    // stage data
     var stageData = setupStageData(app);
 
-    // game main loop
+    // GLOW-LV
     var glowLevel = 0;
+
+    // game main loop
     gameScene.update = function() {
         // launch enemy
         if (app.isGameover === false) {
@@ -374,8 +374,8 @@ tm.main(function() {
                     glowLevel = 0;
                     break;
                 } else if (dist < 1.0) {
-                    // console.log("カスリ点", 10 * (1 + player.glow*10));
-                    app.score += 10 * (1 + player.glow*10); // カスリ点
+                    // console.log("GRAZE", 10 * (1 + player.glow*10));
+                    app.score += 10 * (1 + player.glow*10); // graze
                 }
             }
         }
@@ -493,7 +493,7 @@ tm.main(function() {
         message.text = "stage clear";
         message.visible = true;
         var t = scene.frame;
-        var bonus = ~~(app.zanki * 100000 + app.bomb * 100000);
+        var bonus = ~~(app.zanki * 100000 + app.bomb * 30000);
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 180*1) {
                 message.text = "bonus " + bonus;

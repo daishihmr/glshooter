@@ -9,6 +9,8 @@ var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
 
+var NUM_OF_STAGE = 1;
+
 var textures = {};
 var scripts = {};
 
@@ -18,7 +20,7 @@ tm.preload(function() {
     tm.addLoadCheckList(loadScript("vs", "shader.vs"));
     tm.addLoadCheckList(loadScript("fs", "shader.fs"));
     tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 30);
-    tm.sound.SoundManager.add("bgm", "nc28689.mp3", 1);
+    tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
     tm.sound.SoundManager.add("effect0", "effect0.mp3", 1);
     tm.sound.SoundManager.add("bomb", "nc17909.mp3");
 });
@@ -41,6 +43,8 @@ tm.main(function() {
     app.bgm = null;
     app.volumeSe = 0.8;
     app.resetGameStatus();
+
+    app.currentStage = 1;
 
     var setVolumeSe = function() {
         ["explode", "effect0", "bomb"].forEach(function(s) {
@@ -272,7 +276,7 @@ tm.main(function() {
     gameScene.addChild(life);
 
     // message
-    var message = app.message = tm.app.Label("stage 1", 50);
+    var message = app.message = tm.app.Label("stage " + app.currentStage, 50);
     message.setFontFamily("Orbitron");
     message.setAlign("center");
     message.setBaseline("middle");
@@ -281,11 +285,7 @@ tm.main(function() {
     message.width = 320;
     message.update = function() {
         this.alpha = 0.1 + Math.sin(scene.frame*0.12) * 0.1;
-        if (scene.frame === 240) {
-            this.remove();
-        }
     };
-    gameScene.addChild(message);
 
     // bomb
     var bomb = tm.app.Label("BOMB:" + app.bomb, 12);
@@ -333,6 +333,7 @@ tm.main(function() {
     bossHp.update = function() {
         this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
         this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
+        if (this.width <= 1) this.remove();
         this.x = this.width*0.5 + 5;
     }
 
@@ -532,29 +533,41 @@ tm.main(function() {
     app.stageStart = function() {
         scene.frame = 0;
 
-        if (app.bgm) app.bgm.stop();
-        app.bgm = SoundManager.get("bgm");
-        app.bgm.loop = true;
-        MUTE_BGM || app.bgm.play();
+        var stage = app.currentStage;
+
+        // bgm
+        var vol = 1;
+        if (app.bgm) {
+            app.bgm.stop();
+            vol = app.bgm.volume;
+        }
+        app.bgm = SoundManager.get("bgm" + stage);
+        if (app.bgm) {
+            app.bgm.loop = true;
+            app.bgm.volume = vol;
+            MUTE_BGM || app.bgm.play();
+        }
         
+        // boss
         if (boss !== void 0) {
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
-        boss = createBoss(app, gl, textures["boss1"], explosion);
+        boss = createBoss(app, gl, textures["boss" + stage], explosion, stage);
         enemies.push(boss);
         boss.killed = function() {
             app.stageClear();
         };
 
-        if (background !== void 0) {
-            background.remove();
-        }
-        background = createBackground(app, player);
+        // background
+        if (background) background.remove();
+        background = createBackground(app, player, stage);
         gameScene.addChild(background);
 
-        stageData = setupStageData(app);
+        // stage data
+        stageData = setupStageData(app, stage);
 
+        // reset player
         player.x = 0;
         player.y = -10;
         player.texX = 3;
@@ -566,15 +579,29 @@ tm.main(function() {
         player.disabled = false;
         player.power = 1;
 
+        // clear sprites
         app.clearAllBullets();
         app.clearAllEnemies();
         app.clearBomb();
         app.clearAllExplosion();
         app.clearAllPlayerEffect();
+
+        // message
+        message.text = "stage " + stage;
+        var t = scene.frame;
+        message.addEventListener("enterframe", function() {
+            if (scene.frame === t + 240) {
+                message.remove();
+            }
+        });
+        gameScene.addChild(message);
     };
 
     // stage clear
     app.stageClear = function() {
+        if (app.currentStage === NUM_OF_STAGE) {
+            return app.gameClear();
+        }
         message.fillStyle = "white";
         message.setFontSize(30);
         message.text = "stage clear";
@@ -587,6 +614,7 @@ tm.main(function() {
                 app.score += bonus;
             } else if (scene.frame === t + 180*2) {
                 setTimeout(function() {
+                    app.currentStage += 1;
                     app.stageStart();
                 }, 10);
             }
@@ -598,7 +626,7 @@ tm.main(function() {
     app.gameClear = function() {
         message.fillStyle = "white";
         message.setFontSize(30);
-        message.text = "game clear";
+        message.text = "all stage clear";
         message.visible = true;
         var t = scene.frame;
         var bonus = ~~(app.zanki * 100000 + app.bomb * 30000);
@@ -607,16 +635,17 @@ tm.main(function() {
                 message.text = "bonus " + bonus;
                 app.score += bonus;
             } else if (scene.frame === t + 180*2) {
-                message.text = "thank you!!";
+                message.fillStyle = "yellow";
+                message.text = "THANK YOU!!";
             } else if (scene.frame === t + 180*3) {
-                tm.social.Nineleap.postRanking(~~(app.score), "SCORE:" + ~~(app.score));
+                return app.gameOver();
             }
         });
         gameScene.addChild(message);
     };
 
-    // gameover
-    app.gameover = function() {
+    // game over
+    app.gameOver = function() {
         app.isBulletDisable = false;
         app.isGameover = true;
         setTimeout(function() {

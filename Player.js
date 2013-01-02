@@ -136,7 +136,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             this.visible = false;
             this.rebirth = false;
             scene.remove(this);
-            app.gameover();
+            app.gameOver();
             return;
         }
 

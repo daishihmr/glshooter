@@ -1,4 +1,4 @@
-function createBackground(app, player) {
+function createBackground(app, player, stage) {
     var grad = tm.graphics.LinearGradient(0, 0, 0, 320);
     grad.addColorStopList([
         { offset: 0, color: "rgba(0,0,255,0.3)" },

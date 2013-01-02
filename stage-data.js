@@ -4,7 +4,7 @@
  2. 特定の敵を倒す
 */
 
-var setupStageData = function(app) {
+var setupStageData = function(app, stage) {
 
     var StageData = [];
 

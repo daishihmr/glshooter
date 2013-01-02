@@ -59,7 +59,7 @@ tm.main(function() {
     setVolumeSe();
 
     var gameScene = app.gameScene = tm.app.Scene();
-    
+
     // webgl canvas
     var canvas = document.getElementById("world");
     canvas.style.position = "absolute";
@@ -513,7 +513,7 @@ tm.main(function() {
             } else {
                 mouse.lastLeftUp = Date.now();
             }
-        } 
+        }
 
         if (app.currentScene === gameScene) {
             scene.update();
@@ -550,7 +550,7 @@ tm.main(function() {
             app.bgm.volume = vol;
             MUTE_BGM || app.bgm.play();
         }
-        
+
         // boss
         if (boss !== void 0) {
             var index = enemies.indexOf(boss);

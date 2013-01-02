@@ -1,12 +1,12 @@
 BulletML.dsl();
 
-var patterns = {};
+var Patterns = {};
 (function() {
     function pattern(dsl) {
         return new AttackPattern(new BulletML.Root(dsl));
     }
 
-    patterns.zako1 = pattern({
+    Patterns.zako1 = pattern({
         top: action(
             wait("$rand*5"),
             changeDirection(direction(45, "absolute"), 1),
@@ -23,7 +23,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako1d = pattern({
+    Patterns.zako1d = pattern({
         top: action(
             wait("45+$rand*5"),
             changeDirection(direction(45, "absolute"), 1),
@@ -40,7 +40,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako2 = pattern({
+    Patterns.zako2 = pattern({
         top: action(
             wait("$rand*5"),
             changeDirection(direction(-45, "absolute"), 1),
@@ -57,7 +57,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako2d = pattern({
+    Patterns.zako2d = pattern({
         top: action(
             wait("45+$rand*5"),
             changeDirection(direction(-45, "absolute"), 1),
@@ -74,7 +74,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako3 = pattern({
+    Patterns.zako3 = pattern({
         top: action(
             wait("$rand*5"),
             changeDirection(direction(0, "aim"), 1),
@@ -87,7 +87,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako4 = pattern({
+    Patterns.zako4 = pattern({
         top: action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
@@ -110,7 +110,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako5 = pattern({
+    Patterns.zako5 = pattern({
         top: action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
@@ -134,7 +134,7 @@ var patterns = {};
         )
     });
 
-    patterns.zako6 = pattern({
+    Patterns.zako6 = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -162,7 +162,7 @@ var patterns = {};
         )
     });
 
-    patterns.bigger = pattern({
+    Patterns.bigger = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(2), 1),
@@ -202,7 +202,7 @@ var patterns = {};
         )
     });
 
-    patterns.tank1 = pattern({
+    Patterns.tank1 = pattern({
         top: action(
             changeDirection(direction(80, "absolute"), 1),
             changeSpeed(speed(0.5), 1),
@@ -213,7 +213,7 @@ var patterns = {};
             ))
         )
     });
-    patterns.tank1d = pattern({
+    Patterns.tank1d = pattern({
         top: action(
             wait(30),
             changeDirection(direction(80, "absolute"), 1),
@@ -225,7 +225,7 @@ var patterns = {};
             ))
         )
     });
-    patterns.tank1dd = pattern({
+    Patterns.tank1dd = pattern({
         top: action(
             wait(60),
             changeDirection(direction(80, "absolute"), 1),
@@ -238,7 +238,7 @@ var patterns = {};
         )
     });
 
-    patterns.tank2 = pattern({
+    Patterns.tank2 = pattern({
         top: action(
             changeDirection(direction(-80, "absolute"), 1),
             changeSpeed(speed(0.5), 1),
@@ -249,7 +249,7 @@ var patterns = {};
             ))
         )
     });
-    patterns.tank2d = pattern({
+    Patterns.tank2d = pattern({
         top: action(
             wait(30),
             changeDirection(direction(-80, "absolute"), 1),
@@ -261,7 +261,7 @@ var patterns = {};
             ))
         )
     });
-    patterns.tank2dd = pattern({
+    Patterns.tank2dd = pattern({
         top: action(
             wait(60),
             changeDirection(direction(-80, "absolute"), 1),
@@ -274,7 +274,7 @@ var patterns = {};
         )
     });
 
-    patterns.middle = pattern({
+    Patterns.middle = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(0.8), 1),
@@ -301,7 +301,7 @@ var patterns = {};
         )
     });
 
-    patterns.cannon = pattern({
+    Patterns.cannon = pattern({
         top1: action(
             wait(100),
             repeat(100, action(
@@ -321,7 +321,7 @@ var patterns = {};
         )
     });
 
-    patterns.boss11 = pattern({
+    Patterns.boss11 = pattern({
         top: action(
             actionRef("launch"),
             repeat(900, action(
@@ -428,7 +428,7 @@ var patterns = {};
         )
     });
 
-    patterns.boss12 = pattern({
+    Patterns.boss12 = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),
             actionRef("move"),

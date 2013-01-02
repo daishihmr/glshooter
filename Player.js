@@ -1,5 +1,5 @@
 var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
-    var player = new Sprite(gl, textures["texture0"]);
+    var player = new Sprite(gl, Sprite.mainTexture);
     player.scale = 1.5;
     player.y = -10;
     player.texX = 3;

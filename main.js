@@ -5,7 +5,6 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 var EXTEND_SCORE = 500000;
-var BOSS_HP = 16000;
 var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
@@ -76,10 +75,16 @@ tm.main(function() {
     }
     var texture0 = Sprite.mainTexture = textures["texture0"];
 
+    // explosion
+    var explosion = new Explosion(gl, scene);
+    var explode = app.explode = explosion.explode;
+    var explodeS = app.explodeS = explosion.explodeS;
+    var explodeL = explosion.getExplodeL(gl, scene);
+
     // player
     var weapons = [];
     var weaponPool = [];
-    var player = setupPlayer(app, gl, scene, weapons, weaponPool, mouse);
+    var player = app.player = setupPlayer(app, gl, scene, weapons, weaponPool, mouse);
 
     // bomb
     var bombParticlePool = [];
@@ -137,7 +142,7 @@ tm.main(function() {
 
     // clear bullets
     app.isBulletDisable = false;
-    var clearAllBullets = function(a) {
+    var clearAllBullets = app.clearAllBullets = function(a) {
         for (var i = bullets.length; i--; ) {
             var b = bullets[i];
             if (b.parent !== null && (!b.alive || a)) {
@@ -212,87 +217,13 @@ tm.main(function() {
         e.score = data.score;
         enemyFlags[flag] = false;
         e.flag = flag;
-        e.update = patterns[pattern].createTicker(param);
+        e.update = Patterns[pattern].createTicker(param);
         scene.add(e);
     };
 
     // boss
-    var boss = new Sprite(gl, textures["boss1"]);
-    boss.scale = 8;
-    boss.alpha = 0.5;
-    boss.texScale = 8;
-    boss.glow = 0.4;
-    boss.maxHp = BOSS_HP;
-    boss.damagePoint = 0;
-    boss.damage = function(d) {
-        this.damagePoint += d;
-        if (boss.maxHp*0.5 < this.damagePoint) {
-            // 第2形態へ
-            clearAllBullets(true);
-            this.glow = 0.1;
-            SoundManager.get("explode").play();
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            var t = scene.frame + 50;
-            this.update = function() {
-                if (scene.frame === t || scene.frame === t+10 || scene.frame === t+15 || scene.frame === t+20) {
-                    SoundManager.get("explode").play();
-                    explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
-                } else if (scene.frame === t+75) {
-                    this.update = patterns.boss12.createTicker(param);
-                    this.damage = this.damage2;
-                }
-            };
-            this.damage = function() {};
-        }
-    };
-    boss.damage2 = function(d) {
-        this.damagePoint += d;
-        if (boss.maxHp < this.damagePoint) {
-            // 撃破
-            player.disabled = true;
-            clearAllBullets(true);
-            this.glow = 0;
-            SoundManager.get("explode").play();
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
-            var t = scene.frame + 50;
-            this.update = function() {
-                player.disabled = true;
-                this.alpha -= 0.001;
-                this.x = Math.sin(scene.frame*0.3)*0.1;
-                this.y += -0.025;
-                this.scale -= 0.001;
-                this.rotation -= 0.02;
-                if (t < scene.frame && (scene.frame - t) % 5 === 0 && Math.random() < 0.5) {
-                    SoundManager.get("explode").play();
-                    explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
-                }
-                if (scene.frame === t + 250) {
-                    explodeL(function() {
-                        app.gameclear();
-                    });
-                } else if (scene.frame === t + 250+60) {
-                    this.update = function() {
-                        this.alpha -= 0.001;
-                        if (this.alpha <= 0) {
-                            scene.remove(this);
-                        }
-                    };
-                }
-            };
-            this.damage = function() {};
-        }
-    }
+    var boss = createBoss(app, gl, textures["boss1"], param, explosion);
     enemies.push(boss);
-
-    // explosion
-    var explosion = new Explosion(gl, scene, texture0);
-    var explode = app.explode = explosion.explode;
-    var explodeS = app.explodeS = explosion.explodeS;
-    var explodeL = explosion.getExplodeL(gl, scene, texture0);
 
     // background
     app.background = "rgba(0,0,0,1)"

@@ -1,5 +1,6 @@
-var Explosion = function(gl, scene, texture0) {
+var Explosion = function(gl, scene) {
     var Random = tm.util.Random;
+    var texture0 = Sprite.mainTexture;
 
     var explodePool = [];
     for (var i = 0; i < 600; i++) {
@@ -42,7 +43,7 @@ var Explosion = function(gl, scene, texture0) {
         scene.add(e);
     };
 
-    this.getExplodeL = function(gl, scene, texture0) {
+    this.getExplodeL = function(gl, scene) {
         var createParticle = function() {
             var p = new Sprite(gl, texture0);
             p.texX = 4;

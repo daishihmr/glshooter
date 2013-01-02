@@ -30,23 +30,21 @@ function createBackground(app, player, stage) {
             return bg;
         },
         function() {
-            var grad = tm.graphics.RadialGradient(160, 80, 0, 160, 160, 160*1.5);
+            var grad = tm.graphics.RadialGradient(160, 160, 0, 160, 160, 160*1.5);
             grad.addColorStopList([
-                { offset: 0, color: "rgba(0,0,255,0.20)" },
+                { offset: 0, color: "rgba(0,0,255,0.15)" },
                 { offset: 1, color: "rgba(0,0,255,0.10)" }
             ]);
-            var grad2 = tm.graphics.RadialGradient(160, 80, 0, 160, 160, 160*1.5);
+            var grad2 = tm.graphics.RadialGradient(160, 160, 0, 160, 160, 160*1.5);
             grad2.addColorStopList([
-                { offset: 0, color: "rgba(255,255,255,0)" },
-                { offset: 1, color: "rgba(255,255,255,0.1)" }
+                { offset: 0, color: "rgba(255,255,255,0.0)" },
+                { offset: 1, color: "rgba(255,255,255,0.2)" }
             ]);
 
             var polygons = [];
-            for (var i = 0; i < 7; i++) {
+            for (var i = -16; i < 16; i++) {
                 polygons.push({
-                    x: Math.random() * 20 - 10,
-                    y: Math.random() * 20 - 10,
-                    z: Math.random() * -10
+                    z: i
                 });
             }
 
@@ -56,34 +54,38 @@ function createBackground(app, player, stage) {
             });
             bg.x = app.width/2;
             bg.y = app.height/2;
-            // bg.canvas.strokeStyle = grad2.toStyle();
+
+            var viewMat = mat4.identity(mat4.create());
+            var projMat = mat4.identity(mat4.create());
+            var mvpMat = mat4.identity(mat4.create());
+            mat4.lookAt([0,0,0], [0,0,-1], [0,1,0], viewMat)
+            mat4.perspective(90, 1/1, 0.1, 32, projMat);
+            mat4.multiply(projMat, viewMat, mvpMat);
+
+            var canvas = bg.canvas;
+            canvas.strokeStyle = grad2.toStyle();
             bg.update = function(app) {
-                var c = this.canvas;
-                c.clear();
+                var x = Math.cos(app.frame*0.02)*30;
+                var y = Math.sin(app.frame*0.02)*30;
+                canvas.clear();
                 this.renderer(this._shapeParam);
                 for (var i = polygons.length; i--; ) {
                     var p = polygons[i];
-                    p.z += 1;
+                    p.z += 0.04;
 
+                    var result = vec4.create([x, y, p.z, 1]);
+                    mat4.multiplyVec4(mvpMat, result);
 
-                    var modelMat = mat4.identity(mat4.create());
-                    var viewMat = mat4.identity(mat4.create());
-                    var projMat = mat4.identity(mat4.create());
-                    var mvpMat = mat4.identity(mat4.create());
-                    mat4.lookAt([0,1,3], [0,0,0], [0,1,0], viewMat)
-                    mat4.perspective(90, 1/1, 0.1, 100, projMat);
-
-                    mat4.translate(modelMat, [0, 0, p.z], modelMat);
-
-                    mat4.multiply(projMat, viewMat, mvpMat);
-                    mat4.multiply(mvpMat, modelMat, mvpMat);
-
-                    var result = vec4.create([p.x, p.y, 0, 1]);
-                    mat4.multiplyVec4(mvpMat, result, result);
-
-
-
-                    c.strokePolygon(result[0]+160, result[1]+160, 10, 8);
+                    if (16 < p.z) {
+                        p.z -= 32;
+                    } else if (0 < result[3]) {
+                        canvas.strokePolygon(
+                            result[0] / result[3] + 160,
+                            result[1] / result[3] + 160,
+                            50 / result[3],
+                            8,
+                            app.frame);
+                    }
                 }
             };
 

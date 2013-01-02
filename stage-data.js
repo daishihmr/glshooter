@@ -5,8 +5,7 @@
 */
 
 var setupStageData = function(app, stage) {
-
-    var StageData = [];
+    stage = 2;
 
     var delay20 = [ { frame: 20, enemies: [] } ];
     var delay60 = [ { frame: 60, enemies: [] } ];
@@ -311,152 +310,139 @@ var setupStageData = function(app, stage) {
         }
     ];
 
-    StageData = StageData
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako1Left)
-        .concat(zako1Right)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako1FastLeft)
-        .concat(delay60)
-        .concat(zako1FastRight)
-        .concat(delay60)
-        .concat(zako1FastBoth)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako3Left)
-        .concat(zako3Left)
-        .concat(zako3Left)
-        .concat(zako3Left)
-        .concat(zako3Left)
-        .concat(delay60)
-        .concat(zako3Right)
-        .concat(zako3Right)
-        .concat(zako3Right)
-        .concat(zako3Right)
-        .concat(zako3Right)
-        .concat(delay60)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(delay60)
-        .concat(bigger)
-        .concat(biggerKilled)
-        .concat(tankRight)
-        .concat(tankLeft)
-        .concat(delay60)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(delay60)
-        .concat(cannonLeft)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(zako3Both)
-        .concat(delay20)
-        .concat(middle0)
-        .concat(middle5)
-        .concat(middleM5)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(cannonLeft)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako412)
-        .concat(delay60)
-        .concat(cannonRight)
-        .concat(delay60)
-        .concat(zako412)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako40)
-        .concat(delay60)
-        .concat(cannonRight)
-        .concat(zako5M12)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako5M12)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako5M12)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(cannonCenter)
-        .concat(cannonCenter2)
-        .concat(tankRight)
-        .concat(tankLeft)
-        .concat(zako68)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako6M8)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako68)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(zako6M8)
-        .concat(delay60)
-        .concat(delay60)
-
-
-    ;
-
-    // ボス戦前の休憩
-    StageData = StageData
-        .concat([
-            {
-                frame: 10,
-                enemies: [],
-                message: {
-                    color: "red",
-                    text: "WARNING!!",
-                    visible: true
+    var StageData = [];
+    if (stage === 1) {
+        StageData = StageData
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako1Left)
+            .concat(zako1Right)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako1FastLeft)
+            .concat(delay60)
+            .concat(zako1FastRight)
+            .concat(delay60)
+            .concat(zako1FastBoth)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako3Left)
+            .concat(zako3Left)
+            .concat(zako3Left)
+            .concat(zako3Left)
+            .concat(zako3Left)
+            .concat(delay60)
+            .concat(zako3Right)
+            .concat(zako3Right)
+            .concat(zako3Right)
+            .concat(zako3Right)
+            .concat(zako3Right)
+            .concat(delay60)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(delay60)
+            .concat(bigger)
+            .concat(biggerKilled)
+            .concat(tankRight)
+            .concat(tankLeft)
+            .concat(delay60)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(delay60)
+            .concat(cannonLeft)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(zako3Both)
+            .concat(delay20)
+            .concat(middle0)
+            .concat(middle5)
+            .concat(middleM5)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(cannonLeft)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako412)
+            .concat(delay60)
+            .concat(cannonRight)
+            .concat(delay60)
+            .concat(zako412)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako40)
+            .concat(delay60)
+            .concat(cannonRight)
+            .concat(zako5M12)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako5M12)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako5M12)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(cannonCenter)
+            .concat(cannonCenter2)
+            .concat(tankRight)
+            .concat(tankLeft)
+            .concat(zako68)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako6M8)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako68)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(zako6M8)
+            .concat(delay60)
+            .concat(delay60)
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "red",
+                        text: "WARNING!!",
+                        visible: true
+                    }
                 }
-            }
-        ])
-        .concat(delay60)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(delay60)
-        .concat(delay60)
-        .concat([
-            {
-                frame: 10,
-                enemies: [],
-                message: {
-                    color: "white",
-                    text: "",
-                    visible: false
+            ])
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "white",
+                        text: "",
+                        visible: false
+                    }
                 }
-            }
-        ])
-    ;
-
-    StageData = StageData.concat([
-        {
-            frame: 20,
-            enemies: [
-                [0, 21.9, "boss", "boss11"]
-            ]
-        }
-    ]);
-
-    // StageData = [
-    //     {
-    //         frame: 20,
-    //         enemies: [
-    //             [0, 21.9, "boss", "boss11"]
-    //         ]
-    //     }
-    // ];
+            ])
+            .concat([
+                {
+                    frame: 20,
+                    enemies: [
+                        [0, 21.9, "boss", "boss11"]
+                    ]
+                }
+            ]);
+    } else if (stage === 2) {
+    }
 
     var cursor = 0;
     var last = 0;
@@ -477,5 +463,4 @@ var setupStageData = function(app, stage) {
     };
 
     return StageData;
-
 };

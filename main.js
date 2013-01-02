@@ -28,6 +28,7 @@ tm.preload(function() {
 tm.main(function() {
     var SoundManager = tm.sound.SoundManager;
     var Random = tm.util.Random;
+    var settings = JSON.parse(localStorage.getItem("settings") || "{\"bgm\":1.0,\"se\":0.8}");
 
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
@@ -41,7 +42,8 @@ tm.main(function() {
         app.bomb = 3;
     };
     app.bgm = null;
-    app.volumeSe = 0.8;
+
+    app.volumeSe = settings.se;
     app.resetGameStatus();
 
     app.currentStage = 1;
@@ -536,7 +538,7 @@ tm.main(function() {
         var stage = app.currentStage;
 
         // bgm
-        var vol = 1;
+        var vol = settings.bgm;
         if (app.bgm) {
             app.bgm.stop();
             vol = app.bgm.volume;
@@ -568,16 +570,10 @@ tm.main(function() {
         stageData = setupStageData(app, stage);
 
         // reset player
-        player.x = 0;
-        player.y = -10;
-        player.texX = 3;
-        player.glow = 0;
-        player.roll = 0;
-        player.speed = 0.2;
-        player.level = 0;
-        player.rebirth = false;
-        player.disabled = false;
-        player.power = 1;
+        player.reset();
+        player.rebirth = true;
+        player.disabled = true;
+        player.y = -17;
 
         // clear sprites
         app.clearAllBullets();

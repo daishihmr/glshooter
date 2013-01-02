@@ -281,6 +281,10 @@ var GameOverScene;
                     break;
                 }
             };
+
+            this.addEventListener("exit", function() {
+                localStorage.setItem("settings", JSON.stringify(settings));
+            });
         },
         update: function(app) {
             if (app.keyboard.getKeyDown("down")) {
@@ -333,5 +337,4 @@ var GameOverScene;
             }
         }
     });
-
 })();

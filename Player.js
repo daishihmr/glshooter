@@ -1,6 +1,18 @@
 var setupPlayer = function(app, gl, scene, weapons, mouse) {
     var player = new Sprite(gl, Sprite.mainTexture);
     player.scale = 1.5;
+    player.reset = function() {
+        this.x = 0;
+        this.y = -10;
+        this.texX = 3;
+        this.glow = 0;
+        this.roll = 0;
+        this.speed = 0.2;
+        this.level = 0;
+        this.rebirth = false;
+        this.disabled = false;
+        this.power = 1;
+    };
 
     var kb = app.keyboard;
     player.update = function() {
@@ -75,16 +87,16 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
                     this.roll += 0.5;
                 }
             }
+
+            if (this.x < -16) this.x = -16;
+            if (16 < this.x) this.x = 16;
+            if (this.y < -16) this.y = -16;
+            if (16 < this.y) this.y = 16;
         }
 
         if (beforeRoll === this.roll) {
             this.roll *= 0.95;
         }
-
-        if (this.x < -16) this.x = -16;
-        if (16 < this.x) this.x = 16;
-        if (this.y < -16) this.y = -16;
-        if (16 < this.y) this.y = 16;
 
         if (this.roll < -3) this.roll =  -3;
         else if (3 < this.roll) this.roll = 3;

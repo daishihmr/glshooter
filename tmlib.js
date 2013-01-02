@@ -6976,7 +6976,9 @@ tm.graphics = tm.graphics || {};
          */
         drawImage: function(image, x, y)
         {
+try {
             this.context.drawImage.apply(this.context, arguments);
+} catch (e) { debugger; }
             return ;
             
             x = x || 0;

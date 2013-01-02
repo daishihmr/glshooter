@@ -330,8 +330,6 @@ var patterns = {};
                 actionRef("attack2"),
                 actionRef("move2"),
                 actionRef("attack3"),
-                actionRef("move2"),
-                actionRef("attack4"),
                 actionRef("move2")
             ))
         ),
@@ -368,7 +366,8 @@ var patterns = {};
             wait(60),
             changeSpeed(speed(-1), 100),
             wait(66),
-            changeSpeed(speed(0), 100)
+            changeSpeed(speed(0), 100),
+            wait(100)
         ),
         attack2: action((function() {
             var result = [];
@@ -426,46 +425,6 @@ var patterns = {};
                     wait("160*(1.1-$rank)")
                 ))
             )
-        ),
-        attack4: action(
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 180)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 150)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 120)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1,  90)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1,  90)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 120)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 150)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 180)),
-            repeat(600/40, action(
-                fire(direction(-125, "absolute"), speed(4), bulletRef("bit42")),
-                wait(40/2),
-                fire(direction( 125, "absolute"), speed(4), bulletRef("bit42")),
-                wait(40/2)
-            ))
-        ),
-        bit4: bullet(
-            action(
-                wait(12),
-                changeSpeed(speed(0), 1),
-                changeDirection(direction("$2*$1", "absolute"), 1),
-                wait(5),
-                changeDirection(direction("($2-100)*$1", "absolute"), 600),
-                repeat(150, action(
-                    fire(direction(0, "relative"), speed(5), bullet("g")),
-                    wait(4)
-                )),
-                vanish()
-            )
-        ),
-        bit42: bullet(
-            action(
-                wait(12),
-                changeSpeed(speed(0), 1),
-                fire(direction("$rand*10-2"), speed("0.8+$rank"), bullet()),
-                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
-                vanish()
-            )
         )
     });
 
@@ -474,6 +433,8 @@ var patterns = {};
             changeDirection(direction(0, "absolute"), 1),
             actionRef("move"),
             repeat(300, action(
+                actionRef("attack4"),
+                actionRef("move"),
                 actionRef("attack1"),
                 actionRef("move"),
                 actionRef("attack2"),
@@ -561,28 +522,28 @@ var patterns = {};
             fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit20", -1)),
             fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit20",  1)),
             fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit21", -1)),
-            wait(4000)
+            wait(800)
         ),
         bit20: bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
-                repeat(16, action(
+                repeat(4, action(
                     changeDirection(direction("170*$1", "relative"), 70),
-                    repeat(70/8, action(
+                    repeat(70/4, action(
                         fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
-                        wait(8)
+                        wait(4)
                     )),
                     changeDirection(direction("-170*$1", "relative"), 70),
-                    repeat(70/8, action(
+                    repeat(70/4, action(
                         fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
                         fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
-                        wait(8)
+                        wait(4)
                     ))
                 )),
                 vanish()
@@ -593,16 +554,56 @@ var patterns = {};
                 var a = [];
                 a.push(wait(12));
                 a.push(changeSpeed(speed(0), 1));
-                for (var i = -30; i < 0; i++) {
+                for (var i = -35; i < -5; i++) {
                     a.push(fire(direction(i + "*$1", "aim"), speed("2.4+$rank"), bullet("g")));
                     for (var j = 0; j < 3; j++) {
                         a.push(wait(1));
                         a.push(fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g")));
                     }
-                    a.push(wait(20));
+                    a.push(wait(15));
                 }
                 return a;
             })())
+        ),
+        attack4: action(
+            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 180)),
+            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 150)),
+            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 120)),
+            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1,  90)),
+            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1,  90)),
+            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 120)),
+            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 150)),
+            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 180)),
+            repeat(600/40, action(
+                fire(direction(-125, "absolute"), speed(4), bulletRef("bit42")),
+                wait(40/2),
+                fire(direction( 125, "absolute"), speed(4), bulletRef("bit42")),
+                wait(40/2)
+            ))
+        ),
+        bit4: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                changeDirection(direction("$2*$1", "absolute"), 1),
+                wait(5),
+                changeDirection(direction("($2-100)*$1", "absolute"), 600),
+                repeat(150, action(
+                    fire(direction(0, "relative"), speed(5), bullet("g")),
+                    wait(4)
+                )),
+                vanish()
+            )
+        ),
+        bit42: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                fire(direction("$rand*10-2"), speed("0.8+$rank"), bullet()),
+                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
+                vanish()
+            )
         )
     });
 

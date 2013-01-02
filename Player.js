@@ -14,7 +14,9 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
     var kb = app.keyboard;
     player.update = function() {
         if (this.disabled) {
-            this.visible = (scene.frame % 2 === 0);
+            this.alpha = 0.5;
+        } else {
+            this.alpha = 1.0;
         }
 
         if (this.rebirth) {
@@ -46,40 +48,41 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
             }
         }
 
-        if (this.disabled === true) return;
 
         var beforeRoll = this.roll;
 
-        // キーボード操作
-        var xPress = kb.getKey("x");
-        if (xPress) {
-            this.speed = 0.1;
-        } else {
-            this.speed = 0.2;
-        }
-        if (kb.getKey("left")) {
-            this.x -= this.speed;
-            this.roll -= 0.2;
-        } else if (kb.getKey("right")) {
-            this.x += this.speed;
-            this.roll += 0.2;
-        }
+        if (!this.disabled) {
+            // キーボード操作
+            var xPress = kb.getKey("x");
+            if (xPress) {
+                this.speed = 0.1;
+            } else {
+                this.speed = 0.2;
+            }
+            if (kb.getKey("left")) {
+                this.x -= this.speed;
+                this.roll -= 0.2;
+            } else if (kb.getKey("right")) {
+                this.x += this.speed;
+                this.roll += 0.2;
+            }
 
-        if (kb.getKey("down")) {
-            this.y -= this.speed;
-        } else if (kb.getKey("up")) {
-            this.y += this.speed;
-        }
+            if (kb.getKey("down")) {
+                this.y -= this.speed;
+            } else if (kb.getKey("up")) {
+                this.y += this.speed;
+            }
 
-        // マウス操作
-        if (mouse.getPointing()) {
-            var deltaX = mouse.deltaPosition.x;
-            this.x += deltaX * 0.1;
-            this.y += mouse.deltaPosition.y * -0.1;
-            if (deltaX < 0) {
-                this.roll -= 0.5;
-            } else if (0 < deltaX) {
-                this.roll += 0.5;
+            // マウス操作
+            if (mouse.getPointing()) {
+                var deltaX = mouse.deltaPosition.x;
+                this.x += deltaX * 0.1;
+                this.y += mouse.deltaPosition.y * -0.1;
+                if (deltaX < 0) {
+                    this.roll -= 0.5;
+                } else if (0 < deltaX) {
+                    this.roll += 0.5;
+                }
             }
         }
 
@@ -96,7 +99,7 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
         else if (3 < this.roll) this.roll = 3;
         this.texX = 3 + ~~(this.roll);
 
-        if (scene.frame % 3 === 0) {
+        if (!this.disabled && scene.frame % 3 === 0) {
             if (xPress) {
                 (this.level < 2) || fireWeapon(-0.25, 1.4, 0);
                 (this.level < 1) || fireWeapon(-0.20, 1.5, 0);
@@ -133,8 +136,20 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
         this.miss();
     };
     player.miss = function() {
-        app.bomb = 3;
         app.explode(this.x, this.y, 2);
+        var sound = tm.sound.SoundManager.get("explode");
+        if (sound !== void 0) MUTE_SE || sound.play();
+
+        app.zanki -= 1;
+        if (app.zanki === 0) {
+            this.visible = false;
+            this.rebirth = false;
+            scene.remove(this);
+            app.gameover();
+            return;
+        }
+
+        app.bomb = 3;
         if (this.level !== 2) this.level += 1;
         this.x = 0;
         this.y = -17;
@@ -143,15 +158,6 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
         this.roll = 0;
         this.texX = 3;
         app.isBulletDisable = true;
-        app.zanki -= 1;
-        if (app.zanki === 0) {
-            this.rebirth = false;
-            scene.remove(this);
-            app.gameover();
-        }
-
-        var sound = tm.sound.SoundManager.get("explode");
-        if (sound !== void 0) MUTE_SE || sound.play();
     };
     scene.add(player);
 

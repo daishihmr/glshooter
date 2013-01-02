@@ -157,7 +157,7 @@ var GameOverScene = tm.createClass({
     update: function(app) {
         this.gameover.alpha += 0.01;
         if (this.start + 220 === app.frame) {
-            tm.social.Nineleap.postRanking(app.score, "SCORE:" + app.score);
+            tm.social.Nineleap.postRanking(~~(app.score), "SCORE:" + ~~(app.score));
         }
     }
 });

@@ -5,7 +5,10 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 var EXTEND_SCORE = 500000;
+var BOSS_HP = 16000;
 var GLOW_LEVEL_DOWN = 1.5;
+var SHOW_FPS = true;
+var MUTEKI = false;
 
 var textures = {};
 var scripts = {};
@@ -182,7 +185,7 @@ tm.main(function() {
         };
         return e;
     };
-    for (var i = 0; i < 500; i++) {
+    for (var i = 0; i < 1000; i++) {
         var e = createEnemy();
         enemies.push(e);
         enemyPool.push(e);
@@ -192,6 +195,7 @@ tm.main(function() {
         var e;
         if (enemyName === "boss") {
             e = boss;
+            gameScene.addChild(bossHp);
         } else {
             e = enemyPool.pop();
             if (e === void 0) {
@@ -218,23 +222,23 @@ tm.main(function() {
     boss.alpha = 0.5;
     boss.texScale = 8;
     boss.glow = 0.4;
-    boss.maxHp = 16000;
+    boss.maxHp = BOSS_HP;
     boss.damagePoint = 0;
     boss.damage = function(d) {
         this.damagePoint += d;
-        if (8000 < this.damagePoint) {
+        if (boss.maxHp*0.5 < this.damagePoint) {
             // 第2形態へ
             clearAllBullets(true);
-            this.glow = 0.2;
+            this.glow = 0.1;
             SoundManager.get("explode").play();
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             var t = scene.frame + 50;
             this.update = function() {
-                if (scene.frame === t || scene.frame === t+10 || scene.frame === t+15) {
+                if (scene.frame === t || scene.frame === t+10 || scene.frame === t+15 || scene.frame === t+20) {
                     SoundManager.get("explode").play();
-                    explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 3));
+                    explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
                 } else if (scene.frame === t+75) {
                     this.update = patterns.boss12.createTicker(param);
                     this.damage = this.damage2;
@@ -245,6 +249,33 @@ tm.main(function() {
     };
     boss.damage2 = function(d) {
         this.damagePoint += d;
+        if (boss.maxHp < this.damagePoint) {
+            // 撃破
+            player.disabled = true;
+            clearAllBullets(true);
+            this.glow = 0;
+            SoundManager.get("explode").play();
+            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
+            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
+            explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
+            var t = scene.frame + 50;
+            this.update = function() {
+                this.alpha -= 0.001;
+                this.x = Math.sin(scene.frame*0.3)*0.1;
+                this.y += -0.02;
+                if (t < scene.frame && (scene.frame - t) % 5 === 0 && Math.random() < 0.5) {
+                    SoundManager.get("explode").play();
+                    explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
+                }
+                if (this.alpha < 0) {
+                    this.update = function() {};
+                    explodeL(function() {
+                        app.gameclear();
+                    });
+                }
+            };
+            this.damage = function() {};
+        }
     }
     enemies.push(boss);
 
@@ -252,6 +283,7 @@ tm.main(function() {
     var explosion = new Explosion(gl, scene, texture0);
     var explode = app.explode = explosion.explode;
     var explodeS = app.explodeS = explosion.explodeS;
+    var explodeL = explosion.getExplodeL(gl, scene, texture0);
 
     // background
     app.background = "rgba(0,0,0,1)"
@@ -293,7 +325,7 @@ tm.main(function() {
     life.width = 320;
     gameScene.addChild(life);
 
-    // stage
+    // message
     var message = app.message = tm.app.Label("stage 1", 50);
     message.setFontFamily("Orbitron");
     message.setAlign("center");
@@ -304,7 +336,7 @@ tm.main(function() {
     message.update = function() {
         this.alpha = 0.1 + Math.sin(scene.frame*0.12) * 0.1;
         if (scene.frame === 240) {
-            this.visible = false;
+            this.remove();
         }
     };
     gameScene.addChild(message);
@@ -330,7 +362,6 @@ tm.main(function() {
     fps.width = 50;
     fps.x = 320 - fps.width;
     fps.y = 12;
-    gameScene.addChild(fps);
     (function() {
         var frameCount = -1;
         var lastUpdate = Date.now();
@@ -345,23 +376,20 @@ tm.main(function() {
             }
         };
     })();
+    SHOW_FPS && gameScene.addChild(fps);
 
     // boss hp
     var bossHp = tm.app.RectangleShape(300, 5, {
         fillStyle: "white",
         strokeStyle: "none"
     });
-    bossHp.x = 300/2 + 5;
+    bossHp.x = 300*0.5 + 5;
     bossHp.y = 5;
-    bossHp.alpha = 0.5;
     bossHp.update = function() {
-        this.visible = (boss.parent !== null);
-        var hp = boss.maxHp - boss.damagePoint;
-        if (0 <= hp) this.width = 300 * hp/boss.maxHp;
-        else this.width = 0;
-       this.x = this.width/2 + 5;
+        this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
+        this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
+        this.x = this.width*0.5 + 5;
     }
-    gameScene.addChild(bossHp);
 
     var stageData = setupStageData(app);
 
@@ -382,7 +410,11 @@ tm.main(function() {
                     var am = app.message;
                     am.text = msg.text;
                     am.fillStyle = msg.color;
-                    am.visible = msg.visible;
+                    if (msg.visible) {
+                        gameScene.addChild(am);
+                    } else {
+                        am.remove();
+                    }
                 }
             }
         }
@@ -395,26 +427,28 @@ tm.main(function() {
             for (var i = bullets.length; i--; ) {
                 var b = bullets[i];
                 if (b.parent === null) continue;
-                var dx = b.x - player.x;
-                var dy = b.y - player.y;
-                if (dx*dx+dy*dy < 0.1) {
+                var dist = (b.x - player.x)*(b.x - player.x)+(b.y - player.y)*(b.y - player.y);
+                if (dist < 0.1) {
                     scene.remove(b);
-                    player.damage();
+                    MUTEKI || player.damage();
                     glowLevel = 0;
                     break;
+                } else if (dist < 1.0) {
+                    // console.log("カスリ点", 10 * (1 + player.glow*10));
+                    app.score += 10 * (1 + player.glow*10); // カスリ点
                 }
             }
         }
 
         // player vs enemy
-        if (player.parent !== null && player.rebirth === false) {
+        if (player.parent !== null && player.rebirth === false && player.disabled === false) {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dx = e.x - player.x;
                 var dy = e.y - player.y;
                 if (dx*dx+dy*dy < e.scale*2) {
-                    player.damage();
+                    MUTEKI || player.damage();
                     glowLevel = 0;
                 }
             }
@@ -433,8 +467,8 @@ tm.main(function() {
                     scene.remove(w);
                     glowLevel += 3;
                     e.damage(player.power);
-                    w.update();
-                    explodeS(w.x, w.y, 0.3);
+                    app.score += player.glow*0.1; // 撃ち込み点
+                    w.update(); explodeS(w.x, w.y, 0.3);
                 }
             }
         }
@@ -448,7 +482,7 @@ tm.main(function() {
 
         // bomb
         if ((keyboard.getKeyDown("z")||mouse.doubleClick) && player.parent !== null && 0 < app.bomb && bombing === false) {
-            app.bomb--;
+            app.bomb -= 1;
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent !== null) e.damage(20);
@@ -510,6 +544,27 @@ tm.main(function() {
             bgm.stop();
             app.replaceScene(GameOverScene());
         }, 3000);
+    };
+
+    // gameclear
+    app.gameclear = function() {
+        message.fillStyle = "white";
+        message.setFontSize(30);
+        message.text = "stage clear";
+        message.visible = true;
+        var t = scene.frame;
+        var bonus = ~~(app.zanki * 100000 + app.bomb * 100000);
+        message.addEventListener("enterframe", function() {
+            if (scene.frame === t + 180*1) {
+                message.text = "bonus " + bonus;
+                app.score += bonus;
+            } else if (scene.frame === t + 180*2) {
+                message.text = "thank you!!";
+            } else if (scene.frame === t + 180*3) {
+                tm.social.Nineleap.postRanking(~~(app.score), "SCORE:" + ~~(app.score));
+            }
+        });
+        gameScene.addChild(message);
     };
 
     app.run();

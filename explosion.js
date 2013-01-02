@@ -41,4 +41,63 @@ var Explosion = function(gl, scene, texture0) {
         e.incrScale = scale * 0.2;
         scene.add(e);
     };
+
+    this.getExplodeL = function(gl, scene, texture0) {
+        var createParticle = function() {
+            var p = new Sprite(gl, texture0);
+            p.texX = 4;
+            p.texY = 1;
+            p.radius = 0;
+            p.angle = 0;
+            p.update = function() {
+                this.age += 1;
+                if (this.age < 60) {
+                    this.visible = false;
+                    return;
+                } else {
+                    this.visible = true;
+                }
+                this.x = Math.cos(this.angle) * this.radius;
+                this.y = Math.sin(this.angle) * this.radius;
+                this.radius += this.radiusD;
+                this.scale += 0.18;
+                this.alpha -= 0.004;
+                if (this.alpha < 0) {
+                    scene.remove(this);
+                }
+            };
+            return p;
+        }
+
+        var pool = [];
+        for (var i = 0; i < 100; i++) {
+            pool.push(createParticle());
+        }
+
+        return function(callback) {
+            var readyCount = 0;
+            for (var i = pool.length; i--; ) {
+                var p = pool[i];
+                p.radius = tm.util.Random.randfloat(0.1, 2);
+                p.angle = (i % 12) * Math.PI*2/12 - p.radius*0.3;
+                p.radiusD = tm.util.Random.randfloat(0.05, 0.2);
+                p.alpha = 1;
+                p.scale = 1;
+                p.age = 0;
+                p.onremoved = function() {
+                    readyCount += 1;
+                };
+                scene.add(p);
+            }
+            MUTE_SE || tm.sound.SoundManager.get("bomb").play();
+            var check = function() {
+                if (readyCount === pool.length) {
+                    callback();
+                } else {
+                    setTimeout(check, 5);
+                }
+            };
+            check();
+        };
+    };
 };

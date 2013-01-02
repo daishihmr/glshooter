@@ -60,8 +60,8 @@ var Explosion = function(gl, scene, texture0) {
                 this.x = Math.cos(this.angle) * this.radius;
                 this.y = Math.sin(this.angle) * this.radius;
                 this.radius += this.radiusD;
-                this.scale += 0.18;
-                this.alpha -= 0.004;
+                this.scale += 0.17;
+                this.alpha -= 0.0025;
                 if (this.alpha < 0) {
                     scene.remove(this);
                 }
@@ -70,7 +70,7 @@ var Explosion = function(gl, scene, texture0) {
         }
 
         var pool = [];
-        for (var i = 0; i < 100; i++) {
+        for (var i = 0; i < 30; i++) {
             pool.push(createParticle());
         }
 
@@ -80,10 +80,13 @@ var Explosion = function(gl, scene, texture0) {
                 var p = pool[i];
                 p.radius = tm.util.Random.randfloat(0.1, 2);
                 p.angle = (i % 12) * Math.PI*2/12 - p.radius*0.3;
-                p.radiusD = tm.util.Random.randfloat(0.05, 0.2);
+                p.radiusD = tm.util.Random.randfloat(0.02, 0.15);
                 p.alpha = 1;
                 p.scale = 1;
                 p.age = 0;
+                p.x = Math.cos(p.angle) * p.radius;
+                p.y = Math.sin(p.angle) * p.radius;
+                p.visible = false;
                 p.onremoved = function() {
                     readyCount += 1;
                 };

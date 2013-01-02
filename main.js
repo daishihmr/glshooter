@@ -260,18 +260,27 @@ tm.main(function() {
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             var t = scene.frame + 50;
             this.update = function() {
+                player.disabled = true;
                 this.alpha -= 0.001;
                 this.x = Math.sin(scene.frame*0.3)*0.1;
-                this.y += -0.02;
+                this.y += -0.025;
+                this.scale -= 0.001;
+                this.rotation -= 0.02;
                 if (t < scene.frame && (scene.frame - t) % 5 === 0 && Math.random() < 0.5) {
                     SoundManager.get("explode").play();
                     explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
                 }
-                if (this.alpha < 0) {
-                    this.update = function() {};
+                if (scene.frame === t + 250) {
                     explodeL(function() {
                         app.gameclear();
                     });
+                } else if (scene.frame === t + 250+60) {
+                    this.update = function() {
+                        this.alpha -= 0.001;
+                        if (this.alpha <= 0) {
+                            scene.remove(this);
+                        }
+                    };
                 }
             };
             this.damage = function() {};

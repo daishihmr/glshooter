@@ -1,6 +1,7 @@
-var fireBomber = function(gl, scene, texture0, bombParticlePool) {
+var Bomb = {};
+Bomb.fireBomber = function(gl, scene, bombParticlePool) {
     var createBombParticle = function() {
-        var p = new Sprite(gl, texture0);
+        var p = new Sprite(gl, Sprite.mainTexture);
         p.texX = 4;
         p.texY = 1;
         p.radius = 0;
@@ -38,4 +39,10 @@ var fireBomber = function(gl, scene, texture0, bombParticlePool) {
         }
         MUTE_SE || tm.sound.SoundManager.get("bomb").play();
     };
+};
+Bomb.clearBomb = function(scene, bombParticlePool) {
+    for (var i = bombParticlePool.length; i--; ) {
+        scene.remove(bombParticlePool[i]);
+    }
+    bombParticlePool.readyCount = bombParticlePool.length;
 };

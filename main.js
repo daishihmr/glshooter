@@ -30,21 +30,28 @@ tm.main(function() {
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
     app.fitWindow(false);
+    app.background = "rgba(0,0,0,1)"
     app.fps = FPS;
     app.isGameover = false;
+    app.resetGameStatus = function () {
+        app.score = 0;
+        app.zanki = 3;
+        app.bomb = 3;
+    };
+    app.bgm = null;
+    app.volumeSe = 0.8;
+    app.resetGameStatus();
 
-    var bgm = SoundManager.get("bgm");
-
-    // volume down
-    for (var i = SoundManager.sounds["explode"].length; i--; ) {
-        SoundManager.sounds["explode"][i].volume = 0.8;
-    }
+    var setVolumeSe = function() {
+        ["explode", "effect0", "bomb"].forEach(function(s) {
+            for (var i = SoundManager.sounds[s].length; i--; ) {
+                SoundManager.sounds[s][i].volume = app.volumeSe;
+            }
+        });
+    };
+    setVolumeSe();
 
     var gameScene = app.gameScene = tm.app.Scene();
-    gameScene.addEventListener("enter", function() {
-        bgm.loop = true;
-        MUTE_BGM || bgm.play();
-    });
     
     // webgl canvas
     var canvas = document.getElementById("world");
@@ -80,15 +87,19 @@ tm.main(function() {
     var explode = app.explode = explosion.explode;
     var explodeS = app.explodeS = explosion.explodeS;
     var explodeL = explosion.getExplodeL(gl, scene);
+    var clearAllExplosion = app.clearAllExplosion = explosion.clearAll;
 
     // player
     var weapons = [];
-    var weaponPool = [];
-    var player = app.player = setupPlayer(app, gl, scene, weapons, weaponPool, mouse);
+    var player = app.player = setupPlayer(app, gl, scene, weapons, mouse);
+    var clearAllPlayerEffect = app.clearAllPlayerEffect = player.clearAll;
 
     // bomb
     var bombParticlePool = [];
-    app.fireBomber = fireBomber(gl, scene, texture0, bombParticlePool);
+    app.fireBomber = Bomb.fireBomber(gl, scene, bombParticlePool);
+    app.clearBomb = function () {
+        Bomb.clearBomb(scene, bombParticlePool);
+    };
 
     // enemy bullet setting
     var param = app.attackParam = {
@@ -220,17 +231,16 @@ tm.main(function() {
         e.update = Patterns[pattern].createTicker(param);
         scene.add(e);
     };
-
-    // boss
-    var boss = createBoss(app, gl, textures["boss1"], explosion);
-    enemies.push(boss);
-
-    // background
-    app.background = "rgba(0,0,0,1)"
-    gameScene.addChild(createBackground(app, scene, player));
+    var clearAllEnemies = app.clearAllEnemies = function(a) {
+        for (var i = enemies.length; i--; ) {
+            var e = enemies[i];
+            if (e.parent !== null) {
+                scene.remove(e);
+            }
+        }
+    };
 
     // score
-    app.score = 0;
     var score = tm.app.Label("SCORE:" + app.score);
     score.update = function() {
         var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
@@ -249,7 +259,6 @@ tm.main(function() {
     gameScene.addChild(score);
 
     // zanki
-    app.zanki = 3;
     var life = tm.app.Label("LIFE:" + app.zanki, 12);
     life.update = function() {
         this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
@@ -279,7 +288,6 @@ tm.main(function() {
     gameScene.addChild(message);
 
     // bomb
-    app.bomb = 3;
     var bomb = tm.app.Label("BOMB:" + app.bomb, 12);
     bomb.update = function() {
         this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
@@ -327,9 +335,6 @@ tm.main(function() {
         this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
         this.x = this.width*0.5 + 5;
     }
-
-    // stage data
-    var stageData = setupStageData(app);
 
     // GLOW-LV
     var glowLevel = 0;
@@ -447,14 +452,52 @@ tm.main(function() {
     };
 
     var pauseScene = PauseScene();
+    var settingScene = SettingScene(app);
+    var confirmScene = ConfirmScene();
 
     app.update = function() {
         mouse.update();
 
         if (keyboard.getKeyDown("space")) {
             if (app.currentScene === pauseScene) {
+                switch (pauseScene.selection) {
+                case 0: // resume
+                    app.popScene();
+                    break;
+                case 1: // restart
+                    app.pushScene(confirmScene);
+                    break;
+                case 2: // setting
+                    app.pushScene(settingScene);
+                    break;
+                case 3: // back to title
+                    app.pushScene(confirmScene);
+                    break;
+                }
+            } else if (app.currentScene === confirmScene) {
+                switch (confirmScene.selection) {
+                case 0:
+                    if (pauseScene.selection === 1) { // restart
+                        app.resetGameStatus();
+                        app.stageStart();
+                        app.popScene();
+                        app.popScene();
+                    } else if (pauseScene.selection === 3) { // back to title
+                        app.resetGameStatus();
+                        app.popScene();
+                        app.popScene();
+                        app.popScene();
+                        app.bgm.stop();
+                    }
+                    break;
+                case 1:
+                    app.popScene();
+                }
+            } else if (app.currentScene === settingScene) {
+                setVolumeSe();
                 app.popScene();
             } else if (app.currentScene === gameScene) {
+                if (app.isGameover) return;
                 app.pushScene(pauseScene);
             }
         }
@@ -476,21 +519,86 @@ tm.main(function() {
         }
     };
 
-    // gameover
-    app.gameover = function() {
-        app.isBulletDisable = false;
-        app.isGameover = true;
-        setTimeout(function() {
-            bgm.stop();
-            app.replaceScene(GameOverScene());
-        }, 3000);
+    // boss
+    var boss;
+
+    // background
+    var background;
+
+    // stage data
+    var stageData;
+
+    // stage start
+    app.stageStart = function() {
+        scene.frame = 0;
+
+        if (app.bgm) app.bgm.stop();
+        app.bgm = SoundManager.get("bgm");
+        app.bgm.loop = true;
+        MUTE_BGM || app.bgm.play();
+        
+        if (boss !== void 0) {
+            var index = enemies.indexOf(boss);
+            if (index !== -1) enemies.splice(index, 1);
+        }
+        boss = createBoss(app, gl, textures["boss1"], explosion);
+        enemies.push(boss);
+        boss.killed = function() {
+            app.stageClear();
+        };
+
+        if (background !== void 0) {
+            background.remove();
+        }
+        background = createBackground(app, player);
+        gameScene.addChild(background);
+
+        stageData = setupStageData(app);
+
+        player.x = 0;
+        player.y = -10;
+        player.texX = 3;
+        player.glow = 0;
+        player.roll = 0;
+        player.speed = 0.2;
+        player.level = 0;
+        player.rebirth = false;
+        player.disabled = false;
+        player.power = 1;
+
+        app.clearAllBullets();
+        app.clearAllEnemies();
+        app.clearBomb();
+        app.clearAllExplosion();
+        app.clearAllPlayerEffect();
     };
 
-    // gameclear
-    app.gameclear = function() {
+    // stage clear
+    app.stageClear = function() {
         message.fillStyle = "white";
         message.setFontSize(30);
         message.text = "stage clear";
+        message.visible = true;
+        var t = scene.frame;
+        var bonus = ~~(app.zanki * 100000 + app.bomb * 30000);
+        message.addEventListener("enterframe", function() {
+            if (scene.frame === t + 180*1) {
+                message.text = "bonus " + bonus;
+                app.score += bonus;
+            } else if (scene.frame === t + 180*2) {
+                setTimeout(function() {
+                    app.stageStart();
+                }, 10);
+            }
+        });
+        gameScene.addChild(message);
+    };
+
+    // game clear
+    app.gameClear = function() {
+        message.fillStyle = "white";
+        message.setFontSize(30);
+        message.text = "game clear";
         message.visible = true;
         var t = scene.frame;
         var bonus = ~~(app.zanki * 100000 + app.bomb * 30000);
@@ -505,6 +613,16 @@ tm.main(function() {
             }
         });
         gameScene.addChild(message);
+    };
+
+    // gameover
+    app.gameover = function() {
+        app.isBulletDisable = false;
+        app.isGameover = true;
+        setTimeout(function() {
+            if (app.bgm) app.bgm.stop();
+            app.replaceScene(GameOverScene());
+        }, 3000);
     };
 
     app.run();

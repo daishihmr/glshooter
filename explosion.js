@@ -2,6 +2,7 @@ var Explosion = function(gl, scene) {
     var Random = tm.util.Random;
     var texture0 = Sprite.mainTexture;
 
+    var particles = [];
     var explodePool = [];
     for (var i = 0; i < 600; i++) {
         var e = new Sprite(gl, texture0);
@@ -16,6 +17,7 @@ var Explosion = function(gl, scene) {
                 explodePool.push(this);
             }
         }
+        particles.push(e);
         explodePool.push(e);
     }
 
@@ -41,6 +43,12 @@ var Explosion = function(gl, scene) {
         e.y = y + Random.randfloat(-0.2, 0.2);
         e.incrScale = scale * 0.2;
         scene.add(e);
+    };
+
+    this.clearAll = function() {
+        for (var i = particles.length; i--; ) {
+            particles[i].alpha = 0;
+        }
     };
 
     this.getExplodeL = function(gl, scene) {

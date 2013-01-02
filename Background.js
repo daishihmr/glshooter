@@ -1,4 +1,4 @@
-function createBackground(app, scene, player) {
+function createBackground(app, player) {
     var grad = tm.graphics.LinearGradient(0, 0, 0, 320);
     grad.addColorStopList([
         { offset: 0, color: "rgba(0,0,255,0.3)" },
@@ -10,14 +10,14 @@ function createBackground(app, scene, player) {
     });
     bg.x = app.width/2;
     bg.y = app.height/2;
-    bg.update = function() {
+    bg.update = function(app) {
         var c = this.canvas;
         c.clear();
         this.renderer(this._shapeParam);
         c.strokeStyle = "rgba(255,255,255,0.3)";
         var px = 1 - player.x * 0.02;
         for (var i = 0; i < 20; i++) {
-            var s = scene.frame % 15 * 0.2;
+            var s = app.frame % 15 * 0.2;
             var y = (i+s)*(i+s);
             c.drawLine(0, y/px, 320, y*px);
         }

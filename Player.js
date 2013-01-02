@@ -1,15 +1,6 @@
-var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
+var setupPlayer = function(app, gl, scene, weapons, mouse) {
     var player = new Sprite(gl, Sprite.mainTexture);
     player.scale = 1.5;
-    player.y = -10;
-    player.texX = 3;
-    player.glow = 0.4;
-    player.roll = 0;
-    player.speed = 0.2;
-    player.level = 0;
-    player.rebirth = false;
-    player.disabled = false;
-    player.power = 1;
 
     var kb = app.keyboard;
     player.update = function() {
@@ -174,6 +165,7 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
     };
     scene.add(centerMarker);
 
+    var zanzos = [];
     var zanzoPool = [];
     for (var i = 0; i < 200; i++) {
         var z = new Sprite(gl, textures["texture0"]);
@@ -191,9 +183,11 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
         z.onremoved = function() {
             zanzoPool.push(this);
         };
+        zanzos.push(z);
         zanzoPool.push(z);
     }
 
+    var weaponPool = [];
     for (var i = 0; i < 400; i++) {
         var w = new Sprite(gl, textures["texture0"]);
         w.texX = 7;
@@ -220,6 +214,14 @@ var setupPlayer = function(app, gl, scene, weapons, weaponPool, mouse) {
         w.x = player.x + x;
         w.y = player.y + y;
         scene.add(w);
+    };
+    player.clearAll = function() {
+        for (var i = zanzos.length; i--; ) {
+            zanzos[i].alpha = 0;
+        }
+        for (var i = weapons.length; i--; ) {
+            weapons[i].y = 100;
+        }
     };
 
     return player;

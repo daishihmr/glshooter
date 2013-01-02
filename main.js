@@ -8,6 +8,7 @@ var EXTEND_SCORE = 500000;
 var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
+var START_STAGE = 1;
 
 var NUM_OF_STAGE = 1;
 
@@ -28,7 +29,7 @@ tm.preload(function() {
 tm.main(function() {
     var SoundManager = tm.sound.SoundManager;
     var Random = tm.util.Random;
-    var settings = JSON.parse(localStorage.getItem("settings") || "{\"bgm\":1.0,\"se\":0.8}");
+    var settings = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings") || "{\"bgm\":1.0,\"se\":0.8}");
 
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
@@ -46,7 +47,7 @@ tm.main(function() {
     app.volumeSe = settings.se;
     app.resetGameStatus();
 
-    app.currentStage = 1;
+    app.currentStage = START_STAGE;
 
     var setVolumeSe = function() {
         ["explode", "effect0", "bomb"].forEach(function(s) {

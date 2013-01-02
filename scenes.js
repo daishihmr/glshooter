@@ -283,7 +283,7 @@ var GameOverScene;
             };
 
             this.addEventListener("exit", function() {
-                localStorage.setItem("settings", JSON.stringify(settings));
+                localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(settings));
             });
         },
         update: function(app) {

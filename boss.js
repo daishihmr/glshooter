@@ -1,4 +1,5 @@
-var BOSS_HP = [ 16000, 100 ];
+var BOSS_HP = [ 16000, 16000 ];
+
 var createBoss = function(app, gl, explosion, stage) {
     var Random = tm.util.Random;
     var SoundManager = tm.sound.SoundManager;
@@ -28,7 +29,7 @@ var createBoss = function(app, gl, explosion, stage) {
                     SoundManager.get("explode").play();
                     explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
                 } else if (scene.frame === t+75) {
-                    this.update = Patterns.boss12.createTicker(app.attackParam);
+                    this.update = Patterns["boss" + stage + "2"].createTicker(app.attackParam);
                     this.damage = this.damage2;
                 }
             };

@@ -125,7 +125,7 @@ tm.main(function() {
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
                 b.texY = 1;
-            } else if (spec.label === "b") {
+            } else if (spec.label === "b" || spec.label.indexOf("blue") === 0) {
                 b.texX = 1;
                 b.texY = 1;
             } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {

@@ -774,4 +774,82 @@ var Patterns = {};
         )
     });
 
+    Patterns.boss21 = pattern({
+        top: action(
+            actionRef("initPosition"),
+            actionRef("attack2")
+        ),
+        initPosition: action(
+            changeDirection(direction(155, "absolute"), 1),
+            changeSpeed(speed(0.3), 1),
+            wait(5),
+            fire(direction(0, "relative"), speed(0.3), bulletRef("bit11")),
+            wait(950),
+            changeSpeed(speed(0), 60),
+            wait(60),
+            changeDirection(direction(0, "absolute"), 1),
+            wait(30)
+        ),
+        bit11: bullet(
+            action(
+                wait(120),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", 30))
+                )),
+                wait(90),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", 10))
+                )),
+                wait(90),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", -10))
+                )),
+                wait(90),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", -30))
+                )),
+                wait(90),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", -40))
+                )),
+                wait(90),
+                fire(direction(0, "absolute"), bulletRef("bit12")),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", -50))
+                )),
+                wait(90),
+                repeat(24-1, action(
+                    fire(direction(360/24, "sequence"), bulletRef("bit12", -60))
+                )),
+                vanish()
+            )
+        ),
+        bit12: bullet(
+            action(
+                wait(5),
+                fire(direction("155+$1", "absolute"), speed("1.2+$rank"), bulletRef("blueC")),
+                vanish()
+            )
+        ),
+        blueC: bullet(
+            action(
+                wait(100),
+                fire(direction("$rand*360"), speed("2.0+$rank"), bullet("b")),
+                vanish()
+            )
+        ),
+        attack2: action(
+
+        )
+    });
+
+    Patterns.boss22 = pattern({
+        top: action()
+    });
+
 })();

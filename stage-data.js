@@ -659,10 +659,19 @@ var setupStageData = function(app, stage) {
                 {
                     frame: 20,
                     enemies: [
-                        [0, 21.9, "boss", "boss11"]
+                        [0, 21.9, "boss", "boss21"]
                     ]
                 }
             ]);
+
+            StageData = [
+                {
+                    frame: 20,
+                    enemies: [
+                        [ -12, -21.9, "boss", "boss21"]
+                    ]
+                }
+            ];
     }
 
     var cursor = 0;

@@ -9,7 +9,7 @@ var enemyData = {
         frameIndex: 20,
         hp: 5,
         scale: 1,
-        score: 10,
+        score: 50,
     },
     tank: {
         frameIndex: 21,
@@ -31,7 +31,7 @@ var enemyData = {
     },
     middleK: {
         frameIndex: 22,
-        hp: 400,
+        hp: 500,
         scale: 4,
         score: 1000,
         clear: true
@@ -41,6 +41,13 @@ var enemyData = {
         hp: 50,
         scale: 2,
         score: 400
+    },
+    cannon2: {
+        frameIndex: 20,
+        hp: 150,
+        scale: 3.5,
+        score: 400,
+        clear: true
     },
     ship: {
         frameIndex: 24,

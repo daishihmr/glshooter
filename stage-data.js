@@ -7,7 +7,9 @@
 var setupStageData = function(app, stage) {
 
     var delay20 = [ { frame: 20, enemies: [] } ];
+    var delay40 = [ { frame: 40, enemies: [] } ];
     var delay60 = [ { frame: 60, enemies: [] } ];
+
     var zako1Left = [
         {
             frame: 120,
@@ -219,6 +221,24 @@ var setupStageData = function(app, stage) {
     var zako4M12 = czako4(-12);
     var zako412 = czako4(12);
 
+    var czako4K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako4K" ],
+                    [ c+-1.5, 17.5, "zako", "zako4K" ],
+                    [ c+ 0  , 17.5, "zako", "zako4K" ],
+                    [ c+ 1.5, 17.5, "zako", "zako4K" ],
+                    [ c+ 3  , 17.5, "zako", "zako4K" ],
+                ]
+            },
+        ];
+    };
+    var zako4K0 = czako4K(0);
+    var zako4KM12 = czako4K(-12);
+    var zako4K12 = czako4K(12);
+
     var czako5 = function(c) {
         return [
             {
@@ -398,8 +418,8 @@ var setupStageData = function(app, stage) {
         {
             frame: 10,
             enemies: [
-                [ -7, 19, "cannon", "cannon2" ],
-                [  7, 19, "cannon", "cannon2" ],
+                [ -5, 19, "cannon", "cannon2" ],
+                [  5, 19, "cannon", "cannon2" ],
             ]
         }
     ];
@@ -407,8 +427,8 @@ var setupStageData = function(app, stage) {
         {
             frame: 10,
             enemies: [
-                [ -12, 19, "cannon", "cannon2" ],
-                [  12, 19, "cannon", "cannon2" ],
+                [ -12, 19, "cannon2", "cannon2" ],
+                [  12, 19, "cannon2", "cannon2" ],
             ]
         }
     ];
@@ -590,15 +610,9 @@ var setupStageData = function(app, stage) {
 
             .concat(delay60)
 
-            .concat(zako6KM8).concat(delay20)
             .concat(zako6K8).concat(delay20)
             .concat(zako6KM8).concat(delay20)
 
-            .concat(middleKLeft).concat(delay60)
-
-            .concat(delay60)
-
-            .concat(zako5K12).concat(delay60)
             .concat(zako5K12).concat(delay60)
             .concat(zako5K12).concat(delay60)
 
@@ -609,17 +623,14 @@ var setupStageData = function(app, stage) {
 
             .concat(channon22)
 
-            .concat(zako40).concat(delay20)
-            .concat(zako40).concat(delay20)
-            .concat(zako40).concat(delay20)
+            .concat(zako4K12).concat(delay40)
+            .concat(zako4K12).concat(delay40)
 
-            .concat(zako512).concat(delay20)
-            .concat(zako512).concat(delay20)
-            .concat(zako512).concat(delay20)
+            .concat(zako512).concat(delay40)
+            .concat(zako512).concat(delay40)
 
-            .concat(zako4M12).concat(delay20)
-            .concat(zako4M12).concat(delay20)
-            .concat(zako4M12).concat(delay20)
+            .concat(zako4KM12).concat(delay40)
+            .concat(zako4KM12).concat(delay40)
 
             .concat(delay60)
             .concat(delay60)
@@ -659,7 +670,7 @@ var setupStageData = function(app, stage) {
                 {
                     frame: 20,
                     enemies: [
-                        [0, 21.9, "boss", "boss21"]
+                        [ -12, -21.9, "boss", "boss21"]
                     ]
                 }
             ]);

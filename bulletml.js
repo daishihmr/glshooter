@@ -206,6 +206,9 @@ BulletML.global = this;
         }
     };
     BulletML.Root.prototype.getWalker = function(actionLabel, rank) {
+        if (rank instanceof Object === false) {
+            rank = { rank: rank };
+        }
         var w = new BulletML.Walker(this, rank);
         var action = this.findAction(actionLabel);
         if (action) {
@@ -237,7 +240,7 @@ BulletML.global = this;
         this._localScope = {};
         /** globalScope variables. */
         this._globalScope = {
-            $rank : rank || 0
+            $rank : rank || { rank: 0 }
         };
     };
     BulletML.Walker.prototype.next = function() {
@@ -411,6 +414,7 @@ BulletML.global = this;
                 scope[prop] = this._globalScope[prop];
             }
         }
+        if (scope.$rank) scope.$rank = scope.$rank.rank;
         for ( var prop in this._localScope) {
             if (this._localScope.hasOwnProperty(prop)) {
                 scope[prop] = this._localScope[prop];
@@ -472,6 +476,9 @@ BulletML.global = this;
         this._localScope = {};
     };
     BulletML.Bullet.prototype.getWalker = function(rank) {
+        if (rank instanceof Object === false) {
+            rank = { rank: rank };
+        }
         var w = new BulletML.Walker(this.root, rank);
         var action = new BulletML.Action();
         action.root = this.root;

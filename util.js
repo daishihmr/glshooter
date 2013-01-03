@@ -1,10 +1,13 @@
-function fitWindow(canvas) {
+function fitWindow(domElement) {
+    domElement.style.position = "absolute";
+    domElement.style.top = 0;
+    domElement.style.left = 0;
     if (window.innerHeight < window.innerWidth) {
-        canvas.width = window.innerHeight;
-        canvas.height = window.innerHeight;
+        domElement.width = window.innerHeight;
+        domElement.height = window.innerHeight;
     } else {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerWidth;
+        domElement.width = window.innerWidth;
+        domElement.height = window.innerWidth;
     }
 }
 

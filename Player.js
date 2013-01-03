@@ -6,8 +6,8 @@
  -> マウス操作の場合、回避に圧倒的なアドバンテージがある分、収束ショットを撃つことができないデメリットがある
 */
 
-var PLAYER_SPEED = 0.21;
-var MUTEKI_TIME = 180;
+var PLAYER_SPEED = 0.2;
+var MUTEKI_TIME = 90;
 
 var setupPlayer = function(app, gl, scene, weapons, mouse) {
     var player = new Sprite(gl, Sprite.mainTexture);
@@ -49,10 +49,11 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         this.muteki = (scene.frame < reactFrame + MUTEKI_TIME);
 
         var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.20;
-        for (var i = 0; i < 3; i++) {
+        var firePower = (this.muteki) ? 8 : 2;
+        for (var i = 0; i < firePower; i++) {
             var z = zanzoPool.pop();
             if (z) {
-                z.x = this.x + Math.random()*0.4-0.2 - zpos;
+                z.x = this.x + Math.random()*0.1-0.05 - zpos;
                 z.y = this.y - 1.2;
                 z.alpha = 0.8;
                 z.scale = 0.6;
@@ -60,7 +61,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             }
             z = zanzoPool.pop();
             if (z) {
-                z.x = this.x + Math.random()*0.4-0.2 + zpos;
+                z.x = this.x + Math.random()*0.1-0.05 + zpos;
                 z.y = this.y - 1.2;
                 z.alpha = 0.8;
                 z.scale = 0.6;
@@ -163,17 +164,21 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
 
         app.zanki -= 1;
         if (app.zanki === 0) {
+            scene.remove(this);
             this.visible = false;
             this.rebirth = false;
-            scene.remove(this);
-            app.gameOver();
+            app.confirmContinue();
             return;
         }
 
-        app.bomb = 3;
+        return player.launch();
+    };
+    player.launch = function() {
+        app.bomb = Math.max(3, app.bomb);
         if (this.level !== 2) this.level += 1;
         this.x = 0;
         this.y = -17;
+        this.visible = true;
         this.disabled = true;
         this.rebirth = true;
         this.roll = 0;
@@ -203,9 +208,9 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
-            this.y -= 0.3;
-            this.scale -= 0.08;
             this.visible = player.visible;
+            this.y -= 0.2;
+            this.scale -= 0.08;
             this.alpha -= 0.08;
             if (this.alpha < 0) {
                 scene.remove(this);

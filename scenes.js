@@ -1,9 +1,9 @@
-
 var TitleScene;
 var PauseScene;
 var ConfirmScene;
 var SettingScene;
 var GameOverScene;
+var ContinueScene;
 
 (function() {
 
@@ -327,14 +327,63 @@ var GameOverScene;
             this.addChild(gameover);
 
             this.addEventListener("enter", function(e) {
-                this.start = e.app.frame;
+                var app = e.app;
+                this.start = app.frame;
             });
         },
         update: function(app) {
             this.gameover.alpha += 0.01;
             if (this.start + 220 === app.frame) {
-                tm.social.Nineleap.postRanking(~~(app.score), "SCORE:" + ~~(app.score));
+                app.highScore = Math.max(app.score, app.highScore);
+                console.log("entry 9leap", ~~(app.highScore), "SCORE:" + ~~(app.highScore));
+                tm.social.Nineleap.postRanking(~~(app.highScore), "SCORE:" + ~~(app.highScore));
             }
         }
     });
+
+    ContinueScene = tm.createClass({
+        superClass: tm.app.Scene,
+        init: function() {
+            this.superInit();
+
+            var bg = tm.app.RectangleShape(320, 320, {
+                fillStyle: "rgba(0,0,0,0.9)",
+                strokeStyle: "none"
+            });
+            bg.x = 160;
+            bg.y = 160;
+            this.addChild(bg);
+
+            var title = createLabel("continue?", 35, 160, 60);
+            title.fillStyle = "#ffffff";
+            this.addChild(title);
+
+            this.menuItem = [];
+            this.menuItem[0] = createLabel("yes", 20, 80, 160);
+            this.menuItem[1] = createLabel("no", 20, 240, 160);
+            for (var i = this.menuItem.length; i--; ) {
+                this.addChild(this.menuItem[i]);
+            }
+
+            this.selection = 0;
+            this.addEventListener("enter", function() {
+                this.selection = 0;
+            });
+        },
+        update: function(app) {
+            if (app.keyboard.getKeyDown("right")) {
+                this.selection += 1;
+                if (this.selection === this.menuItem.length) this.selection = 0;
+            } else if (app.keyboard.getKeyDown("left")) {
+                this.selection -= 1;
+                if (this.selection === -1) this.selection = this.menuItem.length - 1;
+            }
+
+            for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].fillStyle = "#333";
+            }
+            this.menuItem[this.selection].fillStyle = "#fff"
+        }
+    });
+
 })();

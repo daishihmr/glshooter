@@ -10,6 +10,7 @@ var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
 var INITIAL_RANK = 0.5;
+var COLLISION_RADUIS = 0.09;
 
 var START_STAGE = 1;
 var NUM_OF_STAGE = 2;
@@ -42,7 +43,8 @@ tm.main(function() {
     app.fitWindow(false);
     app.background = "rgba(0,0,0,1)"
     app.fps = FPS;
-    app.isGameover = false;
+    app.highScore = 0;
+    app.score = 0;
     app.resetGameStatus = function () {
         app.score = 0;
         app.zanki = 3;
@@ -67,12 +69,9 @@ tm.main(function() {
     var gameScene = app.gameScene = tm.app.Scene();
 
     // webgl canvas
-    var canvas = document.getElementById("world");
-    canvas.style.position = "absolute";
-    canvas.style.top = 0;
-    canvas.style.left = 0;
-    fitWindow(canvas);
-    var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    var glCanvas = document.getElementById("world");
+    fitWindow(glCanvas);
+    var gl = glCanvas.getContext("webgl") || glCanvas.getContext("experimental-webgl");
     if (!gl) {
         alert("could not initialized WebGL");
         return;
@@ -80,7 +79,7 @@ tm.main(function() {
 
     // input
     var keyboard = app.keyboard;
-    var mouse = tm.input.Mouse(canvas);
+    var mouse = tm.input.Mouse(glCanvas);
     mouse.lastLeftUp = -1;
 
     var titleScene = TitleScene(mouse);
@@ -109,45 +108,14 @@ tm.main(function() {
     var player = app.player = setupPlayer(app, gl, scene, weapons, mouse);
     var clearAllPlayerEffect = app.clearAllPlayerEffect = player.clearAll;
 
+    // GLOW-LV
+    var glowLevel = 0;
+
     // bomb
     var bombParticlePool = [];
     app.fireBomber = Bomb.fireBomber(gl, scene, bombParticlePool);
     app.clearBomb = function () {
         Bomb.clearBomb(scene, bombParticlePool);
-    };
-
-    // enemy bullet setting
-    var param = app.attackParam = {
-        target: player,
-        rank: INITIAL_RANK,
-        bulletFactory: function(spec) {
-            var b = bulletPool.pop();
-            if (b === void 0) return;
-            b.alive = false;
-            if (spec.label === null || spec.label === void 0) {
-                b.texX = 3;
-                b.texY = 1;
-            } else if (spec.label === "b" || spec.label.indexOf("blue") === 0) {
-                b.texX = 1;
-                b.texY = 1;
-            } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
-                b.texX = 2;
-                b.texY = 1;
-            } else if (spec.label.indexOf("bit") === 0) {
-                b.alive = true;
-                b.texX = 7;
-                b.texY = 7;
-            } else {
-                b.texX = 3;
-                b.texY = 1;
-            }
-            return b;
-        },
-        isInsideOfWorld: function(b) {
-            return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
-        },
-        updateProperties: false,
-        speedRate: BULLET_SPEED
     };
 
     // enemy bullet
@@ -165,6 +133,54 @@ tm.main(function() {
             bulletPool.push(this);
         };
     }
+
+    // enemy bullet setting
+    var attackParam = app.attackParam = {
+        target: player,
+        rank: INITIAL_RANK,
+        bulletFactory: function(spec) {
+            var b = bulletPool.pop();
+            if (b === void 0) return;
+            b.alive = false;
+            b.scale = 0.6;
+            if (spec.label === null || spec.label === void 0) {
+                b.texX = 3;
+                b.texY = 1;
+            } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
+                b.texX = 2;
+                b.texY = 1;
+            } else if (spec.label === "b" || spec.label.indexOf("blue") === 0) {
+                b.texX = 1;
+                b.texY = 1;
+            } else if (spec.label.indexOf("bit") !== -1) {
+                b.alive = true;
+                b.texX = 7;
+                b.texY = 7;
+            } else {
+                b.texX = 3;
+                b.texY = 1;
+            }
+
+            if (spec.label === "s") {
+                b.scale = 0.4;
+            } else if (spec.label === "sg") {
+                b.scale = 0.4;
+                b.texX = 2;
+                b.texY = 1;
+            } else if (spec.label === "sb") {
+                b.scale = 0.4;
+                b.texX = 1;
+                b.texY = 1;
+            }
+
+            return b;
+        },
+        isInsideOfWorld: function(b) {
+            return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
+        },
+        updateProperties: false,
+        speedRate: BULLET_SPEED
+    };
 
     // clear all bullets
     app.isBulletDisable = false;
@@ -203,7 +219,7 @@ tm.main(function() {
             }
 
             if (this.clear === true) {
-                clearAllBullets(true);
+                clearAllBullets(false);
             }
 
             // for extend
@@ -229,14 +245,14 @@ tm.main(function() {
                 timer.y = this.y;
                 var t = scene.frame;
                 timer.update = function() {
-                    clearAllBullets(true);
+                    clearAllBullets(false);
                     if (scene.frame % 5 === 0 && Math.random() < 0.7) {
                         if (expSoundPlaying <= 0) {
                             MUTE_SE || SoundManager.get("explode").play();
                             expSoundPlaying = 5;
                         }
                         explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);
-                    } else if (scene.frame > t+45) {
+                    } else if (scene.frame > t+60) {
                         scene.remove(this);
                     }
                 };
@@ -273,7 +289,7 @@ tm.main(function() {
         e.clear = data.clear;
         enemyFlags[flag] = false;
         e.flag = flag;
-        e.update = Patterns[pattern].createTicker(param);
+        e.update = Patterns[pattern].createTicker(attackParam);
         scene.add(e);
     };
     var clearAllEnemies = app.clearAllEnemies = function(a) {
@@ -286,13 +302,13 @@ tm.main(function() {
     };
 
     // score
-    var score = tm.app.Label("SCORE:" + app.score);
+    var score = tm.app.Label("SCORE:" + app.score, 30);
     score.update = function() {
         var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
         if (player.y < 0) {
-            this.fillStyle = "rgba(255,255,255," + ((player.y + 17) / 17)*a + ")";
+            this.alpha = ((player.y + 17) / 30)*a;
         } else {
-            this.fillStyle = "rgba(255,255,255," + a + ")";
+            this.alpha = a;
         }
         this.text= "SCORE:" + ~~(app.score);
     };
@@ -302,6 +318,25 @@ tm.main(function() {
     score.y = 320;
     score.width = 320;
     gameScene.addChild(score);
+
+    // highScore
+    var highScore = tm.app.Label("high score:" + app.highScore, 10);
+    highScore.setFontFamily("Orbitron");
+    highScore.setBaseline("bottom");
+    highScore.width = 320;
+    highScore.x = 4;
+    highScore.y = 320 - 32;
+    highScore.update = function() {
+        var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
+        if (player.y < 0) {
+            this.alpha = ((player.y + 17) / 30)*a;
+        } else {
+            this.alpha = a;
+        }
+        app.highScore = Math.max(app.score, app.highScore);
+        this.text = "high score:" + ~~(app.highScore);
+    };
+    gameScene.addChild(highScore);
 
     // zanki
     var life = tm.app.Label("LIFE:" + app.zanki, 12);
@@ -347,7 +382,7 @@ tm.main(function() {
     fps.setBaseline("top");
     fps.width = 50;
     fps.x = 320 - fps.width;
-    fps.y = 12;
+    fps.y = 24;
     (function() {
         var frameCount = -1;
         var lastUpdate = Date.now();
@@ -356,7 +391,7 @@ tm.main(function() {
             frameCount += 1;
             var ms = Date.now();
             if (ms - lastUpdate >= 1000) {
-                fps.text = "fps:" + frameCount;
+                this.text = "fps:" + frameCount;
                 lastUpdate = ms;
                 frameCount = 0;
             }
@@ -378,30 +413,25 @@ tm.main(function() {
         this.x = this.width*0.5 + 5;
     }
 
-    // GLOW-LV
-    var glowLevel = 0;
-
     // game main loop
     gameScene.update = function() {
         // launch enemy
-        if (app.isGameover === false) {
-            var data = stageData.next(scene.frame, enemyFlags);
-            if (data !== void 0) {
-                var elist = data.enemies;
-                for (var i = elist.length; i--; ) {
-                    var e = elist[i];
-                    launchEnemy(e[0], e[1], e[2], e[3], e[4]);
-                }
-                var msg = data.message;
-                if (msg !== void 0) {
-                    var am = app.message;
-                    am.text = msg.text;
-                    am.fillStyle = msg.color;
-                    if (msg.visible) {
-                        gameScene.addChild(am);
-                    } else {
-                        am.remove();
-                    }
+        var data = stageData.next(scene.frame, enemyFlags);
+        if (data !== void 0) {
+            var elist = data.enemies;
+            for (var i = elist.length; i--; ) {
+                var e = elist[i];
+                launchEnemy(e[0], e[1], e[2], e[3], e[4]);
+            }
+            var msg = data.message;
+            if (msg !== void 0) {
+                var am = app.message;
+                am.text = msg.text;
+                am.fillStyle = msg.color;
+                if (msg.visible) {
+                    gameScene.addChild(am);
+                } else {
+                    am.remove();
                 }
             }
         }
@@ -415,7 +445,7 @@ tm.main(function() {
                 var b = bullets[i];
                 if (b.parent === null) continue;
                 var dist = (b.x - player.x)*(b.x - player.x)+(b.y - player.y)*(b.y - player.y);
-                if (dist < 0.1) {
+                if (dist < COLLISION_RADUIS) {
                     scene.remove(b);
                     MUTEKI || player.damage();
                     glowLevel = 0;
@@ -464,7 +494,7 @@ tm.main(function() {
 
         // bombing or rebirthing
         if (app.isBulletDisable || bombing) {
-            clearAllBullets();
+            clearAllBullets(false);
         }
 
         // bomb
@@ -474,7 +504,7 @@ tm.main(function() {
                 var e = enemies[i];
                 if (e.parent !== null) e.damage(20);
             }
-            clearAllBullets();
+            clearAllBullets(false);
 
             app.fireBomber();
         }
@@ -496,6 +526,7 @@ tm.main(function() {
     var pauseScene = PauseScene();
     var settingScene = SettingScene(app);
     var confirmScene = ConfirmScene();
+    var continueScene = ContinueScene();
 
     app.update = function() {
         mouse.update();
@@ -538,8 +569,20 @@ tm.main(function() {
             } else if (app.currentScene === settingScene) {
                 setVolumeSe();
                 app.popScene();
+            } else if (app.currentScene === continueScene) {
+                app.popScene();
+                switch(continueScene.selection) {
+                case 0:
+                    app.resetGameStatus();
+                    player.level = -1;
+                    scene.frame = scene.returnFrame;
+                    scene.add(player);
+                    return player.launch();
+                case 1:
+                    return app.gameOver();
+                }
             } else if (app.currentScene === gameScene) {
-                if (app.isGameover) return;
+                if (player.disabled) return;
                 app.pushScene(pauseScene);
             }
         }
@@ -591,6 +634,7 @@ tm.main(function() {
 
         // boss
         if (boss !== void 0) {
+            scene.remove(boss);
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
@@ -609,13 +653,14 @@ tm.main(function() {
         stageData = setupStageData(app, stage);
 
         // reset player
+        glowLevel = 0;
         player.reset();
         player.rebirth = true;
         player.disabled = true;
         player.y = -17;
 
         // clear sprites
-        app.clearAllBullets();
+        app.clearAllBullets(true);
         app.clearAllEnemies();
         app.clearBomb();
         app.clearAllExplosion();
@@ -680,14 +725,19 @@ tm.main(function() {
         gameScene.addChild(message);
     };
 
+    // confirm continue
+    app.confirmContinue = function() {
+        app.isBulletDisable = false;
+        scene.returnFrame = scene.frame;
+        setTimeout(function() {
+            app.pushScene(continueScene);
+        }, 1000);
+    };
+
     // game over
     app.gameOver = function() {
-        app.isBulletDisable = false;
-        app.isGameover = true;
-        setTimeout(function() {
-            if (app.bgm) app.bgm.stop();
-            app.replaceScene(GameOverScene());
-        }, 3000);
+        if (app.bgm) app.bgm.stop();
+        app.replaceScene(GameOverScene());
     };
 
     app.run();

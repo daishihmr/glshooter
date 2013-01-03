@@ -88,7 +88,8 @@ var Scene;
     };
 
     Scene.prototype.add = function(sprite) {
-        this.children[this.children.length] = sprite;
+        var c = this.children;
+        c[c.length] = sprite;
         sprite.parent = this;
         sprite.uniforms = this.uniformLocationsForSprite;
     };

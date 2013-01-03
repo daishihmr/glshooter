@@ -9,8 +9,9 @@ var EXTEND_SCORE_BOMB = 100000;
 var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
+var INITIAL_RANK = 0.5;
 
-var START_STAGE = 2;
+var START_STAGE = 1;
 var NUM_OF_STAGE = 2;
 
 var textures = {};
@@ -117,7 +118,7 @@ tm.main(function() {
     // enemy bullet setting
     var param = app.attackParam = {
         target: player,
-        rank: 0.5,
+        rank: INITIAL_RANK,
         bulletFactory: function(spec) {
             var b = bulletPool.pop();
             if (b === void 0) return;

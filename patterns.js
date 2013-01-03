@@ -359,7 +359,7 @@ var Patterns = {};
                 wait(2),
                 changeSpeed(0, 1),
                 fire(direction("$1", "relative"), speed(3), bullet("g")),
-                repeat("5+$rank*5", action(
+                repeat("1+$rank*10", action(
                     wait(1),
                     fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
                 )),
@@ -452,10 +452,10 @@ var Patterns = {};
             repeat(100, action(
                 changeDirection(direction(180, "relative"), 600),
                 repeat(30, action(
-                    fire(direction(0, "relative"), speed(1.4), bullet("g")),
-                    fire(direction(90, "sequence"), speed(1.4), bullet("g")),
-                    fire(direction(90, "sequence"), speed(1.4), bullet("g")),
-                    fire(direction(90, "sequence"), speed(1.4), bullet("g")),
+                    fire(direction(0, "relative"), speed("1.0+$rank"), bullet("g")),
+                    fire(direction(90, "sequence"), speed("1.0+$rank"), bullet("g")),
+                    fire(direction(90, "sequence"), speed("1.0+$rank"), bullet("g")),
+                    fire(direction(90, "sequence"), speed("1.0+$rank"), bullet("g")),
                     wait(20)
                 ))
             ))

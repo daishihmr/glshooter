@@ -15,11 +15,10 @@ var START_STAGE = 1;
 var NUM_OF_STAGE = 2;
 
 var textures = {};
-var scripts = {};
 
 tm.preload(function() {
-    tm.util.FileManager.load("vs", 'shader.vs');
-    tm.util.FileManager.load("fs", 'shader.fs');
+    tm.util.FileManager.load("vs", { url: "shader.vs", type: "GET" });
+    tm.util.FileManager.load("fs", { url: "shader.fs", type: "GET" });
 
     tm.graphics.TextureManager.add("texture0", "texture0.png");
     tm.graphics.TextureManager.add("boss1", "boss1.png");

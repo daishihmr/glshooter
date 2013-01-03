@@ -17,8 +17,8 @@ var textures = {};
 var scripts = {};
 
 tm.preload(function() {
-    tm.addLoadCheckList(loadScript("vs", "shader.vs"));
-    tm.addLoadCheckList(loadScript("fs", "shader.fs"));
+    tm.util.FileManager.load("vs", 'shader.vs');
+    tm.util.FileManager.load("fs", 'shader.fs');
 
     tm.graphics.TextureManager.add("texture0", "texture0.png");
     tm.graphics.TextureManager.add("boss1", "boss1.png");
@@ -87,7 +87,9 @@ tm.main(function() {
     app.replaceScene(titleScene);
 
     // main 3D scene
-    var scene = new Scene(gl, scripts["vs"], scripts["fs"]);
+    var vs = tm.util.FileManager.get("vs").data;
+    var fs = tm.util.FileManager.get("fs").data;
+    var scene = new Scene(gl, vs, fs);
 
     // GL Textures
     for (var name in tm.graphics.TextureManager.textures) {

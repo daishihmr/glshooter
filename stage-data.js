@@ -198,30 +198,6 @@ var setupStageData = function(app, stage) {
             ],
         },
     ];
-    var middle0 = [
-        {
-            frame: 10,
-            enemies: [
-                [ 0, 18, "middle", "middle"],
-            ]
-        },
-    ];
-    var middle5 = [
-        {
-            frame: 10,
-            enemies: [
-                [ 5, 18, "middle", "middle"],
-            ]
-        },
-    ];
-    var middleM5 = [
-        {
-            frame: 10,
-            enemies: [
-                [ -5, 18, "middle", "middle"],
-            ]
-        },
-    ];
     var czako4 = function(c) {
         return [
             {
@@ -258,6 +234,24 @@ var setupStageData = function(app, stage) {
     var zako5M12 = czako5(-12);
     var zako512 = czako5(12);
 
+    var czako5K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako5K" ],
+                    [ c+-1.5, 17.5, "zako", "zako5K" ],
+                    [ c+ 0  , 17.5, "zako", "zako5K" ],
+                    [ c+ 1.5, 17.5, "zako", "zako5K" ],
+                    [ c+ 3  , 17.5, "zako", "zako5K" ],
+                ]
+            },
+        ];
+    };
+    var zako5K0 = czako5K(0);
+    var zako5KM12 = czako5K(-12);
+    var zako5K12 = czako5K(12);
+
     var czako6 = function(c) {
         return [
             {
@@ -275,6 +269,24 @@ var setupStageData = function(app, stage) {
     var zako60 = czako6(0);
     var zako6M8 = czako6(-8);
     var zako68 = czako6(8);
+
+    var czako6K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "ship", "zako6K" ],
+                    [ c+-1.5, 17.5, "ship", "zako6K" ],
+                    [ c+ 0  , 17.5, "ship", "zako6K" ],
+                    [ c+ 1.5, 17.5, "ship", "zako6K" ],
+                    [ c+ 3  , 17.5, "ship", "zako6K" ],
+                ]
+            },
+        ];
+    };
+    var zako6K0 = czako6K(0);
+    var zako6KM8 = czako6K(-8);
+    var zako6K8 = czako6K(8);
 
     var czako7 = function(c) {
         return [
@@ -303,6 +315,48 @@ var setupStageData = function(app, stage) {
     var zako70 = czako7(0);
     var zako7M8 = czako7(-8);
     var zako78 = czako7(8);
+
+    var middle0 = [
+        {
+            frame: 10,
+            enemies: [
+                [ 0, 18, "middle", "middle"],
+            ]
+        },
+    ];
+    var middle5 = [
+        {
+            frame: 10,
+            enemies: [
+                [ 5, 18, "middle", "middle"],
+            ]
+        },
+    ];
+    var middleM5 = [
+        {
+            frame: 10,
+            enemies: [
+                [ -5, 18, "middle", "middle"],
+            ]
+        },
+    ];
+
+    var middleKRight = [
+        {
+            frame: 10,
+            enemies: [
+                [ 20, 10, "middleK", "middleKR" ],
+            ]
+        }
+    ];
+    var middleKLeft = [
+        {
+            frame: 10,
+            enemies: [
+                [ -20, 10, "middleK", "middleKL" ],
+            ]
+        }
+    ];
 
     var cannonLeft = [
         {
@@ -470,61 +524,61 @@ var setupStageData = function(app, stage) {
             ]);
     } else if (stage === 2) {
         StageData = StageData
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
+            .concat(delay60).concat(delay60)
 
             .concat(zako78)
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
 
             .concat(zako7M8)
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
 
             .concat(zako78)
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
 
             .concat(zako7M8)
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
 
             .concat(delay60)
 
-            .concat(zako78)
-            .concat(delay60)
-            .concat(zako78)
-            .concat(delay60)
-            .concat(zako78)
-            .concat(delay60)
-            .concat(zako78)
-            .concat(delay60)
-            .concat(zako78)
-            .concat(delay60)
+            .concat(zako78).concat(delay60)
+            .concat(zako78).concat(delay60)
+            .concat(zako78).concat(delay60)
+            .concat(zako78).concat(delay60)
+            .concat(zako78).concat(delay60)
 
-            .concat(zako70)
-            .concat(delay60)
-            .concat(zako70)
-            .concat(delay60)
-            .concat(zako70)
-            .concat(delay60)
-            .concat(zako70)
-            .concat(delay60)
-            .concat(zako70)
-            .concat(delay60)
-
-            .concat(zako7M8)
-            .concat(delay60)
-            .concat(zako7M8)
-            .concat(delay60)
-            .concat(zako7M8)
-            .concat(delay60)
-            .concat(zako7M8)
-            .concat(delay60)
-            .concat(zako7M8)
-            .concat(delay60)
+            .concat(zako7M8).concat(delay60)
+            .concat(zako7M8).concat(delay60)
+            .concat(zako7M8).concat(delay60)
+            .concat(zako7M8).concat(delay60)
+            .concat(zako7M8).concat(delay60)
 
             .concat(delay60)
+
+            .concat(zako5KM12).concat(delay60)
+            .concat(zako5KM12).concat(delay60)
+            .concat(zako5KM12)
+
+            .concat(middleKRight).concat(delay60)
+
+            .concat(delay60)
+
+            .concat(zako5KM12).concat(delay60)
+            .concat(zako5KM12).concat(delay60)
+
+            .concat(delay60)
+
+            .concat(zako6KM8).concat(delay20)
+            .concat(zako6K8).concat(delay20)
+            .concat(zako6KM8).concat(delay20)
+
+            .concat(middleKLeft).concat(delay60)
+
+            .concat(delay60)
+
+            .concat(zako5K12).concat(delay60)
+            .concat(zako5K12).concat(delay60)
+            .concat(zako5K12).concat(delay60)
     }
 
     var cursor = 0;

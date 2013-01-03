@@ -134,6 +134,29 @@ var Patterns = {};
         )
     });
 
+    Patterns.zako5K = pattern({
+        top: action(
+            wait("$rand*20"),
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(3), 1),
+            wait("5+$rand*20"),
+            changeSpeed(speed(0.2), 30),
+            wait(30),
+            actionRef("attack"),
+            changeSpeed(speed(-3), 30)
+        ),
+        attack: action(
+            wait("5+$rand*20"),
+            repeat(2, action(
+                fire(direction("$rand*10-15*2"), speed("0.6+$rank"), bullet()),
+                repeat(5, action(
+                    fire(direction(15, "sequence"), speed(0, "sequence"), bullet())
+                )),
+                wait(80)
+            ))
+        )
+    });
+
     Patterns.zako6 = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),
@@ -162,13 +185,41 @@ var Patterns = {};
         )
     });
 
+    Patterns.zako6K = pattern({
+        top: action(
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(3), 1),
+            wait("5+$rand*20"),
+            changeSpeed(speed(0.3), 30),
+            wait(45),
+            actionRef("attack"),
+            changeSpeed(speed(-3), 30)
+        ),
+        attack: action(
+            repeat(8, actionRef("firebit", "$rand*360")),
+            wait(90),
+            repeat(8, actionRef("firebit", "$rand*360")),
+            wait(90)
+        ),
+        firebit: action(
+            fire(direction("$1", "aim"), speed("0.5+$rand"), bulletRef("bit", "$1"))
+        ),
+        bit: bullet(
+            action(
+                wait("10+$rank*3"),
+                fire(direction("$1*-1", "relative"), speed("0.8+$rank"), bullet("g")),
+                vanish()
+            )
+        )
+    });
+
     Patterns.zako7 = pattern({
         top: action(
             wait("5+$rand*60"),
             changeDirection(direction("0", "absolute"), 1),
             wait(5),
             changeDirection(direction("$rand*10-5"), 30),
-            changeSpeed("3.0+$rank", 1),
+            changeSpeed("2.9+$rank", 1),
             wait(15),
             fire(direction("$rand*5-2.5"),speed("3.4+$rank"), bullet()),
             wait(15),
@@ -313,6 +364,84 @@ var Patterns = {};
                     fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
                 )),
                 vanish()
+            )
+        )
+    });
+
+    Patterns.middleKR = pattern({
+        top: action(
+            changeDirection(direction(-90, "absolute"), 1),
+            changeSpeed(speed(4), 1),
+            wait(5),
+            changeSpeed(speed(0), 70),
+            wait(70),
+            changeDirection(direction(-70, "absolute"), 1),
+            changeSpeed(speed(0.1), 1),
+            repeat(3, action(
+                repeat(5, action(
+                    fire(direction(-90, "absolute"), speed(1), bulletRef("bit", -1)),
+                    fire(direction( 90, "absolute"), speed(1), bulletRef("bit",  1)),
+                    wait(10)
+                )),
+                wait(120)
+            ))
+        ),
+        bit: bullet(
+            action(
+                wait(5),
+                changeDirection(direction(-70, "absolute"), 1),
+                changeSpeed(speed(0.1), 1),
+                fire(direction("-2*$1", "absolute"), speed("0.001+$rank*0.01"), bulletRef("greenAccel")),
+                repeat(90/7, action(
+                    wait(5),
+                    fire(direction("7*$1", "sequence"), speed(0.1, "sequence"), bulletRef("greenAccel"))
+                )),
+                fire(direction("$rand*10-5"), speed("1.0+$rank"), bullet()),
+                vanish()
+            )
+        ),
+        greenAccel: bullet(
+            action(
+                changeSpeed(speed(1.2, "relative"), 300)
+            )
+        )
+    });
+
+    Patterns.middleKL = pattern({
+        top: action(
+            changeDirection(direction(90, "absolute"), 1),
+            changeSpeed(speed(4), 1),
+            wait(5),
+            changeSpeed(speed(0), 70),
+            wait(70),
+            changeDirection(direction(70, "absolute"), 1),
+            changeSpeed(speed(0.1), 1),
+            repeat(3, action(
+                repeat(5, action(
+                    fire(direction(-90, "absolute"), speed(1), bulletRef("bit", -1)),
+                    fire(direction( 90, "absolute"), speed(1), bulletRef("bit",  1)),
+                    wait(10)
+                )),
+                wait(120)
+            ))
+        ),
+        bit: bullet(
+            action(
+                wait(5),
+                changeDirection(direction(70, "absolute"), 1),
+                changeSpeed(speed(0.1), 1),
+                fire(direction("-2*$1", "absolute"), speed("0.001+$rank*0.01"), bulletRef("greenAccel")),
+                repeat(90/7, action(
+                    wait(5),
+                    fire(direction("7*$1", "sequence"), speed(0.1, "sequence"), bulletRef("greenAccel"))
+                )),
+                fire(direction("$rand*10-5"), speed("1.0+$rank"), bullet()),
+                vanish()
+            )
+        ),
+        greenAccel: bullet(
+            action(
+                changeSpeed(speed(1.2, "relative"), 300)
             )
         )
     });

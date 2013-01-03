@@ -1,3 +1,4 @@
+var PLAYER_SPEED = 0.22;
 var MUTEKI_TIME = 180;
 
 var setupPlayer = function(app, gl, scene, weapons, mouse) {
@@ -9,7 +10,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         this.texX = 3;
         this.glow = 0;
         this.roll = 0;
-        this.speed = 0.2;
+        this.speed = PLAYER_SPEED;
         this.level = 0;
         this.rebirth = false;
         this.disabled = false;
@@ -66,9 +67,9 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             // キーボード操作
             var xPress = kb.getKey("x");
             if (xPress) {
-                this.speed = 0.1;
+                this.speed = PLAYER_SPEED*0.5;
             } else {
-                this.speed = 0.2;
+                this.speed = PLAYER_SPEED;
             }
             if (kb.getKey("left")) {
                 this.x -= this.speed;

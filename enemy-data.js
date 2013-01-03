@@ -29,6 +29,13 @@ var enemyData = {
         scale: 2,
         score: 800
     },
+    middleK: {
+        frameIndex: 22,
+        hp: 400,
+        scale: 4,
+        score: 1000,
+        clear: true
+    },
     cannon: {
         frameIndex: 20,
         hp: 50,

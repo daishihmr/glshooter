@@ -5,6 +5,7 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 var EXTEND_SCORE = 500000;
+var EXTEND_SCORE_BOMB = 100000;
 var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
@@ -127,7 +128,7 @@ tm.main(function() {
             } else if (spec.label === "b") {
                 b.texX = 1;
                 b.texY = 1;
-            } else if (spec.label === "g") {
+            } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label.indexOf("bit") === 0) {
@@ -199,17 +200,46 @@ tm.main(function() {
                 enemyFlags[this.flag] = true;
             }
 
-            // extend
-            var before = ~~(app.score / EXTEND_SCORE);
-            app.score += this.score * (1 + player.glow*10);
-            if (before !== ~~(app.score / EXTEND_SCORE)) {
-                app.zanki += 1;
+            if (this.clear === true) {
+                clearAllBullets(true);
             }
 
-            explode(this.x, this.y, this.scale);
-            if (0 < expSoundPlaying) return;
-            MUTE_SE || SoundManager.get("explode").play();
-            expSoundPlaying = 5;
+            // for extend
+            var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
+            var beforeExtZanki = ~~(app.score / EXTEND_SCORE);
+
+            app.score += this.score * (1 + player.glow*10);
+
+            // test extend
+            if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) app.bomb += 1;
+            if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE)) app.zanki += 1;
+
+            if (this.clear !== true) {
+                explode(this.x, this.y, this.scale);
+                if (0 < expSoundPlaying) return;
+                MUTE_SE || SoundManager.get("explode").play();
+                expSoundPlaying = 5;
+            } else {
+                var timer = new Sprite(gl, texture0);
+                timer.texX = 7;
+                timer.texY = 7;
+                timer.x = this.x;
+                timer.y = this.y;
+                var t = scene.frame;
+                timer.update = function() {
+                    clearAllBullets(true);
+                    if (scene.frame % 5 === 0 && Math.random() < 0.7) {
+                        if (expSoundPlaying <= 0) {
+                            MUTE_SE || SoundManager.get("explode").play();
+                            expSoundPlaying = 5;
+                        }
+                        explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);
+                    } else if (scene.frame > t+45) {
+                        scene.remove(this);
+                    }
+                };
+                scene.add(timer);
+            }
         };
         return e;
     };
@@ -238,6 +268,7 @@ tm.main(function() {
         e.hp = data.hp;
         e.scale = data.scale;
         e.score = data.score;
+        e.clear = data.clear;
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(param);

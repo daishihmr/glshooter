@@ -5,6 +5,12 @@ var enemyData = {
         scale: 1,
         score: 100,
     },
+    zakoS: {
+        frameIndex: 20,
+        hp: 5,
+        scale: 1,
+        score: 10,
+    },
     tank: {
         frameIndex: 21,
         hp: 5,

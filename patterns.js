@@ -162,6 +162,22 @@ var Patterns = {};
         )
     });
 
+    Patterns.zako7 = pattern({
+        top: action(
+            wait("5+$rand*60"),
+            changeDirection(direction("0", "absolute"), 1),
+            wait(5),
+            changeDirection(direction("$rand*10-5"), 30),
+            changeSpeed("3.0+$rank", 1),
+            wait(15),
+            fire(direction("$rand*5-2.5"),speed("3.4+$rank"), bullet()),
+            wait(15),
+            changeDirection(direction(0), 30),
+            wait(15),
+            changeDirection(direction(0), 30)
+        )
+    });
+
     Patterns.bigger = pattern({
         top: action(
             changeDirection(direction(0, "absolute"), 1),

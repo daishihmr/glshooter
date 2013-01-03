@@ -1,5 +1,4 @@
 function createBackground(app, player, stage) {
-    stage = 2;
     return [
         function() {
             var grad = tm.graphics.LinearGradient(0, 0, 0, 320);
@@ -38,7 +37,7 @@ function createBackground(app, player, stage) {
             var grad2 = tm.graphics.RadialGradient(160, 160, 0, 160, 160, 160*1.5);
             grad2.addColorStopList([
                 { offset: 0, color: "rgba(255,255,255,0.0)" },
-                { offset: 1, color: "rgba(255,255,255,0.2)" }
+                { offset: 1, color: "rgba(255,255,255,0.3)" }
             ]);
 
             var polygons = [];
@@ -65,8 +64,10 @@ function createBackground(app, player, stage) {
             var canvas = bg.canvas;
             canvas.strokeStyle = grad2.toStyle();
             bg.update = function(app) {
-                var x = Math.cos(app.frame*0.02)*30;
-                var y = Math.sin(app.frame*0.02)*30;
+                var px = player.x * -4;
+                var py = player.y *  4;
+                var x = Math.cos(app.frame*0.02)*30 + px;
+                var y = Math.sin(app.frame*0.02)*30 + py;
                 canvas.clear();
                 this.renderer(this._shapeParam);
                 for (var i = polygons.length; i--; ) {

@@ -8,20 +8,25 @@ var EXTEND_SCORE = 500000;
 var GLOW_LEVEL_DOWN = 1.5;
 var SHOW_FPS = true;
 var MUTEKI = false;
-var START_STAGE = 1;
 
-var NUM_OF_STAGE = 1;
+var START_STAGE = 2;
+var NUM_OF_STAGE = 2;
 
 var textures = {};
 var scripts = {};
 
 tm.preload(function() {
-    tm.graphics.TextureManager.add("texture0", "texture0.png");
-    tm.graphics.TextureManager.add("boss1", "boss1.png");
     tm.addLoadCheckList(loadScript("vs", "shader.vs"));
     tm.addLoadCheckList(loadScript("fs", "shader.fs"));
-    tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 30);
+
+    tm.graphics.TextureManager.add("texture0", "texture0.png");
+    tm.graphics.TextureManager.add("boss1", "boss1.png");
+    tm.graphics.TextureManager.add("boss2", "boss1.png");
+
     tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
+    tm.sound.SoundManager.add("bgm2", "nc784.mp3", 1);
+
+    tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 30);
     tm.sound.SoundManager.add("effect0", "effect0.mp3", 1);
     tm.sound.SoundManager.add("bomb", "nc17909.mp3");
 });
@@ -372,7 +377,7 @@ tm.main(function() {
         expSoundPlaying--;
 
         // player vs bullet
-        if (player.parent !== null && player.rebirth === false) {
+        if (player.parent !== null && !player.muteki && !player.disabled) {
             for (var i = bullets.length; i--; ) {
                 var b = bullets[i];
                 if (b.parent === null) continue;
@@ -390,7 +395,7 @@ tm.main(function() {
         }
 
         // player vs enemy
-        if (player.parent !== null && player.rebirth === false && player.disabled === false) {
+        if (player.parent !== null && !player.muteki && !player.disabled) {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
@@ -556,7 +561,7 @@ tm.main(function() {
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
-        boss = createBoss(app, gl, textures["boss" + stage], explosion, stage);
+        boss = createBoss(app, gl, explosion, stage);
         enemies.push(boss);
         boss.killed = function() {
             app.stageClear();

@@ -1,3 +1,5 @@
+var MUTEKI_TIME = 180;
+
 var setupPlayer = function(app, gl, scene, weapons, mouse) {
     var player = new Sprite(gl, Sprite.mainTexture);
     player.scale = 1.5;
@@ -12,11 +14,13 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         this.rebirth = false;
         this.disabled = false;
         this.power = 1;
+        this.muteki = false;
     };
 
     var kb = app.keyboard;
+    var reactFrame = 0;
     player.update = function() {
-        if (this.disabled) {
+        if (this.disabled || this.muteki) {
             this.alpha = 0.5;
         } else {
             this.alpha = 1.0;
@@ -29,8 +33,11 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
                 this.disabled = false;
                 this.visible = true;
                 app.isBulletDisable = false;
+                reactFrame = scene.frame;
             }
         }
+
+        this.muteki = (scene.frame < reactFrame + MUTEKI_TIME);
 
         var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.20;
         for (var i = 0; i < 3; i++) {
@@ -79,6 +86,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
 
             // マウス操作
             if (mouse.getPointing()) {
+                xPress = false;
                 var deltaX = mouse.deltaPosition.x;
                 this.x += deltaX * 0.1;
                 this.y += mouse.deltaPosition.y * -0.1;
@@ -161,6 +169,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         this.rebirth = true;
         this.roll = 0;
         this.texX = 3;
+        this.muteki = true;
         app.isBulletDisable = true;
     };
     scene.add(player);

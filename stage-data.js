@@ -5,7 +5,6 @@
 */
 
 var setupStageData = function(app, stage) {
-    stage = 2;
 
     var delay20 = [ { frame: 20, enemies: [] } ];
     var delay60 = [ { frame: 60, enemies: [] } ];
@@ -277,6 +276,34 @@ var setupStageData = function(app, stage) {
     var zako6M8 = czako6(-8);
     var zako68 = czako6(8);
 
+    var czako7 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+ -3.0, 19.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 19.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 19.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 19.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 19.5, "zakoS", "zako7" ],
+                    [ c+ -3.0, 18.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 18.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 18.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 18.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 18.5, "zakoS", "zako7" ],
+                    [ c+ -3.0, 17.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 17.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 17.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 17.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 17.5, "zakoS", "zako7" ],
+                ]
+            }
+        ]
+    };
+    var zako70 = czako7(0);
+    var zako7M8 = czako7(-8);
+    var zako78 = czako7(8);
+
     var cannonLeft = [
         {
             frame: 10,
@@ -442,6 +469,62 @@ var setupStageData = function(app, stage) {
                 }
             ]);
     } else if (stage === 2) {
+        StageData = StageData
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat(zako78)
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat(zako78)
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat(delay60)
+
+            .concat(zako78)
+            .concat(delay60)
+            .concat(zako78)
+            .concat(delay60)
+            .concat(zako78)
+            .concat(delay60)
+            .concat(zako78)
+            .concat(delay60)
+            .concat(zako78)
+            .concat(delay60)
+
+            .concat(zako70)
+            .concat(delay60)
+            .concat(zako70)
+            .concat(delay60)
+            .concat(zako70)
+            .concat(delay60)
+            .concat(zako70)
+            .concat(delay60)
+            .concat(zako70)
+            .concat(delay60)
+
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(zako7M8)
+            .concat(delay60)
+            .concat(zako7M8)
+            .concat(delay60)
+
+            .concat(delay60)
     }
 
     var cursor = 0;

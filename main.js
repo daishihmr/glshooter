@@ -621,6 +621,7 @@ tm.main(function() {
 
         // message
         message.text = "stage " + stage;
+        message.setFontSize(50);
         var t = scene.frame;
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 240) {

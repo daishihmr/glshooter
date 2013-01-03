@@ -128,6 +128,7 @@ var setupStageData = function(app, stage) {
             ]
         },
     ];
+
     var bigger = [
         {
             frame: 100,
@@ -137,6 +138,7 @@ var setupStageData = function(app, stage) {
         },
     ];
     var biggerKilled = [ { flag: "flag1", enemies: [] }] ;
+
     var tankLeft = [
         {
             frame: 5,
@@ -198,6 +200,7 @@ var setupStageData = function(app, stage) {
             ],
         },
     ];
+
     var czako4 = function(c) {
         return [
             {
@@ -391,6 +394,25 @@ var setupStageData = function(app, stage) {
         }
     ];
 
+    var channon2 = [
+        {
+            frame: 10,
+            enemies: [
+                [ -7, 19, "cannon", "cannon2" ],
+                [  7, 19, "cannon", "cannon2" ],
+            ]
+        }
+    ];
+    var channon22 = [
+        {
+            frame: 10,
+            enemies: [
+                [ -12, 19, "cannon", "cannon2" ],
+                [  12, 19, "cannon", "cannon2" ],
+            ]
+        }
+    ];
+
     var StageData = [];
     if (stage === 1) {
         StageData = StageData
@@ -579,6 +601,68 @@ var setupStageData = function(app, stage) {
             .concat(zako5K12).concat(delay60)
             .concat(zako5K12).concat(delay60)
             .concat(zako5K12).concat(delay60)
+
+            .concat(channon2)
+            .concat(tankBoth)
+
+            .concat(delay60).concat(delay60)
+
+            .concat(channon22)
+
+            .concat(zako40).concat(delay20)
+            .concat(zako40).concat(delay20)
+            .concat(zako40).concat(delay20)
+
+            .concat(zako512).concat(delay20)
+            .concat(zako512).concat(delay20)
+            .concat(zako512).concat(delay20)
+
+            .concat(zako4M12).concat(delay20)
+            .concat(zako4M12).concat(delay20)
+            .concat(zako4M12).concat(delay20)
+
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "red",
+                        text: "WARNING!!",
+                        visible: true
+                    }
+                }
+            ])
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat(delay60)
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "white",
+                        text: "",
+                        visible: false
+                    }
+                }
+            ])
+            .concat([
+                {
+                    frame: 20,
+                    enemies: [
+                        [0, 21.9, "boss", "boss11"]
+                    ]
+                }
+            ]);
     }
 
     var cursor = 0;

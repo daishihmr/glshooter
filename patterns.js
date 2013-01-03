@@ -466,6 +466,28 @@ var Patterns = {};
         )
     });
 
+    Patterns.cannon2 = pattern({
+        top1: action(
+            wait(100),
+            repeat(100, action(
+                repeat(30, action(
+                    changeDirection(direction(90, "relative"), 30),
+                    repeat(5, action(
+                        fire(direction(  0, "relative"), speed("0.6+$rank"), bullet("g")),
+                        fire(direction(120, "sequence"), speed("0.6+$rank"), bullet("g")),
+                        fire(direction(120, "sequence"), speed("0.6+$rank"), bullet("g")),
+                        wait(2)
+                    )),
+                    wait(30)
+                ))
+            ))
+        ),
+        top2: action(
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(0.2), 1)
+        )
+    });
+
     Patterns.boss11 = pattern({
         top: action(
             actionRef("launch"),

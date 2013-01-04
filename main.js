@@ -4,9 +4,15 @@ var MUTE_BGM = false; // if true, not play bgm.
 var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
-var EXTEND_SCORE = 500000;
-var EXTEND_SCORE_BOMB = 100000;
-var GLOW_LEVEL_DOWN = 1.5;
+
+var EXTEND_SCORE_LIFE = 2500000;
+var EXTEND_SCORE_BOMB =  500000;
+
+var GLOW_DOWN_TIME = 60;
+var GLOW_UP_PER_HIT = 1;
+var GLOW_DOWN = 2;
+var GLOW_MAX = 1100;
+
 var SHOW_FPS = true;
 var MUTEKI = false;
 var INITIAL_RANK = 0.5;
@@ -45,6 +51,17 @@ tm.main(function() {
     app.fps = FPS;
     app.highScore = 0;
     app.score = 0;
+    app.incrScore = function(delta, calcGlow) {
+        var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
+        var beforeExtZanki = ~~(app.score / EXTEND_SCORE_LIFE);
+
+        this.score += delta * (calcGlow ? (1+glowLevel*0.004)*(1+glowLevel*0.004) : 1);
+
+        if (0 < delta) {
+            if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) app.bomb += 1;
+            if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE_LIFE)) app.zanki += 1;
+        }
+    };
     app.resetGameStatus = function () {
         app.score = 0;
         app.zanki = 3;
@@ -222,15 +239,12 @@ tm.main(function() {
                 clearAllBullets(false);
             }
 
-            // for extend
-            var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
-            var beforeExtZanki = ~~(app.score / EXTEND_SCORE);
-
-            app.score += this.score * (1 + player.glow*10);
-
-            // test extend
-            if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) app.bomb += 1;
-            if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE)) app.zanki += 1;
+            var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scale+this.scale);
+            var K = 5*5;
+            d = Math.clamp(d, 0, K);
+            var rate = Math.max(1, ((K-d)/K)*10);
+            if (1<rate) console.log("RATE " + rate*rate);
+            app.incrScore(this.score*rate*rate, true);
 
             if (this.clear !== true) {
                 explode(this.x, this.y, this.scale);
@@ -271,6 +285,9 @@ tm.main(function() {
         var e;
         if (enemyName === "boss") {
             e = boss;
+            e.alpha = 0.5;
+            e.emission = 0;
+            e.glow = 0.4;
             gameScene.addChild(bossHp);
         } else {
             e = enemyPool.pop();
@@ -335,6 +352,7 @@ tm.main(function() {
         }
         app.highScore = Math.max(app.score, app.highScore);
         this.text = "high score:" + ~~(app.highScore);
+        // this.text = glowLevel;
     };
     gameScene.addChild(highScore);
 
@@ -414,7 +432,11 @@ tm.main(function() {
     }
 
     // game main loop
+    var glowUp = false;
+    var noGlowUpTime = 0;
     gameScene.update = function() {
+        glowUp = false;
+
         // launch enemy
         var data = stageData.next(scene.frame, enemyFlags);
         if (data !== void 0) {
@@ -441,6 +463,7 @@ tm.main(function() {
 
         // player vs bullet
         if (player.parent !== null && !player.muteki && !player.disabled) {
+            var grazeScore = 50;
             for (var i = bullets.length; i--; ) {
                 var b = bullets[i];
                 if (b.parent === null) continue;
@@ -450,9 +473,9 @@ tm.main(function() {
                     MUTEKI || player.damage();
                     glowLevel = 0;
                     break;
-                } else if (dist < 1.0) {
-                    // console.log("GRAZE", 10 * (1 + player.glow*10));
-                    app.score += 10 * (1 + player.glow*10); // graze
+                } else if (dist < 1.5) {
+                    console.log("GRAZE");
+                    app.incrScore(grazeScore, true); // graze
                 }
             }
         }
@@ -482,9 +505,9 @@ tm.main(function() {
                 var dy = w.y - e.y;
                 if (dx*dx+dy*dy < e.scale*2) {
                     scene.remove(w);
-                    glowLevel += 3;
+                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
                     e.damage(player.power);
-                    app.score += player.glow*0.1; // 撃ち込み点
+                    app.incrScore(0.1, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
                 }
             }
@@ -517,9 +540,15 @@ tm.main(function() {
             }
         }
 
-        glowLevel -= GLOW_LEVEL_DOWN;
-        if (glowLevel<0) glowLevel=0;
-        else if (1200 < glowLevel) glowLevel = 1200;
+        if (glowUp) {
+            noGlowUpTime = 0;
+        } else {
+            noGlowUpTime += 1;
+            if (GLOW_DOWN_TIME < noGlowUpTime) {
+                glowLevel -= GLOW_DOWN;
+            }
+        }
+        glowLevel = Math.clamp(glowLevel, 0, GLOW_MAX);
         player.glow = glowLevel * 0.001;
     };
 
@@ -653,7 +682,6 @@ tm.main(function() {
         stageData = setupStageData(app, stage);
 
         // reset player
-        glowLevel = 0;
         player.reset();
         player.rebirth = true;
         player.disabled = true;
@@ -669,6 +697,8 @@ tm.main(function() {
         // message
         message.text = "stage " + stage;
         message.setFontSize(50);
+        message.fillStyle = "white";
+        message.alpha = 0.1;
         var t = scene.frame;
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 240) {
@@ -685,6 +715,7 @@ tm.main(function() {
         }
         message.fillStyle = "white";
         message.setFontSize(30);
+        message.alpha = 0.1;
         message.text = "stage clear";
         message.visible = true;
         var t = scene.frame;
@@ -692,7 +723,7 @@ tm.main(function() {
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 180*1) {
                 message.text = "bonus " + bonus;
-                app.score += bonus;
+                app.incrScore(bonus, false);
             } else if (scene.frame === t + 180*2) {
                 setTimeout(function() {
                     app.currentStage += 1;
@@ -714,7 +745,7 @@ tm.main(function() {
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 180*1) {
                 message.text = "bonus " + bonus;
-                app.score += bonus;
+                app.incrScore(bonus, false);
             } else if (scene.frame === t + 180*2) {
                 message.fillStyle = "yellow";
                 message.text = "THANK YOU!!";

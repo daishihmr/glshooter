@@ -131,15 +131,132 @@ var setupStageData = function(app, stage) {
         },
     ];
 
-    var bigger = [
-        {
-            frame: 100,
-            enemies: [
-                [ 0, 17.0, "bigger", "bigger", "flag1" ],
-            ]
-        },
-    ];
-    var biggerKilled = [ { flag: "flag1", enemies: [] }] ;
+    var pZako4 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako4" ],
+                    [ c+-1.5, 17.5, "zako", "zako4" ],
+                    [ c+ 0  , 17.5, "zako", "zako4" ],
+                    [ c+ 1.5, 17.5, "zako", "zako4" ],
+                    [ c+ 3  , 17.5, "zako", "zako4" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako4K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako4K" ],
+                    [ c+-1.5, 17.5, "zako", "zako4K" ],
+                    [ c+ 0  , 17.5, "zako", "zako4K" ],
+                    [ c+ 1.5, 17.5, "zako", "zako4K" ],
+                    [ c+ 3  , 17.5, "zako", "zako4K" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako5 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako5" ],
+                    [ c+-1.5, 17.5, "zako", "zako5" ],
+                    [ c+ 0  , 17.5, "zako", "zako5" ],
+                    [ c+ 1.5, 17.5, "zako", "zako5" ],
+                    [ c+ 3  , 17.5, "zako", "zako5" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako5K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "zako", "zako5K" ],
+                    [ c+-1.5, 17.5, "zako", "zako5K" ],
+                    [ c+ 0  , 17.5, "zako", "zako5K" ],
+                    [ c+ 1.5, 17.5, "zako", "zako5K" ],
+                    [ c+ 3  , 17.5, "zako", "zako5K" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako6 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "ship", "zako6" ],
+                    [ c+-1.5, 17.5, "ship", "zako6" ],
+                    [ c+ 0  , 17.5, "ship", "zako6" ],
+                    [ c+ 1.5, 17.5, "ship", "zako6" ],
+                    [ c+ 3  , 17.5, "ship", "zako6" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako6K = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+-3  , 17.5, "ship", "zako6K" ],
+                    [ c+-1.5, 17.5, "ship", "zako6K" ],
+                    [ c+ 0  , 17.5, "ship", "zako6K" ],
+                    [ c+ 1.5, 17.5, "ship", "zako6K" ],
+                    [ c+ 3  , 17.5, "ship", "zako6K" ],
+                ]
+            },
+        ];
+    };
+
+    var pZako7 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+ -3.0, 19.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 19.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 19.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 19.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 19.5, "zakoS", "zako7" ],
+                    [ c+ -3.0, 18.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 18.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 18.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 18.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 18.5, "zakoS", "zako7" ],
+                    [ c+ -3.0, 17.5, "zakoS", "zako7" ],
+                    [ c+ -1.5, 17.5, "zakoS", "zako7" ],
+                    [ c+  0.0, 17.5, "zakoS", "zako7" ],
+                    [ c+  1.5, 17.5, "zakoS", "zako7" ],
+                    [ c+  3.0, 17.5, "zakoS", "zako7" ],
+                ]
+            }
+        ]
+    };
+
+    var pZako8 = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [  c, 18, "ship", "zako8" ],
+                    [ -c, 18, "ship", "zako8" ],
+                ]
+            }
+        ];
+    };
 
     var tankLeft = [
         {
@@ -203,142 +320,6 @@ var setupStageData = function(app, stage) {
         },
     ];
 
-    var czako4 = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "zako", "zako4" ],
-                    [ c+-1.5, 17.5, "zako", "zako4" ],
-                    [ c+ 0  , 17.5, "zako", "zako4" ],
-                    [ c+ 1.5, 17.5, "zako", "zako4" ],
-                    [ c+ 3  , 17.5, "zako", "zako4" ],
-                ]
-            },
-        ];
-    };
-    var zako40 = czako4(0);
-    var zako4M12 = czako4(-12);
-    var zako412 = czako4(12);
-
-    var czako4K = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "zako", "zako4K" ],
-                    [ c+-1.5, 17.5, "zako", "zako4K" ],
-                    [ c+ 0  , 17.5, "zako", "zako4K" ],
-                    [ c+ 1.5, 17.5, "zako", "zako4K" ],
-                    [ c+ 3  , 17.5, "zako", "zako4K" ],
-                ]
-            },
-        ];
-    };
-    var zako4K0 = czako4K(0);
-    var zako4KM12 = czako4K(-12);
-    var zako4K12 = czako4K(12);
-
-    var czako5 = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "zako", "zako5" ],
-                    [ c+-1.5, 17.5, "zako", "zako5" ],
-                    [ c+ 0  , 17.5, "zako", "zako5" ],
-                    [ c+ 1.5, 17.5, "zako", "zako5" ],
-                    [ c+ 3  , 17.5, "zako", "zako5" ],
-                ]
-            },
-        ];
-    };
-    var zako50 = czako5(0);
-    var zako5M12 = czako5(-12);
-    var zako512 = czako5(12);
-
-    var czako5K = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "zako", "zako5K" ],
-                    [ c+-1.5, 17.5, "zako", "zako5K" ],
-                    [ c+ 0  , 17.5, "zako", "zako5K" ],
-                    [ c+ 1.5, 17.5, "zako", "zako5K" ],
-                    [ c+ 3  , 17.5, "zako", "zako5K" ],
-                ]
-            },
-        ];
-    };
-    var zako5K0 = czako5K(0);
-    var zako5KM12 = czako5K(-12);
-    var zako5K12 = czako5K(12);
-
-    var czako6 = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "ship", "zako6" ],
-                    [ c+-1.5, 17.5, "ship", "zako6" ],
-                    [ c+ 0  , 17.5, "ship", "zako6" ],
-                    [ c+ 1.5, 17.5, "ship", "zako6" ],
-                    [ c+ 3  , 17.5, "ship", "zako6" ],
-                ]
-            },
-        ];
-    };
-    var zako60 = czako6(0);
-    var zako6M8 = czako6(-8);
-    var zako68 = czako6(8);
-
-    var czako6K = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+-3  , 17.5, "ship", "zako6K" ],
-                    [ c+-1.5, 17.5, "ship", "zako6K" ],
-                    [ c+ 0  , 17.5, "ship", "zako6K" ],
-                    [ c+ 1.5, 17.5, "ship", "zako6K" ],
-                    [ c+ 3  , 17.5, "ship", "zako6K" ],
-                ]
-            },
-        ];
-    };
-    var zako6K0 = czako6K(0);
-    var zako6KM8 = czako6K(-8);
-    var zako6K8 = czako6K(8);
-
-    var czako7 = function(c) {
-        return [
-            {
-                frame: 10,
-                enemies: [
-                    [ c+ -3.0, 19.5, "zakoS", "zako7" ],
-                    [ c+ -1.5, 19.5, "zakoS", "zako7" ],
-                    [ c+  0.0, 19.5, "zakoS", "zako7" ],
-                    [ c+  1.5, 19.5, "zakoS", "zako7" ],
-                    [ c+  3.0, 19.5, "zakoS", "zako7" ],
-                    [ c+ -3.0, 18.5, "zakoS", "zako7" ],
-                    [ c+ -1.5, 18.5, "zakoS", "zako7" ],
-                    [ c+  0.0, 18.5, "zakoS", "zako7" ],
-                    [ c+  1.5, 18.5, "zakoS", "zako7" ],
-                    [ c+  3.0, 18.5, "zakoS", "zako7" ],
-                    [ c+ -3.0, 17.5, "zakoS", "zako7" ],
-                    [ c+ -1.5, 17.5, "zakoS", "zako7" ],
-                    [ c+  0.0, 17.5, "zakoS", "zako7" ],
-                    [ c+  1.5, 17.5, "zakoS", "zako7" ],
-                    [ c+  3.0, 17.5, "zakoS", "zako7" ],
-                ]
-            }
-        ]
-    };
-    var zako70 = czako7(0);
-    var zako7M8 = czako7(-8);
-    var zako78 = czako7(8);
-
     var middle0 = [
         {
             frame: 10,
@@ -381,6 +362,16 @@ var setupStageData = function(app, stage) {
         }
     ];
 
+    var bigger = [
+        {
+            frame: 100,
+            enemies: [
+                [ 0, 17.0, "bigger", "bigger", "flag1" ],
+            ]
+        },
+    ];
+    var biggerKilled = [ { flag: "flag1", enemies: [] }] ;
+
     var cannonLeft = [
         {
             frame: 10,
@@ -414,7 +405,7 @@ var setupStageData = function(app, stage) {
         }
     ];
 
-    var channon2 = [
+    var cannon2 = [
         {
             frame: 10,
             enemies: [
@@ -423,12 +414,12 @@ var setupStageData = function(app, stage) {
             ]
         }
     ];
-    var channon22 = [
+    var cannon22 = [
         {
             frame: 10,
             enemies: [
-                [ -12, 19, "cannon2", "cannon2" ],
-                [  12, 19, "cannon2", "cannon2" ],
+                [ -12, 19, "cannon2", "cannon3" ],
+                [  12, 19, "cannon2", "cannon3" ],
             ]
         }
     ];
@@ -493,23 +484,23 @@ var setupStageData = function(app, stage) {
             .concat(cannonLeft)
             .concat(delay60)
             .concat(delay60)
-            .concat(zako412)
+            .concat(pZako4(12))
             .concat(delay60)
             .concat(cannonRight)
             .concat(delay60)
-            .concat(zako412)
+            .concat(pZako4(12))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako40)
+            .concat(pZako4(0))
             .concat(delay60)
             .concat(cannonRight)
-            .concat(zako5M12)
+            .concat(pZako5(-12))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako5M12)
+            .concat(pZako5(-12))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako5M12)
+            .concat(pZako5(-12))
             .concat(delay60)
             .concat(delay60)
             .concat(delay60)
@@ -517,16 +508,16 @@ var setupStageData = function(app, stage) {
             .concat(cannonCenter2)
             .concat(tankRight)
             .concat(tankLeft)
-            .concat(zako68)
+            .concat(pZako6(8))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako6M8)
+            .concat(pZako6(-8))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako68)
+            .concat(pZako6(8))
             .concat(delay60)
             .concat(delay60)
-            .concat(zako6M8)
+            .concat(pZako6(-8))
             .concat(delay60)
             .concat(delay60)
             .concat([
@@ -569,75 +560,84 @@ var setupStageData = function(app, stage) {
             .concat(delay60).concat(delay60)
             .concat(delay60).concat(delay60)
 
-            .concat(zako78)
+            .concat(pZako7(8))
             .concat(delay60).concat(delay60)
 
-            .concat(zako7M8)
+            .concat(pZako7(-8))
             .concat(delay60).concat(delay60)
 
-            .concat(zako78)
+            .concat(pZako7(8))
             .concat(delay60).concat(delay60)
 
-            .concat(zako7M8)
+            .concat(pZako7(-8))
             .concat(delay60).concat(delay60)
 
             .concat(delay60)
 
-            .concat(zako78).concat(delay60)
-            .concat(zako78).concat(delay60)
-            .concat(zako78).concat(delay60)
-            .concat(zako78).concat(delay60)
-            .concat(zako78).concat(delay60)
-
-            .concat(zako7M8).concat(delay60)
-            .concat(zako7M8).concat(delay60)
-            .concat(zako7M8).concat(delay60)
-            .concat(zako7M8).concat(delay60)
-            .concat(zako7M8).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
+            .concat(pZako7(8)).concat(delay60)
 
             .concat(delay60)
 
-            .concat(zako5KM12).concat(delay60)
-            .concat(zako5KM12).concat(delay60)
-            .concat(zako5KM12)
+            .concat(pZako8( 4)).concat(delay60)
+            .concat(pZako8( 8)).concat(delay60)
+            .concat(pZako8(12)).concat(delay60)
+
+            .concat(delay60).concat(delay60).concat(delay60)
+
+            .concat(pZako5K(-12)).concat(delay60)
+            .concat(pZako5K(-12)).concat(delay60)
+            .concat(pZako5K(-12))
 
             .concat(middleKRight).concat(delay60)
 
             .concat(delay60)
 
-            .concat(zako5KM12).concat(delay60)
-            .concat(zako5KM12).concat(delay60)
+            .concat(pZako5K(-12)).concat(delay60)
+            .concat(pZako5K(-12)).concat(delay60)
 
             .concat(delay60)
 
-            .concat(zako6K8).concat(delay20)
-            .concat(zako6KM8).concat(delay20)
+            .concat(pZako6K(8)).concat(delay20)
+            .concat(pZako6K(-8)).concat(delay20)
 
-            .concat(zako5K12).concat(delay60)
-            .concat(zako5K12).concat(delay60)
+            .concat(pZako5K(12)).concat(delay60)
+            .concat(pZako5K(12)).concat(delay60)
 
-            .concat(channon2)
+            .concat(cannon2)
             .concat(tankBoth)
 
             .concat(delay60).concat(delay60)
 
-            .concat(channon22)
+            .concat(cannon22)
 
-            .concat(zako4K12).concat(delay40)
-            .concat(zako4K12).concat(delay40)
+            .concat(pZako4K(12)).concat(delay40)
+            .concat(pZako4K(12)).concat(delay40)
 
-            .concat(zako512).concat(delay40)
-            .concat(zako512).concat(delay40)
+            .concat(pZako5(12)).concat(delay40)
+            .concat(pZako5(12)).concat(delay40)
 
-            .concat(zako4KM12).concat(delay40)
-            .concat(zako4KM12).concat(delay40)
+            .concat(pZako4K(-12)).concat(delay40)
+            .concat(pZako4K(-12)).concat(delay40)
 
-            .concat(delay60)
-            .concat(delay60)
-            .concat(delay60)
-            .concat(delay60)
-            .concat(delay60)
-            .concat(delay60)
+            .concat(delay60).concat(delay60)
+            .concat(delay60).concat(delay60)
+            .concat(delay60).concat(delay60)
+
+            .concat(pZako7(0)).concat(delay60)
+            .concat(pZako7(1)).concat(delay60)
+            .concat(pZako7(2)).concat(delay60)
+            .concat(pZako7(3)).concat(delay60)
+
+            .concat(pZako6(-11)).concat(delay20)
+            .concat(pZako6(-13)).concat(delay20)
+            .concat(pZako5(9)).concat(delay60)
+            .concat(pZako5(12)).concat(delay60)
 
             .concat([
                 {

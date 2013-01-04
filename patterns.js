@@ -169,7 +169,7 @@ var Patterns = {};
         ),
         attack: action(
             wait("5+$rand*20"),
-            fire(direction(-15*2), speed("0.6+$rank"), bullet()),
+            fire(direction(-15*1.5), speed("0.6+$rank"), bullet()),
             repeat(4-1, action(
                 fire(direction(15, "sequence"), speed(0, "sequence"), bullet())
             )),
@@ -246,6 +246,33 @@ var Patterns = {};
             changeDirection(direction(0), 30),
             wait(15),
             changeDirection(direction(0), 30)
+        )
+    });
+
+    Patterns.zako8 = pattern({
+        top1: action(
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(5), 1),
+            wait(20),
+            changeSpeed(speed(-0.2), 60),
+            wait(400),
+            changeSpeed(speed(-5), 30)
+        ),
+        top2: action(
+            wait(90),
+            fire(direction( 20, "absolute"), speed("2.2+$rank"), bullet()),
+            repeat(300/6, action(
+                fire(direction(-0.5, "sequence"), speed("2.2+$rank"), bullet()),
+                wait(6)
+            ))
+        ),
+        top3: action(
+            wait(90),
+            fire(direction(-20, "absolute"), speed("2.2+$rank"), bullet()),
+            repeat(300/6, action(
+                fire(direction( 0.5, "sequence"), speed("2.2+$rank"), bullet()),
+                wait(6)
+            ))
         )
     });
 
@@ -488,6 +515,33 @@ var Patterns = {};
             ))
         ),
         top2: action(
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(0.2), 1)
+        )
+    });
+
+    Patterns.cannon3 = pattern({
+        top1: action(
+            actionRef("attack", -1)
+        ),
+        top2: action(
+            actionRef("attack",  1)
+        ),
+        attack: action(
+            changeDirection(direction(0, "absolute"), 100),
+            wait(100),
+            repeat(100, action(
+                changeDirection(direction("10*$1", "relative"), 100),
+                repeat(100/30, action(
+                    fire(direction(  0, "relative"), speed("0.5+$rank"), bullet("g")),
+                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
+                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
+                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
+                    wait(30)
+                ))
+            ))
+        ),
+        top3: action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(0.2), 1)
         )
@@ -798,55 +852,36 @@ var Patterns = {};
         bit11: bullet(
             action(
                 wait(120),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", 30))
+                actionRef("bit11Action", 30, 2, 100),
+                actionRef("bit11Action", 10, 2, 100),
+                repeat(10, action(
+                    actionRef("bit11Action", "-60+$rand*90", 0.8, 80)
                 )),
-                wait(90),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", 10))
-                )),
-                wait(90),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", -10))
-                )),
-                wait(90),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", -30))
-                )),
-                wait(90),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", -40))
-                )),
-                wait(90),
-                fire(direction(0, "absolute"), bulletRef("bit12")),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", -50))
-                )),
-                wait(90),
-                repeat(24-1, action(
-                    fire(direction(360/24, "sequence"), bulletRef("bit12", -60))
+                repeat(10, action(
+                    actionRef("bit11Action", "-60+$rand*90", 0, 80),
+                    actionRef("bit11Action", "-60+$rand*90", 0.8, 80)
                 )),
                 vanish()
             )
         ),
+        bit11Action: action(
+            fire(direction(0, "absolute"), bulletRef("bit12", "$1", "$3")),
+            repeat(24-1, action(
+                fire(direction(360/24, "sequence"), bulletRef("bit12", "$1", "$3"))
+            )),
+            wait("45*$2")
+        ),
         bit12: bullet(
             action(
-                wait(5),
-                fire(direction("155+$1", "absolute"), speed("1.2+$rank"), bulletRef("blueC")),
+                wait("10+$rank*20"),
+                fire(direction("155+$1", "absolute"), speed("1.2+$rank"), bulletRef("blueC", "$2")),
                 vanish()
             )
         ),
         blueC: bullet(
             action(
-                wait(100),
-                fire(direction("$rand*20-10"), speed("2.0+$rank"), bullet("g")),
-                fire(direction("$rand*+40-20-180", "sequence"), speed("3+$rand", "sequence"), bullet("g")),
-                fire(direction("$rand*+40-20", "sequence"), speed("$rand", "sequence"), bullet("g")),
+                wait("$1"),
+                fire(direction(0), speed("2+$rank"), bullet("r")),
                 vanish()
             )
         ),

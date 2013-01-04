@@ -10,8 +10,8 @@ var Scene;
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
         var program = this.program = createProgram(
-            gl, 
-            createShader(gl, "vs", vs), 
+            gl,
+            createShader(gl, "vs", vs),
             createShader(gl, "fs", fs));
 
         var attrPosition = gl.getAttribLocation(program, "position");
@@ -39,7 +39,7 @@ var Scene;
         gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
 
         this.uniformLocationsForSprite = getUniformLocationsForSprite(gl, program, [
-            "x", "y", "scale", "rotation", "texX", "texY", "alpha", "texScale"
+            "x", "y", "scale", "rotation", "texX", "texY", "alpha", "texScale", "emission"
         ]);
 
         this.frame = 0;

@@ -121,10 +121,12 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
         else if (3 < this.roll) this.roll = 3;
         this.texX = 3 + ~~(this.roll);
 
-        if (!this.disabled && scene.frame % 3 === 0) {
+        if (!this.disabled && scene.frame % 3 === 0 && !kb.getKey("c")) {
             if (xPress) {
-                (this.level < 2) || fireWeapon(-0.25, 1.4, 0);
-                (this.level < 1) || fireWeapon(-0.20, 1.5, 0);
+                (this.level < 2) || fireWeapon(-0.19, 1.2, 0);
+                (this.level < 2) || fireWeapon(-0.18, 1.3, 0);
+                (this.level < 1) || fireWeapon(-0.17, 1.4, 0);
+                (this.level < 1) || fireWeapon(-0.16, 1.5, 0);
                 fireWeapon(-0.15, 1.6, 0);
                 fireWeapon(-0.10, 1.7, 0);
                 fireWeapon(-0.05, 1.8, 0);
@@ -132,26 +134,28 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
                 fireWeapon( 0.05, 1.8, 0);
                 fireWeapon( 0.10, 1.7, 0);
                 fireWeapon( 0.15, 1.6, 0);
-                (this.level < 1) || fireWeapon( 0.20, 1.5, 0);
-                (this.level < 2) || fireWeapon( 0.25, 1.4, 0);
+                (this.level < 1) || fireWeapon( 0.16, 1.5, 0);
+                (this.level < 1) || fireWeapon( 0.17, 1.4, 0);
+                (this.level < 2) || fireWeapon( 0.18, 1.3, 0);
+                (this.level < 2) || fireWeapon( 0.19, 1.2, 0);
             }
+
+            (this.level < 2) || fireWeapon(-Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
+            (this.level < 1) || fireWeapon(-Math.sin(scene.frame*0.1)*0.5, 1.4, 0);
             fireWeapon(+Math.sin(scene.frame*0.1)*0.25, 1.4, 0);
             fireWeapon(-Math.sin(scene.frame*0.1)*0.25, 1.4, 0);
             (this.level < 1) || fireWeapon(+Math.sin(scene.frame*0.1)*0.5, 1.4, 0);
-            (this.level < 1) || fireWeapon(-Math.sin(scene.frame*0.1)*0.5, 1.4, 0);
             (this.level < 2) || fireWeapon(+Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
-            (this.level < 2) || fireWeapon(-Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
 
-            var a = xPress ? 0 : 4;
-            (this.level < 2) || fireWeapon(+1.5, 0, a*+3);
-            (this.level < 1) || fireWeapon(+1.0, 0, a*+2);
-            fireWeapon(+0.5, 0, a*+1);
-            fireWeapon(-0.5, 0, a*-1);
-            (this.level < 1) || fireWeapon(-1.0, 0, a*-2);
-            (this.level < 2) || fireWeapon(-1.5, 0, a*-3);
+            var angle = xPress ? 0 : 4;
+            (this.level < 2) || fireWeapon(+1.5, 0, angle*+3);
+            (this.level < 1) || fireWeapon(+1.0, 0, angle*+2);
+            fireWeapon(+0.5, 0, angle*+1);
+            fireWeapon(-0.5, 0, angle*-1);
+            (this.level < 1) || fireWeapon(-1.0, 0, angle*-2);
+            (this.level < 2) || fireWeapon(-1.5, 0, angle*-3);
 
-            if (xPress) this.power = 0.6;
-            else this.power = 1;
+            this.power = xPress ? 0.6 : 1;
         }
     };
     player.damage = function() {

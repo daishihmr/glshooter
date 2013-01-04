@@ -18,6 +18,7 @@ var Sprite;
 
         this.alpha = 1;
         this.glow = 0;
+        this.emission = 0;
 
         this.texture = texture;
 
@@ -41,6 +42,7 @@ var Sprite;
         gl.uniform1f(uni.texY, this.texY);
         gl.uniform1f(uni.texScale, this.texScale);
         gl.uniform1f(uni.alpha, this.alpha);
+        gl.uniform1f(uni.emission, this.emission);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
         if (this.glow > 0) {

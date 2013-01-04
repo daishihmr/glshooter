@@ -18,7 +18,6 @@ var createBoss = function(app, gl, explosion, stage) {
         if (boss.maxHp*0.5 < this.damagePoint) {
             // 第2形態へ
             app.clearAllBullets(true);
-            this.glow = 0.1;
             SoundManager.get("explode").play();
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
@@ -44,7 +43,6 @@ var createBoss = function(app, gl, explosion, stage) {
             // 撃破
             app.player.disabled = true;
             app.clearAllBullets(true);
-            this.glow = 0;
             SoundManager.get("explode").play();
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
             explode(this.x+Random.randfloat(-2, 2), this.y+Random.randfloat(-2, 2), Random.randfloat(1, 2));
@@ -53,6 +51,8 @@ var createBoss = function(app, gl, explosion, stage) {
             this.update = function() {
                 app.player.disabled = true;
                 this.alpha -= 0.001;
+                this.glow += 0.001;
+                this.emission += 0.002;
                 this.x = Math.sin(scene.frame*0.3)*0.1;
                 this.y += -0.025;
                 this.scale -= 0.001;

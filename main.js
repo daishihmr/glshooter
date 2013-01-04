@@ -5,6 +5,9 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 
+var BOMB_DAMAGE1 = 20;
+var BOMB_DAMAGE2 = 4;
+
 var EXTEND_SCORE_LIFE = 2500000;
 var EXTEND_SCORE_BOMB =  500000;
 
@@ -30,7 +33,8 @@ tm.preload(function() {
 
     tm.graphics.TextureManager.add("texture0", "texture0.png");
     tm.graphics.TextureManager.add("boss1", "boss1.png");
-    tm.graphics.TextureManager.add("boss2", "boss1.png");
+    tm.graphics.TextureManager.add("boss2", "boss2.png");
+    tm.graphics.TextureManager.add("boss3", "boss3.png");
 
     tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
     tm.sound.SoundManager.add("bgm2", "nc784.mp3", 1);
@@ -43,7 +47,14 @@ tm.preload(function() {
 tm.main(function() {
     var SoundManager = tm.sound.SoundManager;
     var Random = tm.util.Random;
-    var settings = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings") || "{\"bgm\":1.0,\"se\":0.8}");
+    if (!localStorage.getItem("jp.dev7.glshooter.settings")) {
+        var s = {
+            bgm: 1.0,
+            se: 0.8
+        }
+        localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
+    }
+    var settings = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
 
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
@@ -250,7 +261,7 @@ tm.main(function() {
             var K = 5*5;
             d = Math.clamp(d, 0, K);
             var rate = Math.max(1, ((K-d)/K)*10);
-            if (1<rate) console.log("RATE " + rate*rate);
+            // if (1<rate) console.log("RATE " + rate*rate);
             app.incrScore(this.score*rate*rate, true);
 
             if (this.clear !== true) {
@@ -468,19 +479,22 @@ tm.main(function() {
         // control sound effect
         expSoundPlaying--;
 
+        var px = player.x;
+        var py = player.y;
+
         // player vs bullet
         if (player.parent !== null && !player.muteki && !player.disabled) {
             for (var i = bullets.length; i--; ) {
                 var b = bullets[i];
                 if (b.parent === null) continue;
-                var dist = (b.x - player.x)*(b.x - player.x)+(b.y - player.y)*(b.y - player.y);
+                var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
                     scene.remove(b);
                     MUTEKI || player.damage();
                     glowLevel = 0;
                     break;
                 } else if (dist < 1.5) {
-                    console.log("GRAZE");
+                    // console.log("GRAZE");
                     app.incrScore(1, true); // graze
                 }
             }
@@ -491,8 +505,7 @@ tm.main(function() {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
-                var dx = e.x - player.x;
-                var dy = e.y - player.y;
+                var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dx*dx+dy*dy < e.scale*2) {
                     MUTEKI || player.damage();
                     glowLevel = 0;
@@ -531,7 +544,7 @@ tm.main(function() {
             app.bomb -= 1;
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
-                if (e.parent !== null) e.damage(20);
+                if (e.parent !== null) e.damage(BOMB_DAMAGE1);
             }
             clearAllBullets(false);
 
@@ -542,7 +555,7 @@ tm.main(function() {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
-                e.damage(1);
+                e.damage(BOMB_DAMAGE2);
             }
         }
 

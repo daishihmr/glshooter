@@ -283,7 +283,10 @@ var ContinueScene;
             };
 
             this.addEventListener("exit", function() {
-                localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(settings));
+                var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
+                s.bgm = settings.bgm;
+                s.se = settings.se;
+                localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
             });
         },
         update: function(app) {
@@ -347,7 +350,7 @@ var ContinueScene;
             this.superInit();
 
             var bg = tm.app.RectangleShape(320, 320, {
-                fillStyle: "rgba(0,0,0,0.9)",
+                fillStyle: "rgba(0,0,0,0.3)",
                 strokeStyle: "none"
             });
             bg.x = 160;

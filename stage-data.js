@@ -555,6 +555,16 @@ var setupStageData = function(app, stage) {
                     ]
                 }
             ]);
+
+            // StageData = [
+            //     {
+            //         frame: 20,
+            //         enemies: [
+            //             [ 0, 21.9, "boss", "boss11"]
+            //         ]
+            //     }
+            // ];
+
     } else if (stage === 2) {
         StageData = StageData
             .concat(delay60).concat(delay60)

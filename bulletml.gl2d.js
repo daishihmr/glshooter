@@ -143,9 +143,9 @@ var AttackPattern;
 
         action = action || "top";
         if (typeof (action) === "string") {
-            ticker.walker = this._bulletml.getWalker(action, config.rank);
+            ticker.walker = this._bulletml.getWalker(action, config);
         } else if (action instanceof BulletML.Bullet) {
-            ticker.walker = action.getWalker(config.rank);
+            ticker.walker = action.getWalker(config);
         } else {
             console.error(config, action);
             throw new Error("引数が不正");

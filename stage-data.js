@@ -639,6 +639,9 @@ var setupStageData = function(app, stage) {
             .concat(pZako5(9)).concat(delay60)
             .concat(pZako5(12)).concat(delay60)
 
+            .concat(delay60)
+            .concat(delay60)
+
             .concat([
                 {
                     frame: 10,
@@ -675,14 +678,14 @@ var setupStageData = function(app, stage) {
                 }
             ]);
 
-            // StageData = [
-            //     {
-            //         frame: 20,
-            //         enemies: [
-            //             [ -12, -21.9, "boss", "boss21"]
-            //         ]
-            //     }
-            // ];
+            StageData = [
+                {
+                    frame: 20,
+                    enemies: [
+                        [ -12, -21.9, "boss", "boss21"]
+                    ]
+                }
+            ];
     }
 
     var cursor = 0;

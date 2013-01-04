@@ -836,28 +836,33 @@ var Patterns = {};
     Patterns.boss21 = pattern({
         top: action(
             actionRef("initPosition"),
-            actionRef("attack2")
+            repeat(100, action(
+                actionRef("attack2"),
+                actionRef("attack3"),
+                actionRef("attack4")
+            ))
         ),
         initPosition: action(
-            changeDirection(direction(155, "absolute"), 1),
-            changeSpeed(speed(0.3), 1),
+            changeDirection(direction(158, "absolute"), 1),
+            changeSpeed(speed(0.6), 1),
             wait(5),
-            fire(direction(0, "relative"), speed(0.3), bulletRef("bit11")),
-            wait(950),
+            fire(direction(0, "relative"), speed(0.6), bulletRef("bit11")),
+            fire(direction(0, "relative"), speed(0.6), bulletRef("bit13")),
+            wait(500),
             changeSpeed(speed(0), 60),
             wait(60),
             changeDirection(direction(0, "absolute"), 1),
-            wait(30)
+            wait(120)
         ),
         bit11: bullet(
             action(
                 wait(120),
                 actionRef("bit11Action", 30, 2, 100),
                 actionRef("bit11Action", 10, 2, 100),
-                repeat(10, action(
+                repeat(4, action(
                     actionRef("bit11Action", "-60+$rand*90", 0.8, 80)
                 )),
-                repeat(10, action(
+                repeat(2, action(
                     actionRef("bit11Action", "-60+$rand*90", 0, 80),
                     actionRef("bit11Action", "-60+$rand*90", 0.8, 80)
                 )),
@@ -885,8 +890,149 @@ var Patterns = {};
                 vanish()
             )
         ),
+        bit13: bullet(action(
+            wait(120),
+            repeat(500/57, action(
+                fire(direction(30), speed("1.5+$rank"), bullet("g")),
+                repeat(5, action(
+                    fire(direction(2, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30), speed("1.5+$rank"), bullet("g")),
+                repeat(5, action(
+                    fire(direction(-2, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                wait(57)
+            )),
+            vanish()
+        )),
         attack2: action(
+            fire(speed(0), bulletRef("bit21")),
+            fire(speed(0), bulletRef("bit22")),
+            wait(900)
+        ),
+        bit21: bullet(action(
+            repeat(8, action(
+                fire(direction(-30/2-50), speed("1.8+$rank"), bullet("g")),
+                repeat(10, action(
+                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30/2), speed("1.8+$rank"), bullet("g")),
+                repeat(10, action(
+                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30/2+50), speed("1.8+$rank"), bullet("g")),
+                repeat(10, action(
+                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                wait(130)
+            )),
+            vanish()
+        )),
+        bit22: bullet(action(
+            wait(20),
+            fire(direction(-90, "absolute"), speed(2), bulletRef("bit221")),
+            wait(60),
+            fire(direction( 90, "absolute"), speed(2), bulletRef("bit221")),
+            vanish()
+        )),
+        bit221: bullet(action(
+            wait(30),
+            changeSpeed(speed(0), 1),
+            repeat(8, action(
+                fire(direction(-120/2),        speed(0), bulletRef("bullet22", 0, "2.2+$rank")),
+                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22", 5, "2.2+$rank")),
+                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",10, "2.2+$rank")),
+                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",15, "2.2+$rank")),
+                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",20, "2.2+$rank")),
+                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",25, "2.2+$rank")),
+                repeat("(6+$rank*4)", action(
+                    fire(direction("120/(6+$rank*4)", "sequence"), speed(0), bulletRef("bullet22", 0, "2.2+$rank")),
+                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22", 5, "2.2+$rank")),
+                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",10, "2.2+$rank")),
+                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",15, "2.2+$rank")),
+                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",20, "2.2+$rank")),
+                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",25, "2.2+$rank"))
+                )),
+                wait(120)
+            )),
+            vanish()
+        )),
+        bullet22: bullet(action(
+            wait("$1"),
+            changeSpeed(speed("$1*0.05+$2"), 1)
+        )),
+        attack3: action((function() {
+            var a = [];
+            for (var i = 0; i < 30; i++) {
+                a[a.length] = fire(direction("-80-$rand*60", "absolute"), speed("1+$rand*5"), bulletRef("blue3alive", i*0.5));
+                a[a.length] = wait(2);
+                a[a.length] = fire(direction(" 80+$rand*60", "absolute"), speed("1+$rand*5"), bulletRef("blue3alive", i*0.5));
+                a[a.length] = wait(2);
+            }
+            a[a.length] = wait(120);
+            for (var i = 0; i < 30; i++) {
+                a[a.length] = fire(direction("-80-$rand*60", "absolute"), speed("1+$rand*5"), bulletRef("blue3alive", i*-0.5));
+                a[a.length] = wait(2);
+                a[a.length] = fire(direction(" 80+$rand*60", "absolute"), speed("1+$rand*5"), bulletRef("blue3alive", i*-0.5));
+                a[a.length] = wait(2);
+            }
+            a[a.length] = wait(220);
+            return a;
+        })()),
+        blue3alive: bullet(action(
+            wait("10+$rand*5"),
+            changeSpeed(speed(0), 20),
+            wait(180),
+            fire(direction("$1", "absolute"), speed("4+$rank"), bullet()),
+            repeat(10, action(
+                fire(direction(0, "sequence"), speed(0.2, "sequence"), bullet())
+            )),
+            vanish()
+        )),
+        attack4: action(
+            fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit40", -1)),
+            fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit40",  1)),
+            wait(800)
+        ),
+        bit40: bullet(
+            action(
+                wait(12),
+                changeSpeed(speed(0), 1),
+                repeat(4, action(
+                    changeDirection(direction("170*$1", "relative"), "60+$rank*50"),
+                    repeat(70/5, action(
+                        fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
+                        wait(5)
+                    )),
+                    repeat(2, action(
+                        fire(direction("$rand*20-10"), speed("1.2+$rank"), bullet("g")),
+                        repeat(10, action(
+                            fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g")),
+                            wait(1)
+                        ))
+                    )),
 
+                    changeDirection(direction("-170*$1", "relative"), "60+$rank*50"),
+                    repeat(70/5, action(
+                        fire(direction(  0, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction( 90, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(180, "relative"), speed("0.8+$rank"), bullet()),
+                        fire(direction(270, "relative"), speed("0.8+$rank"), bullet()),
+                        wait(5)
+                    )),
+                    repeat(2, action(
+                        fire(direction("$rand*20-10"), speed("1.2+$rank"), bullet("g")),
+                        repeat(10, action(
+                            fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g")),
+                            wait(1)
+                        ))
+                    ))
+                )),
+                vanish()
+            )
         )
     });
 

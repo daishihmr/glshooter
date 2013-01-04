@@ -19,7 +19,7 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.09;
 
-var START_STAGE = 1;
+var START_STAGE = 2;
 var NUM_OF_STAGE = 2;
 
 var textures = {};
@@ -179,6 +179,10 @@ tm.main(function() {
             } else {
                 b.texX = 3;
                 b.texY = 1;
+            }
+
+            if (spec.label && spec.label.indexOf("alive") !== -1) {
+                b.alive =  true;
             }
 
             if (spec.label === "s") {

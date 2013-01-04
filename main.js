@@ -12,6 +12,7 @@ var GLOW_DOWN_TIME = 60;
 var GLOW_UP_PER_HIT = 1;
 var GLOW_DOWN = 2;
 var GLOW_MAX = 1100;
+var GLOW_BONUS_RATE = 0.004;
 
 var SHOW_FPS = true;
 var MUTEKI = false;
@@ -55,7 +56,7 @@ tm.main(function() {
         var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
         var beforeExtZanki = ~~(app.score / EXTEND_SCORE_LIFE);
 
-        this.score += delta * (calcGlow ? (1+glowLevel*0.004)*(1+glowLevel*0.004) : 1);
+        this.score += delta * (calcGlow ? glowBonus : 1);
 
         if (0 < delta) {
             if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) app.bomb += 1;
@@ -66,6 +67,7 @@ tm.main(function() {
         app.score = 0;
         app.zanki = 3;
         app.bomb = 3;
+        if (player) player.level = 0;
     };
     app.bgm = null;
 
@@ -127,6 +129,7 @@ tm.main(function() {
 
     // GLOW-LV
     var glowLevel = 0;
+    var glowBonus = 1;
 
     // bomb
     var bombParticlePool = [];
@@ -463,7 +466,6 @@ tm.main(function() {
 
         // player vs bullet
         if (player.parent !== null && !player.muteki && !player.disabled) {
-            var grazeScore = 50;
             for (var i = bullets.length; i--; ) {
                 var b = bullets[i];
                 if (b.parent === null) continue;
@@ -475,7 +477,7 @@ tm.main(function() {
                     break;
                 } else if (dist < 1.5) {
                     console.log("GRAZE");
-                    app.incrScore(grazeScore, true); // graze
+                    app.incrScore(1, true); // graze
                 }
             }
         }
@@ -507,7 +509,7 @@ tm.main(function() {
                     scene.remove(w);
                     glowLevel += GLOW_UP_PER_HIT; glowUp = true;
                     e.damage(player.power);
-                    app.incrScore(0.1, true); // hit
+                    app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
                 }
             }
@@ -549,6 +551,7 @@ tm.main(function() {
             }
         }
         glowLevel = Math.clamp(glowLevel, 0, GLOW_MAX);
+        glowBonus = (1+glowLevel*GLOW_BONUS_RATE)*(1+glowLevel*GLOW_BONUS_RATE);
         player.glow = glowLevel * 0.001;
     };
 

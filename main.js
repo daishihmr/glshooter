@@ -20,7 +20,7 @@ var GLOW_BONUS_RATE = 0.004;
 var SHOW_FPS = true;
 var MUTEKI = false;
 var INITIAL_RANK = 0.5;
-var COLLISION_RADUIS = 0.09;
+var COLLISION_RADUIS = 0.2*0.2;
 
 var START_STAGE = 2;
 var NUM_OF_STAGE = 2;
@@ -166,7 +166,7 @@ tm.main(function() {
     }
 
     // enemy bullet setting
-    var attackParam = app.attackParam = {
+    attackParam = app.attackParam = {
         target: player,
         rank: INITIAL_RANK,
         bulletFactory: function(spec) {

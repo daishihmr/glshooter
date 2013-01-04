@@ -1065,6 +1065,100 @@ var Patterns = {};
         )
     });
 
-    Patterns.boss22 = Patterns.boss21;
+    Patterns.boss22 = pattern({
+        top: action(
+            wait(60),
+            repeat(100, action(
+                // actionRef("attack1"),
+                actionRef("attack2")
+            ))
+        ),
+        attack1: action((function() {
+            var a = [];
+            var s = 2;
+            a[a.length] = changeDirection(direction(90, "absolute"), 1);
+            a[a.length] = changeSpeed(speed(s), 40);
+            a[a.length] = wait(20);
+            a[a.length] = changeSpeed(speed(0), 40);
+            a[a.length] = wait(20);
+            for (var i = 0; i < 6; i++) {
+                a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
+                a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
+                a[a.length] = wait(40);
+                a[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
+                a[a.length] = wait(40);
+                a[a.length] = changeSpeed(speed(0), 80);
+                a[a.length] = wait(40);
+            }
+            a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
+            a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
+            a[a.length] = wait(40);
+            a[a.length] = changeSpeed(speed((i%2)?s:-s), 40);
+            a[a.length] = wait(20);
+            a[a.length] = changeSpeed(speed(0), 40);
+            a[a.length] = wait(60);
+            return a;
+        })()),
+        bit1: bullet(action(
+            wait(5),
+            changeSpeed(speed(0), 1),
+            wait("5+$1"),
+            fire(direction("-120*$2"), speed("1.0+$rank+$3*0.2"), bullet()),
+            repeat(240 / 12, action(
+                fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction("-30 + 12*$2", "sequence"), speed(0, "sequence"), bullet()),
+                wait(1)
+            )),
+            fire(direction("+120*$2"), speed(0, "sequence"), bullet()),
+            repeat(240 / 12, action(
+                fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction("-30 + -12*$2", "sequence"), speed(0, "sequence"), bullet()),
+                wait(1)
+            )),
+            vanish()
+        )),
+        attack2: action(
+            fire(direction(0), speed(0), bulletRef("bithori")),
+            fire(direction(0), speed(0), bulletRef("bitvert")),
+            wait(670)
+        ),
+        bitvert: bullet(action(
+
+        )),
+        bithori: bullet(action(
+            actionRef("fireBlueBit", 80),
+            actionRef("fireBlueBit", 70),
+            actionRef("fireBlueBit", 66),
+            actionRef("fireBlueBit", 40),
+            actionRef("fireBlueBit", 66),
+            actionRef("fireBlueBit", 53),
+            vanish()
+        )),
+        fireBlueBit: action(
+            repeat(3, action(
+                fire(direction(-90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
+                fire(direction( 90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
+                wait(30)
+            ))
+        ),
+        blueBitalive: bullet(action(
+            wait(5),
+            changeSpeed(speed(0), 25),
+            wait(30),
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(1.5), 10),
+            repeat(999, action(
+                wait("$1"),
+                fire(direction(-90, "absolute"), speed("3*$rank"), bullet()),
+                fire(direction( 90, "absolute"), speed("3*$rank"), bullet()),
+                wait(2),
+                repeat(12, action(
+                    fire(direction(-90, "absolute"), speed(0, "sequence"), bullet()),
+                    fire(direction( 90, "absolute"), speed(0, "sequence"), bullet()),
+                    wait(2)
+                ))
+            ))
+        ))
+    });
 
 })();

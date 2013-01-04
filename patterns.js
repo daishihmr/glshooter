@@ -913,18 +913,36 @@ var Patterns = {};
         bit21: bullet(action(
             repeat(8, action(
                 fire(direction(-30/2-50), speed("1.8+$rank"), bullet("g")),
-                repeat(10, action(
-                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
                 )),
                 fire(direction(-30/2), speed("1.8+$rank"), bullet("g")),
-                repeat(10, action(
-                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
                 )),
                 fire(direction(-30/2+50), speed("1.8+$rank"), bullet("g")),
-                repeat(10, action(
-                    fire(direction(30/10, "sequence"), speed(0, "sequence"), bullet("g"))
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
                 )),
-                wait(130)
+                wait(65),
+
+                fire(direction(-30/2-75), speed("1.8+$rank"), bullet("g")),
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30/2-25), speed("1.8+$rank"), bullet("g")),
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30/2+25), speed("1.8+$rank"), bullet("g")),
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                fire(direction(-30/2+75), speed("1.8+$rank"), bullet("g")),
+                repeat(8, action(
+                    fire(direction(30/8, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                wait(65)
             )),
             vanish()
         )),
@@ -953,7 +971,7 @@ var Patterns = {};
                     fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",20, "2.2+$rank")),
                     fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",25, "2.2+$rank"))
                 )),
-                wait(120)
+                wait(117)
             )),
             vanish()
         )),

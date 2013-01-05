@@ -1069,7 +1069,7 @@ var Patterns = {};
         top: action(
             wait(60),
             repeat(100, action(
-                // actionRef("attack1"),
+                actionRef("attack1"),
                 actionRef("attack2")
             ))
         ),
@@ -1120,25 +1120,41 @@ var Patterns = {};
         attack2: action(
             fire(direction(0), speed(0), bulletRef("bithori")),
             fire(direction(0), speed(0), bulletRef("bitvert")),
-            wait(670)
+            wait(1220)
         ),
-        bitvert: bullet(action(
-
-        )),
+        bitvert: bullet(action((function() {
+            var a = [];
+            for (var i = -15; i < 15; i+=3) {
+                a[a.length] = actionRef("fireBigBulletR", -80+i);
+                a[a.length] = actionRef("fireBigBulletR", -40+i);
+                a[a.length] = actionRef("fireBigBulletR",   0+i);
+                a[a.length] = actionRef("fireBigBulletR",  40+i);
+                a[a.length] = actionRef("fireBigBulletR",  80+i);
+                a[a.length] = wait(50);
+                a[a.length] = actionRef("fireBigBulletR",-100+i);
+                a[a.length] = actionRef("fireBigBulletR", -60+i);
+                a[a.length] = actionRef("fireBigBulletR", -20+i);
+                a[a.length] = actionRef("fireBigBulletR",  20+i);
+                a[a.length] = actionRef("fireBigBulletR",  60+i);
+                a[a.length] = actionRef("fireBigBulletR", 100+i);
+                a[a.length] = wait(50);
+            }
+            return a;
+        })())),
         bithori: bullet(action(
-            actionRef("fireBlueBit", 80),
-            actionRef("fireBlueBit", 70),
+            actionRef("fireBlueBit", 33),
+            actionRef("fireBlueBit", 44),
+            actionRef("fireBlueBit", 55),
             actionRef("fireBlueBit", 66),
-            actionRef("fireBlueBit", 40),
-            actionRef("fireBlueBit", 66),
-            actionRef("fireBlueBit", 53),
+            actionRef("fireBlueBit", 77),
+            actionRef("fireBlueBit", 88),
             vanish()
         )),
         fireBlueBit: action(
             repeat(3, action(
                 fire(direction(-90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
                 fire(direction( 90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
-                wait(30)
+                wait(40)
             ))
         ),
         blueBitalive: bullet(action(
@@ -1149,15 +1165,42 @@ var Patterns = {};
             changeSpeed(speed(1.5), 10),
             repeat(999, action(
                 wait("$1"),
-                fire(direction(-90, "absolute"), speed("3*$rank"), bullet()),
-                fire(direction( 90, "absolute"), speed("3*$rank"), bullet()),
-                wait(2),
-                repeat(12, action(
-                    fire(direction(-90, "absolute"), speed(0, "sequence"), bullet()),
-                    fire(direction( 90, "absolute"), speed(0, "sequence"), bullet()),
-                    wait(2)
-                ))
+                actionRef("fireBigBulletG", -90),
+                actionRef("fireBigBulletB",  90)
             ))
+        )),
+        fireBigBulletR: action(
+            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("redBB", "$1")),
+            repeat(360/30-1, action(
+                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("redBB", "$1"))
+            ))
+        ),
+        redBB: bullet(action(
+            wait(10),
+            fire(direction("$1", "absolute"), speed("3*$rank"), bullet()),
+            vanish()
+        )),
+        fireBigBulletG: action(
+            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("greenBB", "$1")),
+            repeat(360/30-1, action(
+                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("greenBB", "$1"))
+            ))
+        ),
+        greenBB: bullet(action(
+            wait(10),
+            fire(direction("$1", "absolute"), speed("3*$rank"), bullet("g")),
+            vanish()
+        )),
+        fireBigBulletB: action(
+            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("blueBB", "$1")),
+            repeat(360/30-1, action(
+                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("blueBB", "$1"))
+            ))
+        ),
+        blueBB: bullet(action(
+            wait(10),
+            fire(direction("$1", "absolute"), speed("3*$rank"), bullet("b")),
+            vanish()
         ))
     });
 

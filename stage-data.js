@@ -688,15 +688,15 @@ var setupStageData = function(app, stage) {
                 }
             ]);
 
-            StageData = [
-                {
-                    frame: 20,
-                    enemies: [
-                        // [ -12, -21.9, "boss", "boss21"]
-                        [ 0, 10, "boss", "boss22"]
-                    ]
-                }
-            ];
+            // StageData = [
+            //     {
+            //         frame: 20,
+            //         enemies: [
+            //             [ -12, -21.9, "boss", "boss21"]
+            //             // [ 0, 10, "boss", "boss22"]
+            //         ]
+            //     }
+            // ];
     }
 
     var cursor = 0;

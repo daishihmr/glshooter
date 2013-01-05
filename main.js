@@ -6,10 +6,10 @@ var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 
 var BOMB_DAMAGE1 = 20;
-var BOMB_DAMAGE2 = 4;
+var BOMB_DAMAGE2 = 1;
 
-var EXTEND_SCORE_LIFE = 2500000;
-var EXTEND_SCORE_BOMB =  500000;
+var EXTEND_SCORE_LIFE = 1000000;
+var EXTEND_SCORE_BOMB =  600000;
 
 var GLOW_DOWN_TIME = 60;
 var GLOW_UP_PER_HIT = 1;
@@ -22,8 +22,11 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
-var START_STAGE = 2;
+var START_STAGE = 1;
 var NUM_OF_STAGE = 2;
+
+var CLEAR_BONUS_ZANKI = 100000;
+var CLEAR_BONUS_BOMB = 10000;
 
 var textures = {};
 
@@ -39,9 +42,11 @@ tm.preload(function() {
     tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
     tm.sound.SoundManager.add("bgm2", "nc784.mp3", 1);
 
-    tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 30);
+    tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 20);
     tm.sound.SoundManager.add("effect0", "effect0.mp3", 1);
     tm.sound.SoundManager.add("bomb", "nc17909.mp3");
+    tm.sound.SoundManager.add("v-genBomb", "voice_gen-bomb.mp3", 1);
+    tm.sound.SoundManager.add("v-extend", "voice_extend.mp3", 1);
 });
 
 tm.main(function() {
@@ -70,8 +75,14 @@ tm.main(function() {
         this.score += delta * (calcGlow ? glowBonus : 1);
 
         if (0 < delta) {
-            if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) app.bomb += 1;
-            if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE_LIFE)) app.zanki += 1;
+            if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) {
+                app.bomb += 1;
+                MUTE_SE || SoundManager.get("v-genBomb").play();
+            }
+            if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE_LIFE)) {
+                app.zanki += 1;
+                MUTE_SE || SoundManager.get("v-extend").play();
+            }
         }
     };
     app.resetGameStatus = function () {
@@ -88,7 +99,7 @@ tm.main(function() {
     app.currentStage = START_STAGE;
 
     var setVolumeSe = function() {
-        ["explode", "effect0", "bomb"].forEach(function(s) {
+        ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
             for (var i = SoundManager.sounds[s].length; i--; ) {
                 SoundManager.sounds[s][i].volume = app.volumeSe;
             }
@@ -260,9 +271,9 @@ tm.main(function() {
             var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scale+this.scale);
             var K = 5*5;
             d = Math.clamp(d, 0, K);
-            var rate = Math.max(1, ((K-d)/K)*10);
+            var rate = Math.max(1, ((K-d)/K)*4);
             // if (1<rate) console.log("RATE " + rate*rate);
-            app.incrScore(this.score*rate*rate, true);
+            app.incrScore(this.score*rate*rate, true); // mega rate
 
             if (this.clear !== true) {
                 explode(this.x, this.y, this.scale);
@@ -336,11 +347,12 @@ tm.main(function() {
         }
     };
 
+    // labels =================================================================
     // score
     var score = tm.app.Label("SCORE:" + app.score, 30);
     score.update = function() {
         var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        if (player.y < 0) {
+        if (player.y < 0 && !player.disabled) {
             this.alpha = ((player.y + 17) / 30)*a;
         } else {
             this.alpha = a;
@@ -761,7 +773,7 @@ tm.main(function() {
         message.text = "all stage clear";
         message.visible = true;
         var t = scene.frame;
-        var bonus = ~~(app.zanki * 100000 + app.bomb * 30000);
+        var bonus = ~~(app.zanki * CLEAR_BONUS_ZANKI + app.bomb * CLEAR_BONUS_BOMB);
         message.addEventListener("enterframe", function() {
             if (scene.frame === t + 180*1) {
                 message.text = "bonus " + bonus;

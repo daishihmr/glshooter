@@ -73,43 +73,56 @@ var ContinueScene;
             version.alpha = 0;
             this.addChild(version);
 
-            var start = this.start = tm.app.Label("PRESS (Z) KEY FOR START", 15);
-            start.setFontFamily("Orbitron");
-            start.setAlign("center");
-            start.setBaseline("middle");
-            start.width = 320;
-            start.x = 160;
-            start.y = 240;
-            start.alpha = 0;
+            this.menuItem = [];
+            var start = this.menuItem[0] = createLabel("game start", 20, 160, 230);
             this.addChild(start);
+            var settings = this.menuItem[1] = createLabel("setting", 20, 160, 260);
+            this.addChild(settings);
+            var exit = this.menuItem[2] = createLabel("exit", 20, 160, 290);
+            this.addChild(exit);
+
+            this.selection = 0;
 
             this.addEventListener("enter", function() {
+                this.startFlag = false;
+
                 this.title.visible = true;
                 this.version.visible = true;
-                this.start.visible = true;
                 this.bg.visible = true;
                 this.title.alpha = 0;
                 this.version.alpha = 0;
+
+                this.menuItem.forEach(function(l) {
+                    l.visible = true;
+                });
             });
         },
         update: function(app) {
-            this.start.alpha = Math.sin(app.frame*0.1) * 0.25 + 0.75;
-            if (app.keyboard.getKeyDown("z") || this.mouse.getPointing()) {
-                this.startFlag = true;
-                MUTE_SE || tm.sound.SoundManager.get("effect0").play();
+            if (!this.startFlag) {
+                if (app.keyboard.getKeyDown("down")) {
+                    this.selection += 1;
+                    if (this.selection === this.menuItem.length) this.selection = 0;
+                } else if (app.keyboard.getKeyDown("up")) {
+                    this.selection -= 1;
+                    if (this.selection === -1) this.selection = this.menuItem.length - 1;
+                }
             }
+
+            for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].fillStyle = "#333";
+            }
+            this.menuItem[this.selection].fillStyle = "#fff"
 
             if (this.startFlag) {
                 this.title.alpha -= 0.01;
                 this.version.alpha -= 0.01;
-                this.start.visible = false;
-
-                if (this.title.alpha < 0) {
-                    this.startFlag = false;
+                if (this.title.alpha <= 0) {
                     this.title.visible = false;
                     this.version.visible = false;
-                    this.start.visible = false;
                     this.bg.visible = false;
+                    this.menuItem.forEach(function(l) {
+                        l.visible = false;
+                    });
                     app.pushScene(app.gameScene);
                     app.stageStart();
                 }
@@ -157,7 +170,7 @@ var ContinueScene;
 
             this.menuItem = [];
             this.menuItem[0] = createLabel("resume", 20, 160, 130);
-            this.menuItem[1] = createLabel("restart", 20, 160, 180);
+            this.menuItem[1] = createLabel("restart stage", 20, 160, 180);
             this.menuItem[2] = createLabel("setting", 20, 160, 230);
             this.menuItem[3] = createLabel("back to title", 20, 160, 280);
             for (var i = this.menuItem.length; i--; ) {
@@ -259,24 +272,26 @@ var ContinueScene;
                 bgm: 0,
                 se: 0
             };
+            var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
+            settings.bgm = s.bgm;
+            settings.se = s.se;
             this.selection = 0;
+
             this.addEventListener("enter", function() {
-                if (app.bgm) settings.bgm = app.bgm.volume;
-                settings.se = app.volumeSe;
+                var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
+                settings.bgm = s.bgm;
+                settings.se = s.se;
                 this.selection = 0;
             });
             this.doSetting = function(selection, updown) {
                 switch(selection) {
                 case 0:
                     settings.bgm += 0.01*updown;
-                    if (settings.bgm < 0) settings.bgm = 0;
-                    else if (1 < settings.bgm) settings.bgm = 1;
-                    app.bgm.volume = settings.bgm;
+                    settings.bgm = Math.clamp(settings.bgm+0.01*updown, 0, 1);
+                    if (app.bgm) app.bgm.volume = settings.bgm;
                     break;
                 case 1:
-                    settings.se += 0.01*updown;
-                    if (settings.se < 0) settings.se = 0;
-                    else if (1 < settings.se) settings.se = 1;
+                    settings.se = Math.clamp(settings.se+0.01*updown, 0, 1);
                     app.volumeSe = settings.se;
                     break;
                 }
@@ -301,6 +316,14 @@ var ContinueScene;
                 this.doSetting(this.selection, 1);
             } else if (app.keyboard.getKey("left")) {
                 this.doSetting(this.selection, -1);
+            }
+            if (this.selection === 1) {
+                if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left"))) {
+                    console.log("play")
+                    var s = tm.sound.SoundManager.get("explode");
+                    s.volume = this.settings.se;
+                    s.play();
+                }
             }
 
             for (var i = this.menuItem.length; i--; ) {
@@ -336,10 +359,16 @@ var ContinueScene;
         },
         update: function(app) {
             this.gameover.alpha += 0.01;
-            if (this.start + 220 === app.frame) {
+            if (0.5 < this.gameover.alpha) {
+                this.update = function() {};
                 app.highScore = Math.max(app.score, app.highScore);
-                console.log("entry 9leap", ~~(app.highScore), "SCORE:" + ~~(app.highScore));
-                tm.social.Nineleap.postRanking(~~(app.highScore), "SCORE:" + ~~(app.highScore));
+                var message =
+                    "SCORE: " + ~~(app.highScore) + " (" +
+                    "stage: " + app.currentStage + ", " +
+                    "continue: " + app.continueCount +
+                    ")";
+                console.log("entry 9leap", ~~(app.highScore), message);
+                tm.social.Nineleap.postRanking(~~(app.highScore), message);
             }
         }
     });

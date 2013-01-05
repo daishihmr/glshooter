@@ -66,6 +66,7 @@ tm.main(function() {
     app.fitWindow(false);
     app.background = "rgba(0,0,0,1)"
     app.fps = FPS;
+    app.continueCount = 0;
     app.highScore = 0;
     app.score = 0;
     app.incrScore = function(delta, calcGlow) {
@@ -85,6 +86,7 @@ tm.main(function() {
             }
         }
     };
+
     app.resetGameStatus = function () {
         app.score = 0;
         app.zanki = 3;
@@ -92,7 +94,6 @@ tm.main(function() {
         if (player) player.level = 0;
     };
     app.bgm = null;
-
     app.volumeSe = settings.se;
     app.resetGameStatus();
 
@@ -124,6 +125,11 @@ tm.main(function() {
     mouse.lastLeftUp = -1;
 
     var titleScene = TitleScene(mouse);
+    var pauseScene = PauseScene();
+    var settingScene = SettingScene(app);
+    var confirmScene = ConfirmScene();
+    var continueScene = ContinueScene();
+
     app.replaceScene(titleScene);
 
     // main 3D scene
@@ -584,16 +590,26 @@ tm.main(function() {
         player.glow = glowLevel * 0.001;
     };
 
-    var pauseScene = PauseScene();
-    var settingScene = SettingScene(app);
-    var confirmScene = ConfirmScene();
-    var continueScene = ContinueScene();
-
     app.update = function() {
         mouse.update();
 
         if (keyboard.getKeyDown("space")) {
-            if (app.currentScene === pauseScene) {
+            if (app.currentScene === titleScene) {
+                if (!titleScene.startFlag) {
+                    switch (titleScene.selection) {
+                    case 0: // game start
+                        titleScene.startFlag = true;
+                        SoundManager.get("effect0").play();
+                        break;
+                    case 1: // setting
+                        app.pushScene(settingScene);
+                        break;
+                    case 2: // exit
+                        app.gameOver();
+                        break;
+                    }
+                }
+            } else if (app.currentScene === pauseScene) {
                 switch (pauseScene.selection) {
                 case 0: // resume
                     app.popScene();
@@ -612,11 +628,14 @@ tm.main(function() {
                 switch (confirmScene.selection) {
                 case 0:
                     if (pauseScene.selection === 1) { // restart
+                        app.continueCount += 1;
                         app.resetGameStatus();
                         app.stageStart();
                         app.popScene();
                         app.popScene();
                     } else if (pauseScene.selection === 3) { // back to title
+                        app.continueCount = 0;
+                        app.currentStage = 1;
                         app.resetGameStatus();
                         app.popScene();
                         app.popScene();
@@ -635,6 +654,7 @@ tm.main(function() {
                 switch(continueScene.selection) {
                 case 0:
                     app.resetGameStatus();
+                    app.continueCount += 1;
                     player.level = -1;
                     scene.frame = scene.returnFrame;
                     scene.add(player);
@@ -690,7 +710,9 @@ tm.main(function() {
         if (app.bgm) {
             app.bgm.loop = true;
             app.bgm.volume = vol;
-            MUTE_BGM || app.bgm.play();
+            setTimeout(function() {
+                MUTE_BGM || app.bgm.play();
+            }, 100);
         }
 
         // boss

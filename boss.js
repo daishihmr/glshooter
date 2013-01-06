@@ -1,11 +1,11 @@
-var BOSS_HP = [ 16000, 16000 ];
+var BOSS_HP = [ 16000, 16000, 16000 ];
 
-var createBoss = function(app, gl, explosion, stage) {
+var createBoss = function(app, explosion, stage) {
     var Random = tm.util.Random;
     var SoundManager = tm.sound.SoundManager;
     var explode = explosion.explode;
 
-    var boss = new Sprite(gl, textures["boss" + stage]);
+    var boss = new Sprite(textures["boss" + stage]);
     boss.scale = 8;
     boss.alpha = 0.5;
     boss.texScale = 8;
@@ -64,7 +64,7 @@ var createBoss = function(app, gl, explosion, stage) {
                     explode(this.x+Random.randfloat(-3, 3), this.y+Random.randfloat(-3, 3), Random.randfloat(0.5, 1));
                 }
                 if (scene.frame === t + 250) {
-                    var explodeL = explosion.getExplodeL(gl, scene);
+                    var explodeL = explosion.getExplodeL(scene);
                     var self = this;
                     explodeL(function() {
                         self.killed();

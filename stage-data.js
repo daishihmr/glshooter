@@ -697,6 +697,9 @@ var setupStageData = function(app, stage) {
             //         ]
             //     }
             // ];
+
+    }  else if (stage === 3) {
+        
     }
 
     var cursor = 0;

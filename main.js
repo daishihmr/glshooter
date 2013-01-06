@@ -23,7 +23,7 @@ var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
 var START_STAGE = 1;
-var NUM_OF_STAGE = 2;
+var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
@@ -41,6 +41,7 @@ tm.preload(function() {
 
     tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
     tm.sound.SoundManager.add("bgm2", "nc784.mp3", 1);
+    tm.sound.SoundManager.add("bgm3", "nc790.mp3", 1);
 
     tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 20);
     tm.sound.SoundManager.add("effect0", "effect0.mp3", 1);
@@ -144,7 +145,7 @@ tm.main(function() {
     var texture0 = Sprite.mainTexture = textures["texture0"];
 
     // explosion
-    var explosion = new Explosion(gl, scene);
+    var explosion = new Explosion(scene);
     var explode = app.explode = explosion.explode;
     var explodeS = app.explodeS = explosion.explodeS;
     var explodeL = explosion.getExplodeL(gl, scene);
@@ -152,7 +153,7 @@ tm.main(function() {
 
     // player
     var weapons = [];
-    var player = app.player = setupPlayer(app, gl, scene, weapons, mouse);
+    var player = app.player = setupPlayer(app, scene, weapons, mouse);
     var clearAllPlayerEffect = app.clearAllPlayerEffect = player.clearAll;
 
     // GLOW-LV
@@ -161,7 +162,7 @@ tm.main(function() {
 
     // bomb
     var bombParticlePool = [];
-    app.fireBomber = Bomb.fireBomber(gl, scene, bombParticlePool);
+    app.fireBomber = Bomb.fireBomber(scene, bombParticlePool);
     app.clearBomb = function () {
         Bomb.clearBomb(scene, bombParticlePool);
     };
@@ -170,7 +171,7 @@ tm.main(function() {
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
-        var b = new Sprite(gl, texture0);
+        var b = new Sprite(texture0);
         b.texX = 3;
         b.texY = 1;
         b.scale = 0.5;
@@ -252,7 +253,7 @@ tm.main(function() {
     var enemyPool = [];
     var expSoundPlaying = -1;
     var createEnemy = function() {
-        var e = new Sprite(gl, texture0);
+        var e = new Sprite(texture0);
         e.alpha = 0.5;
         e.glow = 1;
         e.onremoved = function() {
@@ -287,7 +288,7 @@ tm.main(function() {
                 MUTE_SE || SoundManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
-                var timer = new Sprite(gl, texture0);
+                var timer = new Sprite(texture0);
                 timer.texX = 7;
                 timer.texY = 7;
                 timer.x = this.x;
@@ -721,7 +722,7 @@ tm.main(function() {
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
-        boss = createBoss(app, gl, explosion, stage);
+        boss = createBoss(app, explosion, stage);
         enemies.push(boss);
         boss.killed = function() {
             app.stageClear();

@@ -9,8 +9,8 @@
 var PLAYER_SPEED = 0.2;
 var MUTEKI_TIME = 90;
 
-var setupPlayer = function(app, gl, scene, weapons, mouse) {
-    var player = new Sprite(gl, Sprite.mainTexture);
+var setupPlayer = function(app, scene, weapons, mouse) {
+    var player = new Sprite(Sprite.mainTexture);
     player.scale = 1.5;
     player.level = 0;
     player.reset = function() {
@@ -148,12 +148,12 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
             (this.level < 2) || fireWeapon(+Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
 
             var angle = xPress ? 0 : 4;
-            (this.level < 2) || fireWeapon(+1.5, 0, angle*+3);
-            (this.level < 1) || fireWeapon(+1.0, 0, angle*+2);
-            fireWeapon(+0.5, 0, angle*+1);
-            fireWeapon(-0.5, 0, angle*-1);
-            (this.level < 1) || fireWeapon(-1.0, 0, angle*-2);
-            (this.level < 2) || fireWeapon(-1.5, 0, angle*-3);
+            (this.level < 1) || fireWeapon(+1.5, 0, angle*+3);
+            fireWeapon(+1.0, 0, angle*+2);
+            (this.level < 2) || fireWeapon(+0.5, 0, angle*+1);
+            (this.level < 2) || fireWeapon(-0.5, 0, angle*-1);
+            fireWeapon(-1.0, 0, angle*-2);
+            (this.level < 1) || fireWeapon(-1.5, 0, angle*-3);
 
             this.power = xPress ? 0.6 : 1;
         }
@@ -192,7 +192,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
     };
     scene.add(player);
 
-    var centerMarker = new Sprite(gl, textures["texture0"]);
+    var centerMarker = new Sprite(textures["texture0"]);
     centerMarker.x = player.x;
     centerMarker.y = player.y;
     centerMarker.texX = 2; centerMarker.texY = 1;
@@ -208,7 +208,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
     var zanzos = [];
     var zanzoPool = [];
     for (var i = 0; i < 200; i++) {
-        var z = new Sprite(gl, textures["texture0"]);
+        var z = new Sprite(textures["texture0"]);
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
@@ -229,7 +229,7 @@ var setupPlayer = function(app, gl, scene, weapons, mouse) {
 
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
-        var w = new Sprite(gl, textures["texture0"]);
+        var w = new Sprite(textures["texture0"]);
         w.texX = 7;
         w.texY = 1;
         weapons.push(w);

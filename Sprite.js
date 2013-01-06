@@ -1,7 +1,7 @@
 var Sprite;
 (function() {
 
-    Sprite = function(gl, texture) {
+    Sprite = function(texture) {
         this.age = 0;
         this.parent = null;
 

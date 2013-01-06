@@ -6,73 +6,29 @@ var Patterns = {};
         return new AttackPattern(new BulletML.Root(dsl));
     }
 
-    Patterns.zako1 = pattern({
-        top: action(
-            wait("$rand*5"),
-            changeDirection(direction(45, "absolute"), 1),
-            changeSpeed(speed(4), 60),
-            wait(60),
-            changeSpeed(speed(0), 10),
-            wait(10),
-            repeat(5 ,action(
-                fire(direction("$rand*10-5"), speed("2+$rank"), bullet()),
-                wait(2)
-            )),
-            changeDirection(direction(160, "absolute"), 1),
-            changeSpeed(speed(4), 40)
-        )
-    });
+    function zako1(delay, dir) {
+        return pattern({
+            top: action(
+                wait(delay + "+$rand*5"),
+                changeDirection(direction(45 * dir, "absolute"), 1),
+                changeSpeed(speed(4), 60),
+                wait(60),
+                changeSpeed(speed(0), 10),
+                wait(10),
+                repeat(5 ,action(
+                    fire(direction("$rand*10-5"), speed("2+$rank"), bullet()),
+                    wait(2)
+                )),
+                changeDirection(direction(160 * dir, "absolute"), 1),
+                changeSpeed(speed(4), 40)
+            )
+        });
+    }
 
-    Patterns.zako1d = pattern({
-        top: action(
-            wait("45+$rand*5"),
-            changeDirection(direction(45, "absolute"), 1),
-            changeSpeed(speed(4), 60),
-            wait(60),
-            changeSpeed(speed(0), 10),
-            wait(10),
-            repeat(5 ,action(
-                fire(direction("$rand*10-5"), speed("2+$rank"), bullet()),
-                wait(2)
-            )),
-            changeDirection(direction(160, "absolute"), 1),
-            changeSpeed(speed(4), 40)
-        )
-    });
-
-    Patterns.zako2 = pattern({
-        top: action(
-            wait("$rand*5"),
-            changeDirection(direction(-45, "absolute"), 1),
-            changeSpeed(speed(4), 60),
-            wait(60),
-            changeSpeed(speed(0), 10),
-            wait(10),
-            repeat(5 ,action(
-                fire(direction("$rand*10-5"), speed("2+$rank"), bullet()),
-                wait(2)
-            )),
-            changeDirection(direction(-160, "absolute"), 1),
-            changeSpeed(speed(4), 40)
-        )
-    });
-
-    Patterns.zako2d = pattern({
-        top: action(
-            wait("45+$rand*5"),
-            changeDirection(direction(-45, "absolute"), 1),
-            changeSpeed(speed(4), 60),
-            wait(60),
-            changeSpeed(speed(0), 10),
-            wait(10),
-            repeat(5 ,action(
-                fire(direction("$rand*10-5"), speed("2+$rank"), bullet()),
-                wait(2)
-            )),
-            changeDirection(direction(-160, "absolute"), 1),
-            changeSpeed(speed(4), 40)
-        )
-    });
+    Patterns.zako1 = zako1(0, 1);
+    Patterns.zako1d = zako1(40, 1);
+    Patterns.zako2 = zako1(0, -1);
+    Patterns.zako2d = zako1(45, -1);
 
     Patterns.zako3 = pattern({
         top: action(
@@ -316,77 +272,43 @@ var Patterns = {};
         )
     });
 
-    Patterns.tank1 = pattern({
-        top: action(
-            changeDirection(direction(80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
-    Patterns.tank1d = pattern({
-        top: action(
-            wait(30),
-            changeDirection(direction(80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
-    Patterns.tank1dd = pattern({
-        top: action(
-            wait(60),
-            changeDirection(direction(80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
+    function tank1(delay) {
+        return pattern({
+            top: action(
+                wait(delay),
+                changeDirection(direction(80, "absolute"), 1),
+                changeSpeed(speed(0.5), 1),
+                wait("60+$rand*100"),
+                repeat(30, action(
+                    fire(speed("1.5+$rank"), bullet("sg")),
+                    wait("60+$rand*100")
+                ))
+            )
+        });
+    }
 
-    Patterns.tank2 = pattern({
-        top: action(
-            changeDirection(direction(-80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
-    Patterns.tank2d = pattern({
-        top: action(
-            wait(30),
-            changeDirection(direction(-80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
-    Patterns.tank2dd = pattern({
-        top: action(
-            wait(60),
-            changeDirection(direction(-80, "absolute"), 1),
-            changeSpeed(speed(0.5), 1),
-            wait("60+$rand*100"),
-            repeat(30, action(
-                fire(speed("1.5+$rank"), bullet("sg")),
-                wait("60+$rand*100")
-            ))
-        )
-    });
+    Patterns.tank1 = tank1(0);
+    Patterns.tank1d = tank1(30);
+    Patterns.tank1dd = tank1(60);
+
+    function tank2(delay) {
+        return pattern({
+            top: action(
+                wait(delay),
+                changeDirection(direction(-80, "absolute"), 1),
+                changeSpeed(speed(0.5), 1),
+                wait("60+$rand*100"),
+                repeat(30, action(
+                    fire(speed("1.5+$rank"), bullet("sg")),
+                    wait("60+$rand*100")
+                ))
+            )
+        });
+    }
+
+    Patterns.tank2 = tank2(0);
+    Patterns.tank2d = tank2(30);
+    Patterns.tank2dd = tank2(60);
 
     Patterns.middle = pattern({
         top: action(

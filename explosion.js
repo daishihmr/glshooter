@@ -1,11 +1,11 @@
-var Explosion = function(gl, scene) {
+var Explosion = function(scene) {
     var Random = tm.util.Random;
     var texture0 = Sprite.mainTexture;
 
     var particles = [];
     var explodePool = [];
     for (var i = 0; i < 600; i++) {
-        var e = new Sprite(gl, texture0);
+        var e = new Sprite(texture0);
         e.texX = 5;
         e.texY = 1;
         e.incrScale = 0.2;
@@ -51,9 +51,9 @@ var Explosion = function(gl, scene) {
         }
     };
 
-    this.getExplodeL = function(gl, scene) {
+    this.getExplodeL = function(scene) {
         var createParticle = function() {
-            var p = new Sprite(gl, texture0);
+            var p = new Sprite(texture0);
             p.texX = 4;
             p.texY = 1;
             p.radius = 0;

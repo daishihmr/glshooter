@@ -236,7 +236,9 @@ BulletML.global = this;
         /** current localScope variables. */
         this._localScope = {};
         /** globalScope variables. */
-        this._globalScope = { $rank: (rank||0) };
+        this._globalScope = {
+            $rank : rank || 0
+        };
     };
     BulletML.Walker.prototype.next = function() {
         this._cursor += 1;

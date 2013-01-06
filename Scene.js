@@ -1,46 +1,48 @@
 var Scene;
 (function(){
 
-    Scene = function(gl, vs, fs) {
+    Scene = function(canvas, vs, fs) {
+        var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
         if (gl) {
-            this.gl = gl;
-            gl.clearColor(0, 0, 0, 0);
-            gl.clearDepth(1.0);
-            gl.activeTexture(gl.TEXTURE0);
-            gl.enable(gl.BLEND);
-            gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
-
-            var program = this.program = createProgram(
-                gl,
-                createShader(gl, "vs", vs),
-                createShader(gl, "fs", fs));
-
-            var attrPosition = gl.getAttribLocation(program, "position");
-            var positionBuffer = createVbo(gl, VERTICES);
-            gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-            gl.enableVertexAttribArray(attrPosition);
-            gl.vertexAttribPointer(attrPosition, 3, gl.FLOAT, false, 0, 0);
-
-            var attrTexCoord = gl.getAttribLocation(program, "texCoord");
-            var textureBuffer = createVbo(gl, TEXTURE_COORDS);
-            gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
-            gl.enableVertexAttribArray(attrTexCoord);
-            gl.vertexAttribPointer(attrTexCoord, 2, gl.FLOAT, false, 0, 0);
-
-            this.viewMat = mat4.identity(mat4.create());
-            this.projMat = mat4.identity(mat4.create());
-
-            mat4.lookAt([0,0,16], [0,0,0], [0,1,0], this.viewMat)
-            mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
-
-            gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
-
-            this.uniformLocationsForSprite = getUniformLocationsForSprite(gl, program, [
-                "x", "y", "scale", "rotation", "texX", "texY", "alpha", "texScale", "emission"
-            ]);
-
-            this.updateMatrix();
         }
+
+        this.gl = gl;
+        gl.clearColor(0, 0, 0, 0);
+        gl.clearDepth(1.0);
+        gl.activeTexture(gl.TEXTURE0);
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+
+        var program = this.program = createProgram(
+            gl,
+            createShader(gl, "vs", vs),
+            createShader(gl, "fs", fs));
+
+        var attrPosition = gl.getAttribLocation(program, "position");
+        var positionBuffer = createVbo(gl, VERTICES);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.enableVertexAttribArray(attrPosition);
+        gl.vertexAttribPointer(attrPosition, 3, gl.FLOAT, false, 0, 0);
+
+        var attrTexCoord = gl.getAttribLocation(program, "texCoord");
+        var textureBuffer = createVbo(gl, TEXTURE_COORDS);
+        gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+        gl.enableVertexAttribArray(attrTexCoord);
+        gl.vertexAttribPointer(attrTexCoord, 2, gl.FLOAT, false, 0, 0);
+
+        this.viewMat = mat4.identity(mat4.create());
+        this.projMat = mat4.identity(mat4.create());
+
+        mat4.lookAt([0,0,16], [0,0,0], [0,1,0], this.viewMat)
+        mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
+
+        gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
+
+        this.uniformLocationsForSprite = getUniformLocationsForSprite(gl, program, [
+            "x", "y", "scale", "rotation", "texX", "texY", "alpha", "texScale", "emission"
+        ]);
+
+        this.updateMatrix();
 
         this.children = [];
         this._removedChildren = [];
@@ -77,17 +79,14 @@ var Scene;
     };
 
     Scene.prototype.draw = function() {
+        var children = this.children;
         var gl = this.gl;
-        if (gl) {
-            var program = this.program;
-            var children = this.children;
-
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-        }
+        var program = this.program;
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
         for (var i = 0, len = children.length; i < len; i++) children[i].draw(gl);
 
-        if (gl) gl.flush();
+        gl.flush();
 
         this.frame++;
     };

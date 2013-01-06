@@ -114,11 +114,6 @@ tm.main(function() {
     // webgl canvas
     var glCanvas = document.getElementById("world");
     fitWindow(glCanvas);
-    var gl = glCanvas.getContext("webgl") || glCanvas.getContext("experimental-webgl");
-    if (!gl) {
-        alert("could not initialized WebGL");
-        return;
-    }
 
     // input
     var keyboard = app.keyboard;
@@ -136,11 +131,14 @@ tm.main(function() {
     // main 3D scene
     var vs = tm.util.FileManager.get("vs").data;
     var fs = tm.util.FileManager.get("fs").data;
-    var scene = new Scene(gl, vs, fs);
+    var scene = new Scene(glCanvas, vs, fs);
+    var gl = scene.gl;
 
     // GL Textures
-    for (var name in tm.graphics.TextureManager.textures) {
-        textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
+    if (gl) {
+        for (var name in tm.graphics.TextureManager.textures) {
+            textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
+        }
     }
     var texture0 = Sprite.mainTexture = textures["texture0"];
 

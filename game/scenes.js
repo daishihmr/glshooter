@@ -288,6 +288,7 @@ var ContinueScene;
                 case 0:
                     settings.bgm += 0.01*updown;
                     settings.bgm = Math.clamp(settings.bgm+0.01*updown, 0, 1);
+                    app.volumeBgm = settings.bgm;
                     if (app.bgm) app.bgm.volume = settings.bgm;
                     break;
                 case 1:

@@ -4,6 +4,8 @@ var Scene;
     Scene = function(canvas, vs, fs) {
         var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
         if (gl) {
+            alert("failed initialize WebGL");
+            throw new Error("failed initialize WebGL.");
         }
 
         this.gl = gl;

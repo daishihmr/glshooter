@@ -41,6 +41,7 @@ tm.preload(function() {
 
     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
+    tm.sound.SoundManager.add("bgm3", "sounds/nc784.mp3", 1);
 
     tm.sound.SoundManager.add("explode", "sounds/se_maoudamashii_explosion05.mp3", 20);
     tm.sound.SoundManager.add("effect0", "sounds/effect0.mp3", 1);
@@ -94,12 +95,18 @@ tm.main(function() {
         if (player) player.level = 0;
     };
     app.bgm = null;
+    app.volumeBgm = settings.bgm;
     app.volumeSe = settings.se;
     app.resetGameStatus();
 
     app.currentStage = START_STAGE;
 
     var setVolumeSe = function() {
+        ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
+            for (var i = SoundManager.sounds[s].length; i--; ) {
+                SoundManager.sounds[s][i].volume = app.volumeBgm;
+            }
+        });
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
             for (var i = SoundManager.sounds[s].length; i--; ) {
                 SoundManager.sounds[s][i].volume = app.volumeSe;
@@ -702,12 +709,10 @@ tm.main(function() {
         var vol = settings.bgm;
         if (app.bgm) {
             app.bgm.stop();
-            vol = app.bgm.volume;
         }
         app.bgm = SoundManager.get("bgm" + stage);
         if (app.bgm) {
             app.bgm.loop = true;
-            app.bgm.volume = vol;
             setTimeout(function() {
                 MUTE_BGM || app.bgm.play();
             }, 100);

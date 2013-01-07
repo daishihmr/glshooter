@@ -3,7 +3,7 @@ var Scene;
 
     Scene = function(canvas, vs, fs) {
         var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-        if (gl) {
+        if (!gl) {
             alert("failed initialize WebGL");
             throw new Error("failed initialize WebGL.");
         }
@@ -36,7 +36,8 @@ var Scene;
         this.projMat = mat4.identity(mat4.create());
 
         mat4.lookAt([0,0,16], [0,0,0], [0,1,0], this.viewMat)
-        mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
+        // mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
+        mat4.ortho(-16, 16, -16, 16, 0.1, 16, this.projMat);
 
         gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
 

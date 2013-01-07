@@ -22,7 +22,7 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
-var START_STAGE = 1;
+var START_STAGE = 3;
 var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
@@ -452,7 +452,7 @@ tm.main(function() {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dist < e.scale*e.scale) {
+                if (dist < e.scale) {
                     MUTEKI || player.damage();
                     glowLevel = 0;
                 }
@@ -504,7 +504,7 @@ tm.main(function() {
             }
         }
 
-        if (app.currentScene === titleScene || app.currentScene === gameOverScene) {
+        if (app.currentScene === titleScene || app.currentScene === continueScene || app.currentScene === gameOverScene) {
             scene.clear();
         }
     };

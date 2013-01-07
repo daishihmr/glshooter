@@ -10,7 +10,6 @@ var Scene;
 
         this.gl = gl;
         gl.clearColor(0, 0, 0, 0);
-        // gl.clearDepth(1.0);
         gl.activeTexture(gl.TEXTURE0);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -36,8 +35,7 @@ var Scene;
         this.projMat = mat4.identity(mat4.create());
 
         mat4.lookAt([0,0,16], [0,0,0], [0,1,0], this.viewMat)
-        // mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
-        mat4.ortho(-16, 16, -16, 16, 0.1, 16, this.projMat);
+        mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
 
         gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
 
@@ -77,7 +75,6 @@ var Scene;
     Scene.prototype.clear = function() {
         if (this.gl) {
             var gl = this.gl;
-            // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
             gl.clear(gl.COLOR_BUFFER_BIT);
         }
     };
@@ -86,7 +83,6 @@ var Scene;
         var children = this.children;
         var gl = this.gl;
         var program = this.program;
-        // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         for (var i = 0, len = children.length; i < len; i++) children[i].draw(gl);

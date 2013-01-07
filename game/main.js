@@ -371,10 +371,7 @@ tm.main(function() {
     var glowUp = false;
     var noGlowUpTime = 0;
     gameScene.update = function() {
-        if (keyboard.getKeyDown("space")) {
-            if (player.disabled) return;
-            app.pushScene(app.pauseScene);
-        }
+        if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
 
         glowUp = false;
 
@@ -507,8 +504,8 @@ tm.main(function() {
             }
         }
 
-        if (app.currentScene === titleScene || app.currentScene === GameOverScene) {
-            scene.clear();
+        if (app.currentScene === titleScene || app.currentScene === gameOverScene) {
+            // scene.clear();
         }
     };
 

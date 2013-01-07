@@ -336,7 +336,7 @@ var ContinueScene;
             this.superInit();
 
             var bg = tm.app.RectangleShape(320, 320, {
-                fillStyle: "rgba(0,0,0,0.9)",
+                fillStyle: "rgba(0,0,0,0.97)",
                 strokeStyle: "none"
             });
             bg.x = 160;
@@ -394,6 +394,9 @@ var ContinueScene;
             });
         },
         update: function(app) {
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+
             if (app.keyboard.getKeyDown("down")) {
                 this.selection += 1;
                 if (this.selection === this.menuItem.length) this.selection = 0;
@@ -401,8 +404,6 @@ var ContinueScene;
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
             } else if (1 < app.pointing.deltaPosition.length()) {
-                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
                 for (var i = this.menuItem.length; i--; ) {
                     if (this.menuItem[i].isHitPointRect(px, py)) {
                         this.selection = i;

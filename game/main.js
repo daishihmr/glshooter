@@ -504,7 +504,7 @@ tm.main(function() {
             }
         }
 
-        if (app.currentScene === titleScene || app.currentScene === continueScene || app.currentScene === gameOverScene) {
+        if (app.currentScene !== gameScene) {
             scene.clear();
         }
     };

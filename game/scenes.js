@@ -24,10 +24,8 @@ var ContinueScene;
 
     TitleScene = tm.createClass({
         superClass: tm.app.Scene,
-        init: function(mouse) {
+        init: function() {
             this.superInit();
-
-            this.mouse = mouse;
 
             this.startFlag = false;
 
@@ -106,14 +104,14 @@ var ContinueScene;
                 } else if (app.keyboard.getKeyDown("up")) {
                     this.selection -= 1;
                     if (this.selection === -1) this.selection = this.menuItem.length - 1;
-                }
-
-                // mouse
-                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-                for (var i = this.menuItem.length; i--; ) {
-                    if (this.menuItem[i].isHitPointRect(px, py)) {
-                        this.selection = i;
+                } else if (1 < app.pointing.deltaPosition.length()) {
+                    // mouse
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
                     }
                 }
 
@@ -124,6 +122,7 @@ var ContinueScene;
                         MUTE_SE || tm.sound.SoundManager.get("effect0").play();
                         break;
                     case 1: // setting
+                        app.pointing.button = 0; app.pointing.update();
                         app.pushScene(app.settingScene);
                         break;
                     case 2: // exit
@@ -216,13 +215,13 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            }
-
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-            for (var i = this.menuItem.length; i--; ) {
-                if (this.menuItem[i].isHitPointRect(px, py)) {
-                    this.selection = i;
+            } else if (1 < app.pointing.deltaPosition.length()) {
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
                 }
             }
 
@@ -235,9 +234,11 @@ var ContinueScene;
                     app.pushScene(app.confirmScene);
                     break;
                 case 2: // setting
+                    app.pointing.button = 0; app.pointing.update();
                     app.pushScene(app.settingScene);
                     break;
                 case 3: // back to title
+                    app.pointing.button = 0; app.pointing.update();
                     app.pushScene(app.confirmScene);
                     break;
                 }
@@ -286,13 +287,13 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("left")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            }
-
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-            for (var i = this.menuItem.length; i--; ) {
-                if (this.menuItem[i].isHitPointRect(px, py)) {
-                    this.selection = i;
+            } else if (1 < app.pointing.deltaPosition.length()) {
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
                 }
             }
 
@@ -312,6 +313,7 @@ var ContinueScene;
                         app.popScene(); // pop this
                         app.popScene(); // pop pauseScene
                         app.popScene(); // pop gameScene
+                        app.pointing.button = 0; app.pointing.update();
                         if (app.bgm) app.bgm.stop();
                     }
                     break;
@@ -398,26 +400,28 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
+            } else if (1 < app.pointing.deltaPosition.length()) {
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
+                }
             }
+
             if (app.keyboard.getKey("right")) {
                 this.doSetting(this.selection, 1);
             } else if (app.keyboard.getKey("left")) {
                 this.doSetting(this.selection, -1);
             }
+
             if (this.selection === 1) {
                 if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left") || app.pointing.getPointingEnd())) {
                     var s = tm.sound.SoundManager.get("explode");
                     s.volume = this.settings.se;
                     s.play();
                     console.log("play");
-                }
-            }
-
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-            for (var i = this.menuItem.length; i--; ) {
-                if (this.menuItem[i].isHitPointRect(px, py)) {
-                    this.selection = i;
                 }
             }
 
@@ -431,6 +435,7 @@ var ContinueScene;
                 case 2: // back
                     app.setVolumeSe();
                     app.popScene();
+                    app.pointing.button = 0; app.pointing.update();
                     break;
                 }
             }
@@ -518,13 +523,13 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("left")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            }
-
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-            for (var i = this.menuItem.length; i--; ) {
-                if (this.menuItem[i].isHitPointRect(px, py)) {
-                    this.selection = i;
+            } else if (1 < app.pointing.deltaPosition.length()) {
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
                 }
             }
 

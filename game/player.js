@@ -30,9 +30,9 @@ var setupPlayer = function(app, scene, weapons, mouse) {
     var reactFrame = 0;
     player.update = function() {
         if (this.disabled || this.muteki) {
-            this.alpha = 0.5;
+            this.visible = (~~(scene.frame/2)) % 2 === 0;
         } else {
-            this.alpha = 1.0;
+            this.visible = true;
         }
 
         if (this.rebirth) {
@@ -41,7 +41,6 @@ var setupPlayer = function(app, scene, weapons, mouse) {
                 this.rebirth = false;
                 this.disabled = false;
                 this.visible = true;
-                app.isBulletDisable = false;
                 reactFrame = scene.frame;
             }
         }
@@ -49,7 +48,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
         this.muteki = (scene.frame < reactFrame + MUTEKI_TIME);
 
         var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.20;
-        var firePower = (this.muteki) ? 8 : 2;
+        var firePower = (this.rebirth) ? 8 : 2;
         for (var i = 0; i < firePower; i++) {
             var z = zanzoPool.pop();
             if (z) {
@@ -185,14 +184,13 @@ var setupPlayer = function(app, scene, weapons, mouse) {
         this.visible = true;
         this.disabled = true;
         this.rebirth = true;
+        this.muteki = true;
         this.roll = 0;
         this.texX = 3;
-        this.muteki = true;
-        app.isBulletDisable = true;
     };
     scene.add(player);
 
-    var centerMarker = new Sprite(textures["texture0"]);
+    var centerMarker = new Sprite(Sprite.mainTexture);
     centerMarker.x = player.x;
     centerMarker.y = player.y;
     centerMarker.texX = 2; centerMarker.texY = 1;
@@ -208,7 +206,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
     var zanzos = [];
     var zanzoPool = [];
     for (var i = 0; i < 200; i++) {
-        var z = new Sprite(textures["texture0"]);
+        var z = new Sprite(Sprite.mainTexture);
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
@@ -229,7 +227,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
 
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
-        var w = new Sprite(textures["texture0"]);
+        var w = new Sprite(Sprite.mainTexture);
         w.texX = 7;
         w.texY = 1;
         weapons.push(w);

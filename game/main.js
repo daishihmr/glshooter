@@ -126,11 +126,12 @@ tm.main(function() {
     var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
     mouse.lastLeftUp = -1;
 
-    var titleScene = app.titleScene = TitleScene(mouse);
+    var titleScene = app.titleScene = TitleScene();
     var pauseScene = app.pauseScene = PauseScene();
     var settingScene = app.settingScene = SettingScene(app);
     var confirmScene = app.confirmScene = ConfirmScene();
     var continueScene = app.continueScene = ContinueScene();
+    var gameOverScene = app.gameOverScene = GameOverScene();
 
     app.replaceScene(titleScene);
 
@@ -240,7 +241,6 @@ tm.main(function() {
     };
 
     // clear all bullets
-    app.isBulletDisable = false;
     var clearAllBullets = app.clearAllBullets = function(a) {
         for (var i = bullets.length; i--; ) {
             var b = bullets[i];
@@ -378,6 +378,9 @@ tm.main(function() {
 
         glowUp = false;
 
+        // control sound effect
+        expSoundPlaying--;
+
         // launch enemy
         var data = stageData.next(scene.frame, enemyFlags);
         if (data !== void 0) {
@@ -399,66 +402,10 @@ tm.main(function() {
             }
         }
 
-        // control sound effect
-        expSoundPlaying--;
-
-        var px = player.x;
-        var py = player.y;
-
-        // player vs bullet
-        if (player.parent !== null && !player.muteki && !player.disabled) {
-            for (var i = bullets.length; i--; ) {
-                var b = bullets[i];
-                if (b.parent === null) continue;
-                var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
-                if (dist < COLLISION_RADUIS) {
-                    scene.remove(b);
-                    MUTEKI || player.damage();
-                    glowLevel = 0;
-                    break;
-                } else if (dist < 1.5) {
-                    // console.log("GRAZE");
-                    app.incrScore(1, true); // graze
-                }
-            }
-        }
-
-        // player vs enemy
-        if (player.parent !== null && !player.muteki && !player.disabled) {
-            for (var i = enemies.length; i--; ) {
-                var e = enemies[i];
-                if (e.parent === null) continue;
-                var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dist < e.scale*e.scale) {
-                    MUTEKI || player.damage();
-                    glowLevel = 0;
-                }
-            }
-        }
-
-        // weapon vs enemy
-        for (var i = weapons.length; i--; ) {
-            var w = weapons[i];
-            if (w.parent === null) continue;
-            for (var j = enemies.length; j--; ) {
-                var e  = enemies[j];
-                if (e.parent === null) continue;
-                var dx = w.x - e.x;
-                var dy = w.y - e.y;
-                if (dx*dx+dy*dy < e.scale*2) {
-                    scene.remove(w);
-                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
-                    e.damage(player.power);
-                    app.incrScore(0.01, true); // hit
-                    w.update(); explodeS(w.x, w.y, 0.3);
-                }
-            }
-        }
-
         var bombing = bombParticlePool.readyCount !== bombParticlePool.length;
 
         // bombing or rebirthing
-        if (app.isBulletDisable || bombing) {
+        if (player.rebirth || bombing) {
             clearAllBullets(false);
         }
 
@@ -482,6 +429,58 @@ tm.main(function() {
             }
         }
 
+        // collision
+        var px = player.x;
+        var py = player.y;
+        // collision player vs bullet
+        if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
+            for (var i = bullets.length; i--; ) {
+                var b = bullets[i];
+                if (b.parent === null) continue;
+                var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
+                if (dist < COLLISION_RADUIS) {
+                    scene.remove(b);
+                    MUTEKI || player.damage();
+                    glowLevel = 0;
+                    break;
+                } else if (dist < 1.5) {
+                    // console.log("GRAZE");
+                    app.incrScore(1, true); // graze
+                }
+            }
+        }
+        // collision player vs enemy
+        if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
+            for (var i = enemies.length; i--; ) {
+                var e = enemies[i];
+                if (e.parent === null) continue;
+                var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
+                if (dist < e.scale*e.scale) {
+                    MUTEKI || player.damage();
+                    glowLevel = 0;
+                }
+            }
+        }
+        // collision weapon vs enemy
+        for (var i = weapons.length; i--; ) {
+            var w = weapons[i];
+            if (w.parent === null) continue;
+            for (var j = enemies.length; j--; ) {
+                var e  = enemies[j];
+                if (e.parent === null) continue;
+                var dx = w.x - e.x;
+                var dy = w.y - e.y;
+                if (dx*dx+dy*dy < e.scale*2) {
+                    scene.remove(w);
+                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
+                    e.damage(player.power);
+                    app.incrScore(0.01, true); // hit
+                    w.update(); explodeS(w.x, w.y, 0.3);
+                }
+            }
+        }
+
+        // GLOW-UP
         if (glowUp) {
             noGlowUpTime = 0;
         } else {
@@ -493,6 +492,9 @@ tm.main(function() {
         glowLevel = Math.clamp(glowLevel, 0, GLOW_MAX);
         glowBonus = (1+glowLevel*GLOW_BONUS_RATE)*(1+glowLevel*GLOW_BONUS_RATE);
         player.glow = glowLevel * 0.001;
+
+        scene.update();
+        scene.draw();
     };
 
     app.update = function() {
@@ -505,10 +507,7 @@ tm.main(function() {
             }
         }
 
-        if (app.currentScene === gameScene) {
-            scene.update();
-            scene.draw();
-        } else {
+        if (app.currentScene === titleScene || app.currentScene === GameOverScene) {
             scene.clear();
         }
     };
@@ -638,7 +637,6 @@ tm.main(function() {
 
     // confirm continue
     app.confirmContinue = function() {
-        app.isBulletDisable = false;
         scene.returnFrame = scene.frame;
         setTimeout(function() {
             app.pushScene(continueScene);
@@ -658,7 +656,7 @@ tm.main(function() {
     // game over
     app.gameOver = function() {
         if (app.bgm) app.bgm.stop();
-        app.replaceScene(GameOverScene());
+        app.replaceScene(gameOverScene);
     };
 
     app.run();

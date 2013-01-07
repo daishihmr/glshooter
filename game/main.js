@@ -31,23 +31,22 @@ var CLEAR_BONUS_BOMB = 10000;
 var textures = {};
 
 tm.preload(function() {
-    tm.util.FileManager.load("vs", { url: "shader.vs", type: "GET" });
-    tm.util.FileManager.load("fs", { url: "shader.fs", type: "GET" });
+    tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
+    tm.util.FileManager.load("fs", { url: "shaders/shader.fs", type: "GET" });
 
-    tm.graphics.TextureManager.add("texture0", "texture0.png");
-    tm.graphics.TextureManager.add("boss1", "boss1.png");
-    tm.graphics.TextureManager.add("boss2", "boss2.png");
-    tm.graphics.TextureManager.add("boss3", "boss3.png");
+    tm.graphics.TextureManager.add("texture0", "images/texture0.png");
+    tm.graphics.TextureManager.add("boss1", "images/boss1.png");
+    tm.graphics.TextureManager.add("boss2", "images/boss2.png");
+    tm.graphics.TextureManager.add("boss3", "images/boss3.png");
 
-    tm.sound.SoundManager.add("bgm1", "nc28689.mp3", 1);
-    tm.sound.SoundManager.add("bgm2", "nc784.mp3", 1);
-    tm.sound.SoundManager.add("bgm3", "nc790.mp3", 1);
+    tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
+    tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
 
-    tm.sound.SoundManager.add("explode", "se_maoudamashii_explosion05.mp3", 20);
-    tm.sound.SoundManager.add("effect0", "effect0.mp3", 1);
-    tm.sound.SoundManager.add("bomb", "nc17909.mp3");
-    tm.sound.SoundManager.add("v-genBomb", "voice_gen-bomb.mp3", 1);
-    tm.sound.SoundManager.add("v-extend", "voice_extend.mp3", 1);
+    tm.sound.SoundManager.add("explode", "sounds/se_maoudamashii_explosion05.mp3", 20);
+    tm.sound.SoundManager.add("effect0", "sounds/effect0.mp3", 1);
+    tm.sound.SoundManager.add("bomb", "sounds/nc17909.mp3");
+    tm.sound.SoundManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
+    tm.sound.SoundManager.add("v-extend", "sounds/voice_extend.mp3", 1);
 });
 
 tm.main(function() {

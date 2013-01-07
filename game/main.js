@@ -358,119 +358,14 @@ tm.main(function() {
         }
     };
 
-    // labels =================================================================
-    // score
-    var score = tm.app.Label("SCORE:" + app.score, 30);
-    score.update = function() {
-        var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        if (player.y < 0 && !player.disabled) {
-            this.alpha = ((player.y + 17) / 30)*a;
-        } else {
-            this.alpha = a;
-        }
-        this.text= "SCORE:" + ~~(app.score);
-    };
-    score.setFontFamily("Orbitron");
-    score.setBaseline("bottom");
-    score.x = 2;
-    score.y = 320;
-    score.width = 320;
-    gameScene.addChild(score);
-
-    // highScore
-    var highScore = tm.app.Label("high score:" + app.highScore, 10);
-    highScore.setFontFamily("Orbitron");
-    highScore.setBaseline("bottom");
-    highScore.width = 320;
-    highScore.x = 4;
-    highScore.y = 320 - 32;
-    highScore.update = function() {
-        var a = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        if (player.y < 0) {
-            this.alpha = ((player.y + 17) / 30)*a;
-        } else {
-            this.alpha = a;
-        }
-        app.highScore = Math.max(app.score, app.highScore);
-        this.text = "high score:" + ~~(app.highScore);
-        // this.text = glowLevel;
-    };
-    gameScene.addChild(highScore);
-
-    // zanki
-    var life = tm.app.Label("LIFE:" + app.zanki, 12);
-    life.update = function() {
-        this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        this.text= "LIFE:" + app.zanki;
-    };
-    life.setFontFamily("Orbitron");
-    life.setBaseline("top");
-    life.x = 2;
-    life.y = 12;
-    life.width = 320;
-    gameScene.addChild(life);
-
-    // message
-    var message = app.message = tm.app.Label("stage " + app.currentStage, 50);
-    message.setFontFamily("Orbitron");
-    message.setAlign("center");
-    message.setBaseline("middle");
-    message.x = 160;
-    message.y = 160;
-    message.width = 320;
-    message.update = function() {
-        this.alpha = 0.1 + Math.sin(scene.frame*0.12) * 0.1;
-    };
-
-    // bomb
-    var bomb = tm.app.Label("BOMB:" + app.bomb, 12);
-    bomb.update = function() {
-        this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        this.text= "BOMB:" + app.bomb;
-    };
-    bomb.setFontFamily("Orbitron");
-    bomb.setBaseline("top");
-    bomb.x = 2;
-    bomb.y = 26;
-    bomb.width = 320;
-    gameScene.addChild(bomb);
-
-    // fps
-    var fps = tm.app.Label("fps:", 10);
-    fps.setFontFamily("Orbitron");
-    fps.setBaseline("top");
-    fps.width = 50;
-    fps.x = 320 - fps.width;
-    fps.y = 24;
-    (function() {
-        var frameCount = -1;
-        var lastUpdate = Date.now();
-        fps.update = function() {
-            this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-            frameCount += 1;
-            var ms = Date.now();
-            if (ms - lastUpdate >= 1000) {
-                this.text = "fps:" + frameCount;
-                lastUpdate = ms;
-                frameCount = 0;
-            }
-        };
-    })();
-    SHOW_FPS && gameScene.addChild(fps);
-
-    // boss hp
-    var bossHp = tm.app.RectangleShape(300, 5, {
-        fillStyle: "white",
-        strokeStyle: "none"
-    });
-    bossHp.x = 300*0.5 + 5;
-    bossHp.y = 5;
-    bossHp.update = function() {
-        this.alpha = Math.sin(scene.frame * 0.1)*0.25 + 0.75;
-        this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
-        if (this.width <= 1) this.remove();
-        this.x = this.width*0.5 + 5;
-    }
+    // labels
+    var score = Labels.createScore(player);         gameScene.addChild(score);
+    var highScore = Labels.createHighScore(player); gameScene.addChild(highScore);
+    var life = Labels.createLife();                 gameScene.addChild(life);
+    var message = app.message = Labels.createMessage();
+    var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
+    var fps = Labels.createFps();                   SHOW_FPS && gameScene.addChild(fps);
+    var bossHp = Labels.createBossHp(boss);
 
     // game main loop
     var glowUp = false;

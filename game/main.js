@@ -365,7 +365,7 @@ tm.main(function() {
     var message = app.message = Labels.createMessage();
     var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
     var fps = Labels.createFps();                   SHOW_FPS && gameScene.addChild(fps);
-    var bossHp = Labels.createBossHp(boss);
+    var bossHp;
 
     // game main loop
     var glowUp = false;
@@ -548,6 +548,7 @@ tm.main(function() {
         boss.killed = function() {
             app.stageClear();
         };
+        bossHp = Labels.createBossHp(boss);
 
         // background
         if (background) background.remove();

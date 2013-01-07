@@ -1,8 +1,8 @@
-var Labels;
+var Labels = {};
 (function() {
 
     Labels.createScore = function(player) {
-        var score = tm.app.Label("SCORE:0", 30);
+        var score = tm.app.Label("", 30);
 
         score.update = function(app) {
             var a = Math.sin(app.frame * 0.1)*0.25 + 0.75;
@@ -23,7 +23,7 @@ var Labels;
     };
 
     Labels.createHighScore = function(player) {
-        var highScore = tm.app.Label("high score:0", 10);
+        var highScore = tm.app.Label("", 10);
         highScore.setFontFamily("Orbitron");
         highScore.setBaseline("bottom");
         highScore.width = 320;
@@ -44,7 +44,7 @@ var Labels;
     };
 
     Labels.createLife = function() {
-        var life = tm.app.Label("LIFE:0", 12);
+        var life = tm.app.Label("", 12);
         life.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             this.text= "LIFE:" + app.zanki;
@@ -59,7 +59,7 @@ var Labels;
     };
 
     Labels.createMessage = function() {
-        var message = tm.app.Label("stage " + app.currentStage, 50);
+        var message = tm.app.Label("", 50);
         message.setFontFamily("Orbitron");
         message.setAlign("center");
         message.setBaseline("middle");
@@ -74,7 +74,7 @@ var Labels;
     };
 
     Labels.createBomb = function() {
-        var bomb = tm.app.Label("BOMB:" + app.bomb, 12);
+        var bomb = tm.app.Label("", 12);
         bomb.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             this.text= "BOMB:" + app.bomb;

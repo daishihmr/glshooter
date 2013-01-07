@@ -39,15 +39,15 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
 
-    tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
-    tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-    tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
+    tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/glshooter/sounds/nc28689.mp3", 1);
+    tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/glshooter/sounds/nc784.mp3", 1);
+    tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/glshooter/sounds/nc790.mp3", 1);
 
-    tm.sound.SoundManager.add("explode", "sounds/se_maoudamashii_explosion05.mp3", 20);
-    tm.sound.SoundManager.add("effect0", "sounds/effect0.mp3", 1);
-    tm.sound.SoundManager.add("bomb", "sounds/nc17909.mp3");
+    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3", 20);
+    tm.sound.SoundManager.add("effect0",   "sounds/effect0.mp3", 1);
+    tm.sound.SoundManager.add("bomb",      "sounds/nc17909.mp3");
     tm.sound.SoundManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
-    tm.sound.SoundManager.add("v-extend", "sounds/voice_extend.mp3", 1);
+    tm.sound.SoundManager.add("v-extend",  "sounds/voice_extend.mp3", 1);
 });
 
 tm.main(function() {

@@ -101,7 +101,7 @@ tm.main(function() {
 
     app.currentStage = START_STAGE;
 
-    var setVolumeSe = function() {
+    var setVolumeSe = app.setVolumeSe = function() {
         ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
             for (var i = SoundManager.sounds[s].length; i--; ) {
                 SoundManager.sounds[s][i].volume = app.volumeBgm;
@@ -123,14 +123,14 @@ tm.main(function() {
 
     // input
     var keyboard = app.keyboard;
-    var mouse = tm.input.Mouse(glCanvas);
+    var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
     mouse.lastLeftUp = -1;
 
-    var titleScene = TitleScene(mouse);
-    var pauseScene = PauseScene();
-    var settingScene = SettingScene(app);
-    var confirmScene = ConfirmScene();
-    var continueScene = ContinueScene();
+    var titleScene = app.titleScene = TitleScene(mouse);
+    var pauseScene = app.pauseScene = PauseScene();
+    var settingScene = app.settingScene = SettingScene(app);
+    var confirmScene = app.confirmScene = ConfirmScene();
+    var continueScene = app.continueScene = ContinueScene();
 
     app.replaceScene(titleScene);
 
@@ -371,6 +371,11 @@ tm.main(function() {
     var glowUp = false;
     var noGlowUpTime = 0;
     gameScene.update = function() {
+        if (keyboard.getKeyDown("space")) {
+            if (player.disabled) return;
+            app.pushScene(app.pauseScene);
+        }
+
         glowUp = false;
 
         // launch enemy
@@ -491,83 +496,6 @@ tm.main(function() {
     };
 
     app.update = function() {
-        mouse.update();
-
-        if (keyboard.getKeyDown("space")) {
-            if (app.currentScene === titleScene) {
-                if (!titleScene.startFlag) {
-                    switch (titleScene.selection) {
-                    case 0: // game start
-                        titleScene.startFlag = true;
-                        SoundManager.get("effect0").play();
-                        break;
-                    case 1: // setting
-                        app.pushScene(settingScene);
-                        break;
-                    case 2: // exit
-                        app.gameOver();
-                        break;
-                    }
-                }
-            } else if (app.currentScene === pauseScene) {
-                switch (pauseScene.selection) {
-                case 0: // resume
-                    app.popScene();
-                    break;
-                case 1: // restart
-                    app.pushScene(confirmScene);
-                    break;
-                case 2: // setting
-                    app.pushScene(settingScene);
-                    break;
-                case 3: // back to title
-                    app.pushScene(confirmScene);
-                    break;
-                }
-            } else if (app.currentScene === confirmScene) {
-                switch (confirmScene.selection) {
-                case 0:
-                    if (pauseScene.selection === 1) { // restart
-                        app.continueCount += 1;
-                        app.resetGameStatus();
-                        app.stageStart();
-                        app.popScene();
-                        app.popScene();
-                    } else if (pauseScene.selection === 3) { // back to title
-                        app.continueCount = 0;
-                        app.currentStage = 1;
-                        app.resetGameStatus();
-                        app.popScene();
-                        app.popScene();
-                        app.popScene();
-                        app.bgm.stop();
-                    }
-                    break;
-                case 1:
-                    app.popScene();
-                }
-            } else if (app.currentScene === settingScene) {
-                setVolumeSe();
-                app.popScene();
-            } else if (app.currentScene === continueScene) {
-                app.popScene();
-                switch(continueScene.selection) {
-                case 0:
-                    app.resetGameStatus();
-                    app.continueCount += 1;
-                    player.level = -1;
-                    scene.frame = scene.returnFrame;
-                    scene.add(player);
-                    return player.launch();
-                case 1:
-                    return app.gameOver();
-                }
-            } else if (app.currentScene === gameScene) {
-                if (player.disabled) return;
-                app.pushScene(pauseScene);
-            }
-        }
-
         mouse.doubleClick = false;
         if (mouse.getPointingEnd()) {
             if ((Date.now() - mouse.lastLeftUp) < DBL_CLICK_INTERVAL) {
@@ -715,6 +643,16 @@ tm.main(function() {
         setTimeout(function() {
             app.pushScene(continueScene);
         }, 1000);
+    };
+
+    // continue
+    app.gameContinue = function() {
+        app.resetGameStatus();
+        app.continueCount += 1;
+        player.level = -1;
+        scene.frame = scene.returnFrame;
+        scene.add(player);
+        player.launch();
     };
 
     // game over

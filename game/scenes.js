@@ -74,9 +74,9 @@ var ContinueScene;
             this.addChild(version);
 
             this.menuItem = [];
-            var start = this.menuItem[0] = createLabel("game start", 20, 160, 230);
+            var start = this.menuItem[0] = createLabel("game start", 20, 160, 210);
             this.addChild(start);
-            var settings = this.menuItem[1] = createLabel("setting", 20, 160, 260);
+            var settings = this.menuItem[1] = createLabel("setting", 20, 160, 250);
             this.addChild(settings);
             var exit = this.menuItem[2] = createLabel("exit", 20, 160, 290);
             this.addChild(exit);
@@ -99,6 +99,7 @@ var ContinueScene;
         },
         update: function(app) {
             if (!this.startFlag) {
+                // keyboard
                 if (app.keyboard.getKeyDown("down")) {
                     this.selection += 1;
                     if (this.selection === this.menuItem.length) this.selection = 0;
@@ -106,14 +107,39 @@ var ContinueScene;
                     this.selection -= 1;
                     if (this.selection === -1) this.selection = this.menuItem.length - 1;
                 }
+
+                // mouse
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
+                }
+
+                if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                    switch (this.selection) {
+                    case 0: // game start
+                        this.startFlag = true;
+                        MUTE_SE || tm.sound.SoundManager.get("effect0").play();
+                        break;
+                    case 1: // setting
+                        app.pushScene(app.settingScene);
+                        break;
+                    case 2: // exit
+                        app.gameOver();
+                        break;
+                    }
+                }
             }
 
+            // menu item color
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
             this.menuItem[this.selection].fillStyle = "#fff"
 
-            if (this.startFlag) {
+            if (this.startFlag) { // game start (fade out)
                 this.title.alpha -= 0.01;
                 this.version.alpha -= 0.01;
                 if (this.title.alpha <= 0) {
@@ -126,13 +152,14 @@ var ContinueScene;
                     app.pushScene(app.gameScene);
                     app.stageStart();
                 }
-            } else {
+            } else { // fade in
                 this.title.alpha += 0.01;
                 this.version.alpha += 0.01;
                 if (1 < this.title.alpha) this.title.alpha = 1;
                 if (1 < this.version.alpha) this.version.alpha = 1;
             }
 
+            // background
             var p = tm.app.Sprite(32, 32, tm.graphics.TextureManager.get("texture0"));
             p.setFrameIndex(12, 64, 64);
             p.dir = Math.random() * Math.PI * 2;
@@ -191,6 +218,31 @@ var ContinueScene;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
             }
 
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+            for (var i = this.menuItem.length; i--; ) {
+                if (this.menuItem[i].isHitPointRect(px, py)) {
+                    this.selection = i;
+                }
+            }
+
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                switch (this.selection) {
+                case 0: // resume
+                    app.popScene();
+                    break;
+                case 1: // restart
+                    app.pushScene(app.confirmScene);
+                    break;
+                case 2: // setting
+                    app.pushScene(app.settingScene);
+                    break;
+                case 3: // back to title
+                    app.pushScene(app.confirmScene);
+                    break;
+                }
+            }
+
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
@@ -236,6 +288,39 @@ var ContinueScene;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
             }
 
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+            for (var i = this.menuItem.length; i--; ) {
+                if (this.menuItem[i].isHitPointRect(px, py)) {
+                    this.selection = i;
+                }
+            }
+
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                switch (this.selection) {
+                case 0:
+                    if (app.pauseScene.selection === 1) { // restart
+                        app.continueCount += 1;
+                        app.resetGameStatus();
+                        app.stageStart();
+                        app.popScene(); // pop this
+                        app.popScene(); // pop pauseScene
+                    } else if (app.pauseScene.selection === 3) { // back to title
+                        app.continueCount = 0;
+                        app.currentStage = 1;
+                        app.resetGameStatus();
+                        app.popScene(); // pop this
+                        app.popScene(); // pop pauseScene
+                        app.popScene(); // pop gameScene
+                        if (app.bgm) app.bgm.stop();
+                    }
+                    break;
+                case 1:
+                    app.popScene();
+                    break;
+                }
+            }
+
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
@@ -263,6 +348,7 @@ var ContinueScene;
             this.menuItem = [];
             this.menuItem[0] = createLabel("bgm", 20, 100, 130);
             this.menuItem[1] = createLabel("sound", 20, 100, 180);
+            this.menuItem[2] = createLabel("back", 20, 100, 280);
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].setAlign("left");
                 this.addChild(this.menuItem[i]);
@@ -319,11 +405,33 @@ var ContinueScene;
                 this.doSetting(this.selection, -1);
             }
             if (this.selection === 1) {
-                if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left"))) {
-                    console.log("play")
+                if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left") || app.pointing.getPointingEnd())) {
                     var s = tm.sound.SoundManager.get("explode");
                     s.volume = this.settings.se;
                     s.play();
+                    console.log("play");
+                }
+            }
+
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+            for (var i = this.menuItem.length; i--; ) {
+                if (this.menuItem[i].isHitPointRect(px, py)) {
+                    this.selection = i;
+                }
+            }
+
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointing()) {
+                switch (this.selection) {
+                case 0: // bgm
+                case 1: // se
+                    if (px < 160) this.doSetting(this.selection, -1);
+                    else this.doSetting(this.selection, 1);
+                    break;
+                case 2: // back
+                    app.setVolumeSe();
+                    app.popScene();
+                    break;
                 }
             }
 
@@ -410,6 +518,26 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("left")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
+            }
+
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+            for (var i = this.menuItem.length; i--; ) {
+                if (this.menuItem[i].isHitPointRect(px, py)) {
+                    this.selection = i;
+                }
+            }
+
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                app.popScene();
+                switch(this.selection) {
+                case 0:
+                    app.gameContinue();
+                    return;
+                case 1:
+                    app.gameOver();
+                    return;
+                }
             }
 
             for (var i = this.menuItem.length; i--; ) {

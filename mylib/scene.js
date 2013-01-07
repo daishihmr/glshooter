@@ -10,7 +10,7 @@ var Scene;
 
         this.gl = gl;
         gl.clearColor(0, 0, 0, 0);
-        gl.clearDepth(1.0);
+        // gl.clearDepth(1.0);
         gl.activeTexture(gl.TEXTURE0);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
@@ -62,12 +62,12 @@ var Scene;
 
     Scene.prototype.update = function() {
         var children = this.children;
-        var removeChildren = this._removedChildren;
+        var removedChildren = this._removedChildren;
 
         for (var i = 0, len = children.length; i < len; i++) children[i].update();
 
-        for (var i = 0, len = removeChildren.length; i < len; i++) {
-            var index = this.children.indexOf(removeChildren[i]);
+        for (var i = 0, len = removedChildren.length; i < len; i++) {
+            var index = this.children.indexOf(removedChildren[i]);
             if (index != -1) children.splice(index, 1);
         }
         this._removedChildren = [];
@@ -76,7 +76,8 @@ var Scene;
     Scene.prototype.clear = function() {
         if (this.gl) {
             var gl = this.gl;
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.clear(gl.COLOR_BUFFER_BIT);
         }
     };
 
@@ -84,7 +85,8 @@ var Scene;
         var children = this.children;
         var gl = this.gl;
         var program = this.program;
-        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        // gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+        gl.clear(gl.COLOR_BUFFER_BIT);
 
         for (var i = 0, len = children.length; i < len; i++) children[i].draw(gl);
 

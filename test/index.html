@@ -2,29 +2,32 @@
 <html>
 <head>
 <meta charset=UTF-8>
-<link href='http://fonts.googleapis.com/css?family=Orbitron:400,900' rel='stylesheet' type='text/css'>
-
-<script src="lib/gl-matrix-min.js"></script>
-<script src="lib/bulletml.js"></script>
-<script src="lib/tmlib.js"></script>
-<script src="mylib/bulletml.gl2d.js"></script>
-<script src="mylib/util.js"></script>
-<script src="mylib/scene.js"></script>
-<script src="mylib/sprite.js"></script>
-<script src="game/patterns.js"></script>
-<script src="game/enemy-data.js"></script>
-<script src="game/stage-data.js"></script>
-<script src="game/player.js"></script>
-<script src="game/background.js"></script>
-<script src="game/scenes.js"></script>
-<script src="game/bomb.js"></script>
-<script src="game/explosion.js"></script>
-<script src="game/boss.js"></script>
-<script src="game/main.js"></script>
-
 </head>
-<body style="margin:0;background:black">
-    <canvas id="tm"></canvas>
-    <canvas id="world"></canvas>
+<body>
+<script type="text/javascript">
+window.onload = function() {
+    var array = [];
+    for (var i = 0; i < 50000; i++) {
+        array.push({num:i});
+    }
+
+    var rem = [];
+    for (var i = 0, end = array.length * 0.3; i < end; i++) {
+        rem[i] = array[~~(Math.random() * array.length)];
+    }
+
+    var start = Date.now();
+    for (var i = rem.length; i--; ) {
+        var index = array.indexOf(rem[i]);
+        if (index !== -1) array.splice(index, 1);
+    }
+    // for (var i = rem.length; i--; ) {
+    //     var index = array.indexOf(rem[i]);
+    //     if (index !== -1) delete array[index];
+    // }
+    // array = array.filter(function(v) { return v });
+    console.log(Date.now() - start);
+};
+</script>
 </body>
 </html>

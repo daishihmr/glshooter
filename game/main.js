@@ -529,7 +529,7 @@ tm.main(function() {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dx*dx+dy*dy < e.scale*2) {
+                if (dist < e.scale*e.scale) {
                     MUTEKI || player.damage();
                     glowLevel = 0;
                 }

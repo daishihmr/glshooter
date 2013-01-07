@@ -11,9 +11,9 @@ var BOMB_DAMAGE2 = 1;
 var EXTEND_SCORE_LIFE = 1000000;
 var EXTEND_SCORE_BOMB =  600000;
 
-var GLOW_DOWN_TIME = 60;
+var GLOW_DOWN_TIME = 120;
 var GLOW_UP_PER_HIT = 1;
-var GLOW_DOWN = 2;
+var GLOW_DOWN = 5;
 var GLOW_MAX = 1100;
 var GLOW_BONUS_RATE = 0.004;
 
@@ -505,7 +505,7 @@ tm.main(function() {
         }
 
         if (app.currentScene === titleScene || app.currentScene === gameOverScene) {
-            // scene.clear();
+            scene.clear();
         }
     };
 

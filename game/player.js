@@ -198,7 +198,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
     centerMarker.update = function() {
         this.x = player.x;
         this.y = player.y;
-        this.visible = player.visible;
+        this.visible = player.visible && player.parent !== null;
         this.scale = 0.3 + Math.sin(scene.frame * 0.2) * 0.2;
     };
     scene.add(centerMarker);

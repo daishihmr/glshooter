@@ -1026,15 +1026,15 @@ var Patterns = {};
             changeSpeed(speed(0), 1),
             wait("5+$1"),
             fire(direction("-120*$2"), speed("1.0+$rank+$3*0.2"), bullet()),
-            repeat(240 / 12, action(
+            repeat("240 / (24-$rank*12)", action(
                 fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction("-30 + 12*$2", "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction("-30 + (24-$rank*12)*$2", "sequence"), speed(0, "sequence"), bullet()),
                 wait(1)
             )),
             fire(direction("+120*$2"), speed(0, "sequence"), bullet()),
-            repeat(240 / 12, action(
+            repeat("240 / (24-$rank*12)", action(
                 fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction("-30 + -12*$2", "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction("-30 + -(24-$rank*12)*$2", "sequence"), speed(0, "sequence"), bullet()),
                 wait(1)
             )),
             vanish()

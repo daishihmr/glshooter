@@ -41,7 +41,7 @@ tm.preload(function() {
 
     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-    tm.sound.SoundManager.add("bgm3", "sounds/nc784.mp3", 1);
+    tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
 
     tm.sound.SoundManager.add("explode", "sounds/se_maoudamashii_explosion05.mp3", 20);
     tm.sound.SoundManager.add("effect0", "sounds/effect0.mp3", 1);

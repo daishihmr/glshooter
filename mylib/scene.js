@@ -10,7 +10,6 @@ var Scene;
 
         this.gl = gl;
         gl.clearColor(0, 0, 0, 0);
-        gl.activeTexture(gl.TEXTURE0);
         gl.enable(gl.BLEND);
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
@@ -26,8 +25,8 @@ var Scene;
         gl.vertexAttribPointer(attrPosition, 3, gl.FLOAT, false, 0, 0);
 
         var attrTexCoord = gl.getAttribLocation(program, "texCoord");
-        var textureBuffer = createVbo(gl, TEXTURE_COORDS);
-        gl.bindBuffer(gl.ARRAY_BUFFER, textureBuffer);
+        var texCoordBuffer = createVbo(gl, TEXTURE_COORDS);
+        gl.bindBuffer(gl.ARRAY_BUFFER, texCoordBuffer);
         gl.enableVertexAttribArray(attrTexCoord);
         gl.vertexAttribPointer(attrTexCoord, 2, gl.FLOAT, false, 0, 0);
 
@@ -37,6 +36,7 @@ var Scene;
         mat4.lookAt([0,0,16], [0,0,0], [0,1,0], this.viewMat)
         mat4.perspective(90, 1/1, 0.1, 32, this.projMat);
 
+        gl.activeTexture(gl.TEXTURE0);
         gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
 
         this.uniformLocationsForSprite = getUniformLocationsForSprite(gl, program, [
@@ -73,10 +73,8 @@ var Scene;
     };
 
     Scene.prototype.clear = function() {
-        if (this.gl) {
-            var gl = this.gl;
-            gl.clear(gl.COLOR_BUFFER_BIT);
-        }
+        var gl = this.gl;
+        gl.clear(gl.COLOR_BUFFER_BIT);
     };
 
     Scene.prototype.draw = function() {

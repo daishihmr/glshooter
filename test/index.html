@@ -6,26 +6,17 @@
 <body>
 <script type="text/javascript">
 window.onload = function() {
-    var array = [];
-    for (var i = 0; i < 50000; i++) {
-        array.push({num:i});
+    var a = [];
+    for (var i = 0; i < 500000; i++) {
+        a[a.length] = Math.random() < 5 ? undefined : 1;
     }
 
-    var rem = [];
-    for (var i = 0, end = array.length * 0.3; i < end; i++) {
-        rem[i] = array[~~(Math.random() * array.length)];
-    }
+    var b = [];
 
     var start = Date.now();
-    for (var i = rem.length; i--; ) {
-        var index = array.indexOf(rem[i]);
-        if (index !== -1) array.splice(index, 1);
+    for (var i = a.length; i--; ) {
+        b[b.length] = (a !== void 0);
     }
-    // for (var i = rem.length; i--; ) {
-    //     var index = array.indexOf(rem[i]);
-    //     if (index !== -1) delete array[index];
-    // }
-    // array = array.filter(function(v) { return v });
     console.log(Date.now() - start);
 };
 </script>

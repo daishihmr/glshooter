@@ -28,8 +28,6 @@ var NUM_OF_STAGE = 2;
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
 
-var textures = {};
-
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
     tm.util.FileManager.load("fs", { url: "shaders/shader.fs", type: "GET" });
@@ -142,12 +140,11 @@ tm.main(function() {
     var gl = scene.gl;
 
     // GL Textures
-    if (gl) {
-        for (var name in tm.graphics.TextureManager.textures) {
-            textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
-        }
+    var textures = {};
+    for (var name in tm.graphics.TextureManager.textures) {
+        textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
-    var texture0 = Sprite.mainTexture = textures["texture0"];
+    Sprite.mainTexture = textures["texture0"];
 
     // explosion
     var explosion = new Explosion(scene);
@@ -176,7 +173,7 @@ tm.main(function() {
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
-        var b = new Sprite(texture0);
+        var b = new Sprite(Sprite.mainTexture);
         b.texX = 3;
         b.texY = 1;
         b.scale = 0.5;
@@ -257,7 +254,7 @@ tm.main(function() {
     var enemyPool = [];
     var expSoundPlaying = -1;
     var createEnemy = function() {
-        var e = new Sprite(texture0);
+        var e = new Sprite(Sprite.mainTexture);
         e.alpha = 0.5;
         e.glow = 1;
         e.onremoved = function() {
@@ -292,7 +289,7 @@ tm.main(function() {
                 MUTE_SE || SoundManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
-                var timer = new Sprite(texture0);
+                var timer = new Sprite(Sprite.mainTexture);
                 timer.texX = 7;
                 timer.texY = 7;
                 timer.x = this.x;
@@ -543,7 +540,7 @@ tm.main(function() {
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
-        boss = createBoss(app, explosion, stage);
+        boss = createBoss(app, explosion, stage, textures["boss" + stage]);
         enemies.push(boss);
         boss.killed = function() {
             app.stageClear();

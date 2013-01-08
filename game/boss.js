@@ -1,11 +1,11 @@
 var BOSS_HP = [ 16000, 16000, 16000 ];
 
-var createBoss = function(app, explosion, stage) {
+var createBoss = function(app, explosion, stage, texture) {
     var Random = tm.util.Random;
     var SoundManager = tm.sound.SoundManager;
     var explode = explosion.explode;
 
-    var boss = new Sprite(textures["boss" + stage]);
+    var boss = new Sprite(texture);
     boss.scale = 8;
     boss.alpha = 0.5;
     boss.texScale = 8;

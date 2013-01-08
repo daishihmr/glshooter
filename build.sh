@@ -4,6 +4,7 @@ rm glshooter.min.js
 rm glshooter.zip
 
 java -jar compiler.jar --js_output_file glshooter.min.js \
+    --warning_level QUIET \
     --language_in ECMASCRIPT5 \
     --compilation_level ADVANCED_OPTIMIZATIONS \
     --externs lib/tmlib.js \

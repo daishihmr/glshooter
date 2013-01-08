@@ -33,18 +33,18 @@ tm.main(function() {
     scene.add(player);
 
     // 敵
-    for (var i = 0; i < 1; i++) {
+    for (var i = 0; i < 5; i++) {
 
         var enemy = new Sprite(Sprite.mainTexture);
         enemy.glow = 1.0;
         enemy.texX = 4;
         enemy.texY = 2;
-        enemy.x = 0;
-        enemy.y = 10;
+        enemy.x = 5;
+        enemy.y = 20;
         scene.add(enemy);
 
         // 攻撃パターン(game/patterns.jsを参照)
-        enemy.update = Patterns["boss22"].createTicker(attackParam(player));
+        enemy.update = Patterns["middle2L"+i].createTicker(attackParam(player));
 
     }
 
@@ -69,10 +69,10 @@ tm.main(function() {
         else if (keyboard.getKey("left"))   player.x -= 0.2;
 
         frameCount += 1;
-        var ms = Date.now();
-        if (ms - lastUpdate >= 1000) {
+        var now = Date.now();
+        if (now - lastUpdate >= 1000) {
             fps.textContent = "fps = " + frameCount;
-            lastUpdate = ms;
+            lastUpdate = now;
             frameCount = 0;
         }
     };

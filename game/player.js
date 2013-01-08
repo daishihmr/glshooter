@@ -7,8 +7,8 @@
 var PLAYER_SPEED = 0.2;
 var MUTEKI_TIME = 90;
 
-var setupPlayer = function(app, scene, weapons, mouse) {
-    var player = new Sprite(Sprite.mainTexture);
+var setupPlayer = function(app, scene, weapons, mouse, texture) {
+    var player = new Sprite(texture);
     player.scale = 1.5;
     player.level = 0;
     player.reset = function() {
@@ -188,7 +188,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
     };
     scene.add(player);
 
-    var centerMarker = new Sprite(Sprite.mainTexture);
+    var centerMarker = new Sprite(texture);
     centerMarker.x = player.x;
     centerMarker.y = player.y;
     centerMarker.texX = 2; centerMarker.texY = 1;
@@ -204,7 +204,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
     var zanzos = [];
     var zanzoPool = [];
     for (var i = 0; i < 200; i++) {
-        var z = new Sprite(Sprite.mainTexture);
+        var z = new Sprite(texture);
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
@@ -225,7 +225,7 @@ var setupPlayer = function(app, scene, weapons, mouse) {
 
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
-        var w = new Sprite(Sprite.mainTexture);
+        var w = new Sprite(texture);
         w.texX = 7;
         w.texY = 1;
         weapons.push(w);

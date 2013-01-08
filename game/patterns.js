@@ -2,13 +2,13 @@ BulletML.dsl();
 
 var Patterns = {};
 (function() {
-    function pattern(dsl) {
+    var pattern = function(dsl) {
         return new AttackPattern(new BulletML.Root(dsl));
-    }
+    };
 
-    function zako1(delay, dir) {
+    var zako1 = function(delay, dir) {
         return pattern({
-            top: action(
+            "top": action(
                 wait(delay + "+$rand*5"),
                 changeDirection(direction(45 * dir, "absolute"), 1),
                 changeSpeed(speed(4), 60),
@@ -23,15 +23,15 @@ var Patterns = {};
                 changeSpeed(speed(4), 40)
             )
         });
-    }
+    };
 
-    Patterns.zako1 = zako1(0, 1);
-    Patterns.zako1d = zako1(40, 1);
-    Patterns.zako2 = zako1(0, -1);
-    Patterns.zako2d = zako1(45, -1);
+    Patterns["zako1"] = zako1(0, 1);
+    Patterns["zako1d"] = zako1(40, 1);
+    Patterns["zako2"] = zako1(0, -1);
+    Patterns["zako2d"] = zako1(45, -1);
 
-    Patterns.zako3 = pattern({
-        top: action(
+    Patterns["zako3"] = pattern({
+        "top": action(
             wait("$rand*5"),
             changeDirection(direction(0, "aim"), 1),
             changeSpeed(speed(4), 40),
@@ -43,8 +43,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako4 = pattern({
-        top: action(
+    Patterns["zako4"] = pattern({
+        "top": action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -54,7 +54,7 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             wait("5+$rand*20"),
             repeat(2, action(
                 fire(direction(-3*2, "aim"),      speed("1.4+$rank"), bullet()),
@@ -66,8 +66,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako4K = pattern({
-        top: action(
+    Patterns["zako4K"] = pattern({
+        "top": action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -77,7 +77,7 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             wait("5+$rand*20"),
             repeat(2, action(
                 fire(direction(-3*2, "aim"),      speed("0.8+$rank"), bullet()), fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
@@ -88,8 +88,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako5 = pattern({
-        top: action(
+    Patterns["zako5"] = pattern({
+        "top": action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -99,7 +99,7 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             wait("5+$rand*20"),
             repeat(2, action(
                 fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
@@ -112,8 +112,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako5K = pattern({
-        top: action(
+    Patterns["zako5K"] = pattern({
+        "top": action(
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -123,7 +123,7 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             wait("5+$rand*20"),
             fire(direction(-15*1.5), speed("0.6+$rank"), bullet()),
             repeat(4-1, action(
@@ -133,8 +133,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako6 = pattern({
-        top: action(
+    Patterns["zako6"] = pattern({
+        "top": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
             wait("5+$rand*20"),
@@ -143,16 +143,16 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90),
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90)
         ),
-        firebit: action(
+        "firebit": action(
             fire(direction("$1", "aim"), speed("0.5+$rand"), bulletRef("bit", "$1"))
         ),
-        bit: bullet(
+        "bit": bullet(
             action(
                 wait("10+$rank*3"),
                 fire(direction("$1*-1", "relative"), speed("3.4+$rank"), bullet()),
@@ -161,8 +161,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako6K = pattern({
-        top: action(
+    Patterns["zako6K"] = pattern({
+        "top": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
             wait("5+$rand*20"),
@@ -171,16 +171,16 @@ var Patterns = {};
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
         ),
-        attack: action(
+        "attack": action(
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90),
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90)
         ),
-        firebit: action(
+        "firebit": action(
             fire(direction("$1", "aim"), speed("0.5+$rand"), bulletRef("bit", "$1"))
         ),
-        bit: bullet(
+        "bit": bullet(
             action(
                 wait("10+$rank*3"),
                 fire(direction("$1*-1", "relative"), speed("0.8+$rank"), bullet("g")),
@@ -189,8 +189,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako7 = pattern({
-        top: action(
+    Patterns["zako7"] = pattern({
+        "top": action(
             wait("5+$rand*60"),
             changeDirection(direction("0", "absolute"), 1),
             wait(5),
@@ -205,8 +205,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.zako8 = pattern({
-        top1: action(
+    Patterns["zako8"] = pattern({
+        "top1": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(5), 1),
             wait(20),
@@ -214,7 +214,7 @@ var Patterns = {};
             wait(400),
             changeSpeed(speed(-5), 30)
         ),
-        top2: action(
+        "top2": action(
             wait(90),
             fire(direction( 20, "absolute"), speed("2.2+$rank"), bullet()),
             repeat(300/6, action(
@@ -222,7 +222,7 @@ var Patterns = {};
                 wait(6)
             ))
         ),
-        top3: action(
+        "top3": action(
             wait(90),
             fire(direction(-20, "absolute"), speed("2.2+$rank"), bullet()),
             repeat(300/6, action(
@@ -232,8 +232,59 @@ var Patterns = {};
         )
     });
 
-    Patterns.bigger = pattern({
-        top: action(
+    var zakoG = function(attack) {
+        return pattern({
+            "top": action(
+                wait("$rand*20"),
+                changeDirection(direction(90, "absolute"), 1),
+                changeSpeed(speed("$rand*10-5"), 1),
+                wait(10),
+                changeDirection(direction(0, "absolute"), 1),
+                changeSpeed(speed(3), 1),
+                wait("15+$rand*10"),
+                changeSpeed(speed(0.2), 30),
+                wait(30),
+                actionRef("attack"),
+                changeSpeed(speed(-3), 30)
+            ),
+            "attack": attack
+        });
+    };
+
+    Patterns["zakoG1"] = zakoG(action(
+        wait(20),
+        fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+        wait(60),
+        fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+        wait(120)
+    ));
+
+    Patterns["zakoG2"] = zakoG(action(
+        wait(20),
+        repeat(2, action(
+            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            repeat(2, action(
+                wait(3),
+                fire(direction(0, "sequence"), speed(0, "sequence"), bullet())
+            )),
+            wait(60)
+        )),
+        wait(60)
+    ));
+
+    Patterns["zakoG3"] = zakoG(action(
+        wait(20),
+        repeat(2, action(
+            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            fire(direction(-30, "sequence"), speed(0, "sequence"), bullet()),
+            fire(direction( 60, "sequence"), speed(0, "sequence"), bullet()),
+            wait(60)
+        )),
+        wait(60)
+    ));
+
+    Patterns["bigger"] = pattern({
+        "top": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(2), 1),
             wait(30),
@@ -249,7 +300,7 @@ var Patterns = {};
                 actionRef("attack")
             ))
         ),
-        attack: action(
+        "attack": action(
             repeat(2, action(
                 repeat("1+$rank*5", action(
                     fire(direction(-30, "aim"), speed("2+$rank"), bullet()),
@@ -272,11 +323,11 @@ var Patterns = {};
         )
     });
 
-    function tank1(delay) {
+    var tank1 = function(delay, dir) {
         return pattern({
-            top: action(
+            "top": action(
                 wait(delay),
-                changeDirection(direction(80, "absolute"), 1),
+                changeDirection(direction(dir, "absolute"), 1),
                 changeSpeed(speed(0.5), 1),
                 wait("60+$rand*100"),
                 repeat(30, action(
@@ -285,60 +336,130 @@ var Patterns = {};
                 ))
             )
         });
-    }
-
-    Patterns.tank1 = tank1(0);
-    Patterns.tank1d = tank1(30);
-    Patterns.tank1dd = tank1(60);
-
-    function tank2(delay) {
+    };
+    var tank2 = function(delay, turnDelay, dir) {
         return pattern({
-            top: action(
+            "top1": action(
                 wait(delay),
-                changeDirection(direction(-80, "absolute"), 1),
-                changeSpeed(speed(0.5), 1),
-                wait("60+$rand*100"),
+                changeDirection(direction(dir, "absolute"), 1),
+                changeSpeed(speed(0.8), 1),
+                wait(turnDelay),
+                changeDirection(direction(dir*0.5, "absolute"), 60)
+            ),
+            "top2": action(
+                wait(turnDelay*0.5),
+                wait("$rand*10"),
                 repeat(30, action(
-                    fire(speed("1.5+$rank"), bullet("sg")),
-                    wait("60+$rand*100")
+                    fire(direction("$rand*20-10"), speed("1.5+$rank"), bullet("sg")),
+                    wait("100+(40-$rank*40)+$rand*10")
                 ))
             )
         });
-    }
+    };
 
-    Patterns.tank2 = tank2(0);
-    Patterns.tank2d = tank2(30);
-    Patterns.tank2dd = tank2(60);
+    Patterns["tank1"] = tank1(0, 80);
+    Patterns["tank1d"] = tank1(30, 80);
+    Patterns["tank1dd"] = tank1(60, 80);
+    Patterns["tank2"] = tank1(0, -80);
+    Patterns["tank2d"] = tank1(30, -80);
+    Patterns["tank2dd"] = tank1(60, -80);
+    Patterns["tank3R0"] = tank2(  0, 180,  -80);
+    Patterns["tank3R1"] = tank2( 30, 180,  -80);
+    Patterns["tank3R2"] = tank2( 60, 180,  -80);
+    Patterns["tank3R3"] = tank2( 90, 180,  -80);
+    Patterns["tank3R4"] = tank2(120, 180,  -80);
+    Patterns["tank3L0"] = tank2(  0, 180,   80);
+    Patterns["tank3L1"] = tank2( 30, 180,   80);
+    Patterns["tank3L2"] = tank2( 60, 180,   80);
+    Patterns["tank3L3"] = tank2( 90, 180,   80);
+    Patterns["tank3L4"] = tank2(120, 180,   80);
+    Patterns["tank4R0"] = tank2(  0, 180, -150);
+    Patterns["tank4R1"] = tank2( 30, 180, -150);
+    Patterns["tank4R2"] = tank2( 60, 180, -150);
+    Patterns["tank4R3"] = tank2( 90, 180, -150);
+    Patterns["tank4R4"] = tank2(120, 180, -150);
+    Patterns["tank4L0"] = tank2(  0, 180,  150);
+    Patterns["tank4L1"] = tank2( 30, 180,  150);
+    Patterns["tank4L2"] = tank2( 60, 180,  150);
+    Patterns["tank4L3"] = tank2( 90, 180,  150);
+    Patterns["tank4L4"] = tank2(120, 180,  150);
 
-    Patterns.middle = pattern({
-        top: action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(0.8), 1),
-            wait(40),
-            repeat(2, action(
-                fire(direction(-90, "aim"), speed(4), bulletRef("bit", 60)),
-                fire(direction(-90, "aim"), speed(2), bulletRef("bit", 80)),
-                fire(direction(90, "aim"), speed(2), bulletRef("bit", -80)),
-                fire(direction(90, "aim"), speed(4), bulletRef("bit", -60)),
-                wait(60)
-            ))
-        ),
-        bit: bullet(
-            action(
-                wait(2),
-                changeSpeed(0, 1),
-                fire(direction("$1", "relative"), speed(3), bullet("g")),
-                repeat("1+$rank*10", action(
-                    wait(1),
-                    fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
-                )),
-                vanish()
+    var middle = function(delay, dir) {
+        return pattern({
+            "top": action(
+                wait(delay),
+                changeDirection(direction(dir, "absolute"), 1),
+                changeSpeed(speed(0.8), 1),
+                wait(140),
+                changeDirection(direction(dir*2, "absolute"), 60),
+                repeat(2, action(
+                    fire(direction(-90, "aim"), speed(4), bulletRef("bit", 60)),
+                    fire(direction(-90, "aim"), speed(2), bulletRef("bit", 80)),
+                    fire(direction(90, "aim"), speed(2), bulletRef("bit", -80)),
+                    fire(direction(90, "aim"), speed(4), bulletRef("bit", -60)),
+                    wait(60)
+                ))
+            ),
+            "bit": bullet(
+                action(
+                    wait(2),
+                    changeSpeed(0, 1),
+                    fire(direction("$1", "relative"), speed("2.5+$rank"), bullet("g")),
+                    repeat("1+$rank*10", action(
+                        wait(1),
+                        fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
+                    )),
+                    vanish()
+                )
             )
-        )
-    });
+        });
+    };
 
-    Patterns.middleKR = pattern({
-        top: action(
+    var middle2 = function(delay, dir) {
+        return pattern({
+            "top": action(
+                wait(delay),
+                changeDirection(direction(dir, "absolute"), 1),
+                changeSpeed(speed(0.8), 1),
+                wait(140),
+                changeDirection(direction(dir*2, "absolute"), 60),
+                repeat(2, action(
+                    fire(direction(-90, "aim"), speed(4), bulletRef("bit", 110)),
+                    fire(direction(-90, "aim"), speed(2), bulletRef("bit",  90)),
+                    fire(direction( 90, "aim"), speed(2), bulletRef("bit", -90)),
+                    fire(direction( 90, "aim"), speed(4), bulletRef("bit",-110)),
+                    wait(60)
+                ))
+            ),
+            "bit": bullet(
+                action(
+                    wait(2),
+                    changeSpeed(0, 1),
+                    fire(direction("$1", "relative"), speed("2.1+$rank"), bullet("g")),
+                    repeat("1+$rank*10", action(
+                        wait(1),
+                        fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
+                    )),
+                    vanish()
+                )
+            )
+        });
+    };
+
+    Patterns["middle"] = middle(0, 0);
+    Patterns["middle2L0"] = middle2(  0,   10);
+    Patterns["middle2L1"] = middle2( 50,   10);
+    Patterns["middle2L2"] = middle2(100,   10);
+    Patterns["middle2L3"] = middle2(150,   10);
+    Patterns["middle2L4"] = middle2(200,   10);
+    Patterns["middle2R0"] = middle2(  0,  -10);
+    Patterns["middle2R1"] = middle2( 50,  -10);
+    Patterns["middle2R2"] = middle2(100,  -10);
+    Patterns["middle2R3"] = middle2(150,  -10);
+    Patterns["middle2R4"] = middle2(200,  -10);
+
+    Patterns["middleKR"] = pattern({
+        "top": action(
             changeDirection(direction(-90, "absolute"), 1),
             changeSpeed(speed(4), 1),
             wait(5),
@@ -368,7 +489,7 @@ var Patterns = {};
                 wait(40)
             ))
         ),
-        bit: bullet(
+        "bit": bullet(
             action(
                 wait(5),
                 changeDirection(direction(-70, "absolute"), 1),
@@ -381,12 +502,12 @@ var Patterns = {};
                 vanish()
             )
         ),
-        greenAccel: bullet(
+        "greenAccel": bullet(
             action(
                 changeSpeed(speed("0.7+$rank", "relative"), 300)
             )
         ),
-        wshot: action(
+        "wshot": action(
             fire(direction("$1"), speed("1.1+$rank"), bullet("b")),
             fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
             fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
@@ -400,8 +521,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.cannon = pattern({
-        top1: action(
+    Patterns["cannon"] = pattern({
+        "top1": action(
             wait(100),
             repeat(100, action(
                 changeDirection(direction(180, "relative"), 600),
@@ -414,14 +535,14 @@ var Patterns = {};
                 ))
             ))
         ),
-        top2: action(
+        "top2": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(0.2), 1)
         )
     });
 
-    Patterns.cannon2 = pattern({
-        top1: action(
+    Patterns["cannon2"] = pattern({
+        "top1": action(
             wait(100),
             repeat(100, action(
                 repeat(30, action(
@@ -436,20 +557,20 @@ var Patterns = {};
                 ))
             ))
         ),
-        top2: action(
+        "top2": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(0.2), 1)
         )
     });
 
-    Patterns.cannon3 = pattern({
-        top1: action(
+    Patterns["cannon3"] = pattern({
+        "top1": action(
             actionRef("attack", -1)
         ),
-        top2: action(
+        "top2": action(
             actionRef("attack",  1)
         ),
-        attack: action(
+        "attack": action(
             changeDirection(direction(0, "absolute"), 100),
             wait(100),
             repeat(100, action(
@@ -463,14 +584,14 @@ var Patterns = {};
                 ))
             ))
         ),
-        top3: action(
+        "top3": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(0.2), 1)
         )
     });
 
-    Patterns.boss11 = pattern({
-        top: action(
+    Patterns["boss11"] = pattern({
+        "top": action(
             actionRef("launch"),
             repeat(900, action(
                 actionRef("attack1"),
@@ -481,7 +602,7 @@ var Patterns = {};
                 actionRef("move2")
             ))
         ),
-        launch: action(
+        "launch": action(
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(2), 1),
             wait(15),
@@ -489,7 +610,7 @@ var Patterns = {};
             wait(140),
             changeSpeed(speed(0), 10)
         ),
-        attack1: action(
+        "attack1": action(
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1,  30)),
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1, -30)),
             fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1,  30)),
@@ -497,7 +618,7 @@ var Patterns = {};
             wait(10+360*3/10*2),
             wait(30)
         ),
-        bit1: bullet(
+        "bit1": bullet(
             action(
                 wait(12),
                 changeSpeed(0, 1),
@@ -509,7 +630,7 @@ var Patterns = {};
                 vanish()
             )
         ),
-        move2: action(
+        "move2": action(
             changeSpeed(speed(1), 100),
             wait(60),
             changeSpeed(speed(-1), 100),
@@ -517,7 +638,7 @@ var Patterns = {};
             changeSpeed(speed(0), 100),
             wait(100)
         ),
-        attack2: action((function() {
+        "attack2": action((function() {
             var result = [];
             for (var i = 0; i < 8; i++) {
                 result.push(fire(direction(-125, "absolute"), speed(4), bulletRef("bit2", i* 10, i*0.1)));
@@ -527,7 +648,7 @@ var Patterns = {};
             }
             return result;
         })()),
-        bit2: bullet(
+        "bit2": bullet(
             action(
                 wait(12),
                 changeSpeed(0, 1),
@@ -542,13 +663,13 @@ var Patterns = {};
                 vanish()
             )
         ),
-        fire1: action(
+        "fire1": action(
             fire(direction("$1-10", "absolute"), speed("1+$rank+$2"), bullet()),
             repeat(4, action(
                 fire(direction(5, "sequence"), speed(0, "sequence"), bullet())
             ))
         ),
-        attack3: action(
+        "attack3": action(
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit3",  0)),
             fire(direction( 125, "absolute"), speed(4), bulletRef("bit3", "160*(1.1-$rank)/2")),
             repeat(25, action(
@@ -561,7 +682,7 @@ var Patterns = {};
                 wait(40)
             ))
         ),
-        bit3: bullet(
+        "bit3": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -577,8 +698,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.boss12 = pattern({
-        top: action(
+    Patterns["boss12"] = pattern({
+        "top": action(
             changeDirection(direction(0, "absolute"), 1),
             actionRef("move"),
             repeat(300, action(
@@ -590,7 +711,7 @@ var Patterns = {};
                 actionRef("move")
             ))
         ),
-        move: action(
+        "move": action(
             changeSpeed(speed(1), 100),
             wait(60),
             changeSpeed(speed(-1), 100),
@@ -598,12 +719,12 @@ var Patterns = {};
             changeSpeed(speed(0), 100),
             wait(100)
         ),
-        attack1: action(
+        "attack1": action(
             fire(speed(0), bulletRef("bit10")),
             fire(speed(0), bulletRef("bit12")),
             wait(1500)
         ),
-        bit10: bullet(
+        "bit10": bullet(
             action(
                 repeat(120, action(
                     fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit11")),
@@ -618,7 +739,7 @@ var Patterns = {};
                 vanish()
             )
         ),
-        bit11: bullet(
+        "bit11": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -631,7 +752,7 @@ var Patterns = {};
                 vanish()
             )
         ),
-        bit12: bullet(
+        "bit12": bullet(
             action((function() {
                 var a = [];
                 a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 1)));
@@ -654,7 +775,7 @@ var Patterns = {};
                 return a;
             })())
         ),
-        bit13: bullet(
+        "bit13": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -666,14 +787,14 @@ var Patterns = {};
                 vanish()
             )
         ),
-        attack2: action(
+        "attack2": action(
             fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit21",  1)),
             fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit20", -1)),
             fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit20",  1)),
             fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit21", -1)),
             wait(800)
         ),
-        bit20: bullet(
+        "bit20": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -698,7 +819,7 @@ var Patterns = {};
                 vanish()
             )
         ),
-        bit21: bullet(
+        "bit21": bullet(
             action((function() {
                 var a = [];
                 a.push(wait(12));
@@ -715,7 +836,7 @@ var Patterns = {};
                 return a;
             })())
         ),
-        attack4: action(
+        "attack4": action(
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 180)),
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 150)),
             fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 120)),
@@ -731,7 +852,7 @@ var Patterns = {};
                 wait(40/2)
             ))
         ),
-        bit4: bullet(
+        "bit4": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -745,7 +866,7 @@ var Patterns = {};
                 vanish()
             )
         ),
-        bit42: bullet(
+        "bit42": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -757,8 +878,8 @@ var Patterns = {};
         )
     });
 
-    Patterns.boss21 = pattern({
-        top: action(
+    Patterns["boss21"] = pattern({
+        "top": action(
             actionRef("initPosition"),
             repeat(100, action(
                 actionRef("attack2"),
@@ -766,7 +887,7 @@ var Patterns = {};
                 actionRef("attack4")
             ))
         ),
-        initPosition: action(
+        "initPosition": action(
             changeDirection(direction(158, "absolute"), 1),
             changeSpeed(speed(0.6), 1),
             wait(5),
@@ -778,7 +899,7 @@ var Patterns = {};
             changeDirection(direction(0, "absolute"), 1),
             wait(120)
         ),
-        bit11: bullet(
+        "bit11": bullet(
             action(
                 wait(120),
                 actionRef("bit11Action", 30, 2, 100),
@@ -793,28 +914,28 @@ var Patterns = {};
                 vanish()
             )
         ),
-        bit11Action: action(
+        "bit11Action": action(
             fire(direction(0, "absolute"), bulletRef("bit12", "$1", "$3")),
             repeat(24-1, action(
                 fire(direction(360/24, "sequence"), bulletRef("bit12", "$1", "$3"))
             )),
             wait("45*$2")
         ),
-        bit12: bullet(
+        "bit12": bullet(
             action(
                 wait("10+$rank*20"),
                 fire(direction("155+$1", "absolute"), speed("1.2+$rank"), bulletRef("blueC", "$2")),
                 vanish()
             )
         ),
-        blueC: bullet(
+        "blueC": bullet(
             action(
                 wait("$1"),
                 fire(direction(0), speed("2+$rank"), bullet("r")),
                 vanish()
             )
         ),
-        bit13: bullet(action(
+        "bit13": bullet(action(
             wait(120),
             repeat(500/57, action(
                 fire(direction(-25), speed("1.5+$rank"), bullet("g")),
@@ -831,12 +952,12 @@ var Patterns = {};
             )),
             vanish()
         )),
-        attack2: action(
+        "attack2": action(
             fire(speed(0), bulletRef("bit21")),
             fire(speed(0), bulletRef("bit22")),
             wait(900)
         ),
-        bit21: bullet(action(
+        "bit21": bullet(action(
             repeat(8, action(
                 fire(direction(-30/2-50), speed("1.8+$rank"), bullet("g")),
                 repeat("6+$rank*8", action(
@@ -872,14 +993,14 @@ var Patterns = {};
             )),
             vanish()
         )),
-        bit22: bullet(action(
+        "bit22": bullet(action(
             wait(20),
             fire(direction(-90, "absolute"), speed(2), bulletRef("bit221")),
             wait(60),
             fire(direction( 90, "absolute"), speed(2), bulletRef("bit221")),
             vanish()
         )),
-        bit221: bullet(action(
+        "bit221": bullet(action(
             wait(30),
             changeSpeed(speed(0), 1),
             repeat(8, action(
@@ -901,11 +1022,11 @@ var Patterns = {};
             )),
             vanish()
         )),
-        bullet22: bullet(action(
+        "bullet22": bullet(action(
             wait("$1"),
             changeSpeed(speed("$1*0.05+$2"), 1)
         )),
-        attack3: action((function() {
+        "attack3": action((function() {
             var a = [];
             for (var i = 0; i < 30; i++) {
                 a[a.length] = fire(direction("-45-$rand*120", "absolute"), speed("1.5+$rand*6"), bulletRef("blue3alive", i*0.5));
@@ -923,7 +1044,7 @@ var Patterns = {};
             a[a.length] = wait(220);
             return a;
         })()),
-        blue3alive: bullet(action(
+        "blue3alive": bullet(action(
             wait("10+$rand*5"),
             changeSpeed(speed(0), 20),
             wait(180),
@@ -937,7 +1058,7 @@ var Patterns = {};
             )),
             vanish()
         )),
-        attack4: action(
+        "attack4": action(
             repeat(4, action(
                 fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit40", -1)),
                 fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit40",  1)),
@@ -945,7 +1066,7 @@ var Patterns = {};
             )),
             wait(100)
         ),
-        bit40: bullet(
+        "bit40": bullet(
             action(
                 wait(12),
                 changeSpeed(speed(0), 1),
@@ -989,15 +1110,15 @@ var Patterns = {};
         )
     });
 
-    Patterns.boss22 = pattern({
-        top: action(
+    Patterns["boss22"] = pattern({
+        "top": action(
             wait(60),
             repeat(100, action(
                 actionRef("attack1"),
                 actionRef("attack2")
             ))
         ),
-        attack1: action((function() {
+        "attack1": action((function() {
             var a = [];
             var s = 2;
             a[a.length] = changeDirection(direction(90, "absolute"), 1);
@@ -1009,7 +1130,7 @@ var Patterns = {};
                 a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
                 a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
                 a[a.length] = wait(40);
-                a[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
+                "a"[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
                 a[a.length] = wait(40);
                 a[a.length] = changeSpeed(speed(0), 80);
                 a[a.length] = wait(40);

@@ -1,61 +1,61 @@
 var enemyData = {
-    zako: {
+    "zako": {
         frameIndex: 20,
         hp: 5,
         scale: 1,
         score: 100,
     },
-    zakoS: {
+    "zakoS": {
         frameIndex: 20,
         hp: 5,
         scale: 1,
         score: 50,
     },
-    tank: {
+    "tank": {
         frameIndex: 21,
         hp: 5,
         scale: 1,
         score: 100,
     },
-    bigger: {
+    "bigger": {
         frameIndex: 23,
         hp: 200,
         scale: 4,
         score: 1000,
     },
-    middle: {
+    "middle": {
         frameIndex: 22,
         hp: 50,
         scale: 2,
         score: 800
     },
-    middleK: {
+    "middleK": {
         frameIndex: 22,
         hp: 500,
         scale: 4,
         score: 1000,
         clear: true
     },
-    cannon: {
+    "cannon": {
         frameIndex: 20,
         hp: 50,
         scale: 2,
         score: 400
     },
-    cannon2: {
+    "cannon2": {
         frameIndex: 20,
         hp: 150,
         scale: 3.5,
         score: 400,
         clear: true
     },
-    ship: {
+    "ship": {
         frameIndex: 24,
         hp: 10,
         scale: 1.5,
         score: 200
     },
-    boss: {
+    "boss": {
         frameIndex: 0,
         hp: 16000,
         scale: 8,

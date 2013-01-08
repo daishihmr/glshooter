@@ -144,10 +144,10 @@ tm.main(function() {
     for (var name in tm.graphics.TextureManager.textures) {
         textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
-    Sprite.mainTexture = textures["texture0"];
+    var mainTexture = Sprite.mainTexture = textures["texture0"];
 
     // explosion
-    var explosion = new Explosion(scene);
+    var explosion = new Explosion(scene, mainTexture);
     var explode = app.explode = explosion.explode;
     var explodeS = app.explodeS = explosion.explodeS;
     var explodeL = explosion.getExplodeL(gl, scene);
@@ -155,7 +155,7 @@ tm.main(function() {
 
     // player
     var weapons = [];
-    var player = app.player = setupPlayer(app, scene, weapons, mouse);
+    var player = app.player = setupPlayer(app, scene, weapons, mouse, mainTexture);
     var clearAllPlayerEffect = app.clearAllPlayerEffect = player.clearAll;
 
     // GLOW-LV
@@ -164,7 +164,7 @@ tm.main(function() {
 
     // bomb
     var bombParticlePool = [];
-    app.fireBomber = Bomb.fireBomber(scene, bombParticlePool);
+    app.fireBomber = Bomb.fireBomber(scene, bombParticlePool, mainTexture);
     app.clearBomb = function () {
         Bomb.clearBomb(scene, bombParticlePool);
     };
@@ -173,7 +173,7 @@ tm.main(function() {
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
-        var b = new Sprite(Sprite.mainTexture);
+        var b = new Sprite(mainTexture);
         b.texX = 3;
         b.texY = 1;
         b.scale = 0.6;
@@ -254,7 +254,7 @@ tm.main(function() {
     var enemyPool = [];
     var expSoundPlaying = -1;
     var createEnemy = function() {
-        var e = new Sprite(Sprite.mainTexture);
+        var e = new Sprite(mainTexture);
         e.alpha = 0.5;
         e.glow = 1;
         e.onremoved = function() {
@@ -289,7 +289,7 @@ tm.main(function() {
                 MUTE_SE || SoundManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
-                var timer = new Sprite(Sprite.mainTexture);
+                var timer = new Sprite(mainTexture);
                 timer.texX = 7;
                 timer.texY = 7;
                 timer.x = this.x;

@@ -1,7 +1,7 @@
 var Bomb = {};
-Bomb.fireBomber = function(scene, bombParticlePool) {
+Bomb.fireBomber = function(scene, bombParticlePool, texture) {
     var createBombParticle = function() {
-        var p = new Sprite(Sprite.mainTexture);
+        var p = new Sprite(texture);
         p.texX = 4;
         p.texY = 1;
         p.radius = 0;

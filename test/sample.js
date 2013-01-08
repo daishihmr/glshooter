@@ -5,11 +5,9 @@ tm.preload(function() {
 });
 
 tm.main(function() {
-    var app = tm.app.CanvasApp("#canvas2d");
-    app.element.style.display = "none";
-    app.fps = 60;
 
-    var glCanvas = document.getElementById("canvas3d"); fitWindow(glCanvas);
+    // canvas
+    var glCanvas = document.getElementById("canvas3d");
     var scene = new Scene(
         glCanvas, 
         tm.util.FileManager.get("vs").data, 
@@ -17,12 +15,14 @@ tm.main(function() {
     );
     scene.gl.clearColor(0, 0, 0, 1.0);
 
+    // テクスチャ
     var textures = {};
     for (var name in tm.graphics.TextureManager.textures) {
         textures[name] = createTexture(scene.gl, tm.graphics.TextureManager.get(name).element);
     }
     Sprite.mainTexture = textures["main"];
 
+    // 自機
     var player = new Sprite(Sprite.mainTexture);
     player.glow = 1.0;
     player.texX = 3;
@@ -32,6 +32,7 @@ tm.main(function() {
     player.y = -7;
     scene.add(player);
 
+    // 敵
     for (var i = 0; i < 1; i++) {
 
         var enemy = new Sprite(Sprite.mainTexture);
@@ -42,34 +43,43 @@ tm.main(function() {
         enemy.y = 10;
         scene.add(enemy);
 
-        // set attack pattern to enemy
-        // enemy.update = Patterns["boss22"].createTicker(attackParam(player));
+        // 攻撃パターン(game/patterns.jsを参照)
+        enemy.update = Patterns["boss22"].createTicker(attackParam(player));
 
     }
 
+    // キーボード
+    var keyboard = tm.input.Keyboard();
+
+    // FPS表示
+    var fps = document.getElementById("fps");
+
+    // メインループ
     var frameCount = -1;
     var lastUpdate = Date.now();
-    app.update = function() {
+    var tick = function() {
+        keyboard.update();
+
         scene.update();
         scene.draw();
 
-        if (app.keyboard.getKey("up"))          player.y += 0.2;
-        else if (app.keyboard.getKey("down"))   player.y -= 0.2;
-        if (app.keyboard.getKey("right"))       player.x += 0.2;
-        else if (app.keyboard.getKey("left"))   player.x -= 0.2;
+        if (keyboard.getKey("up"))          player.y += 0.2;
+        else if (keyboard.getKey("down"))   player.y -= 0.2;
+        if (keyboard.getKey("right"))       player.x += 0.2;
+        else if (keyboard.getKey("left"))   player.x -= 0.2;
 
         frameCount += 1;
         var ms = Date.now();
         if (ms - lastUpdate >= 1000) {
-            console.log("fps = " + frameCount);
+            fps.textContent = "fps = " + frameCount;
             lastUpdate = ms;
             frameCount = 0;
         }
     };
-
-    app.run();
+    tm.setLoop(tick, 1000/60);
 });
 
+// 攻撃パターン用パラメータ
 var attackParam = function(target) {
     return {
         target: target,

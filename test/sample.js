@@ -39,12 +39,12 @@ tm.main(function() {
         enemy.glow = 1.0;
         enemy.texX = 4;
         enemy.texY = 2;
-        enemy.x = 5;
+        enemy.x = 5 + i*1.5;
         enemy.y = 20;
         scene.add(enemy);
 
         // 攻撃パターン(game/patterns.jsを参照)
-        enemy.update = Patterns["middle2L"+i].createTicker(attackParam(player));
+        enemy.update = Patterns["zakoG1L"].createTicker(attackParam(player));
 
     }
 

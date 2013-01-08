@@ -1,7 +1,23 @@
-BulletML.dsl();
-
 var Patterns = {};
 (function() {
+    // import BulletML.dsl namespace
+    var action = BulletML.dsl.action;
+    var actionRef = BulletML.dsl.actionRef;
+    var bullet = BulletML.dsl.bullet;
+    var bulletRef = BulletML.dsl.bulletRef;
+    var fire = BulletML.dsl.fire;
+    var fireRef = BulletML.dsl.fireRef;
+    var changeDirection = BulletML.dsl.changeDirection;
+    var changeSpeed = BulletML.dsl.changeSpeed;
+    var accel = BulletML.dsl.accel;
+    var wait = BulletML.dsl.wait;
+    var vanish = BulletML.dsl.vanish;
+    var repeat = BulletML.dsl.repeat;
+    var direction = BulletML.dsl.direction;
+    var speed = BulletML.dsl.speed;
+    var horizontal = BulletML.dsl.horizontal;
+    var vertical = BulletML.dsl.vertical;
+
     var pattern = function(dsl) {
         return new AttackPattern(new BulletML.Root(dsl));
     };
@@ -232,18 +248,14 @@ var Patterns = {};
         )
     });
 
-    var zakoG = function(attack) {
+    var zakoG = function(height, attack) {
         return pattern({
             "top": action(
                 wait("$rand*20"),
-                changeDirection(direction(90, "absolute"), 1),
-                changeSpeed(speed("$rand*10-5"), 1),
-                wait(10),
                 changeDirection(direction(0, "absolute"), 1),
                 changeSpeed(speed(3), 1),
-                wait("15+$rand*10"),
-                changeSpeed(speed(0.2), 30),
-                wait(30),
+                wait(height + "+$rand*20"),
+                changeSpeed(speed(0.2), 40),
                 actionRef("attack"),
                 changeSpeed(speed(-3), 30)
             ),
@@ -251,37 +263,52 @@ var Patterns = {};
         });
     };
 
-    Patterns["zakoG1"] = zakoG(action(
-        wait(20),
-        fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
-        wait(60),
-        fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
-        wait(120)
-    ));
-
-    Patterns["zakoG2"] = zakoG(action(
-        wait(20),
-        repeat(2, action(
+    var zakoG1 = function(height) {
+        return zakoG(height, action(
+            wait(20),
             fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            wait(60),
+            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            wait(120)
+        ));
+    };
+    Patterns["zakoG1H"] = zakoG1(10);
+    Patterns["zakoG1M"] = zakoG1(20);
+    Patterns["zakoG1L"] = zakoG1(30);
+
+    var zakoG2 = function(height) {
+        return zakoG(height, action(
+            wait(20),
             repeat(2, action(
-                wait(3),
-                fire(direction(0, "sequence"), speed(0, "sequence"), bullet())
+                fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+                repeat(2, action(
+                    wait(3),
+                    fire(direction(0, "sequence"), speed(0, "sequence"), bullet())
+                )),
+                wait(60)
             )),
             wait(60)
-        )),
-        wait(60)
-    ));
+        ));
+    };
+    Patterns["zakoG2H"] = zakoG2(10);
+    Patterns["zakoG2M"] = zakoG2(20);
+    Patterns["zakoG2L"] = zakoG2(30);
 
-    Patterns["zakoG3"] = zakoG(action(
-        wait(20),
-        repeat(2, action(
-            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
-            fire(direction(-30, "sequence"), speed(0, "sequence"), bullet()),
-            fire(direction( 60, "sequence"), speed(0, "sequence"), bullet()),
+    var zakoG3 = function(height) {
+        return zakoG(height, action(
+            wait(20),
+            repeat(2, action(
+                fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+                fire(direction(-30, "sequence"), speed(0, "sequence"), bullet()),
+                fire(direction( 60, "sequence"), speed(0, "sequence"), bullet()),
+                wait(60)
+            )),
             wait(60)
-        )),
-        wait(60)
-    ));
+        ));
+    };
+    Patterns["zakoG3H"] = zakoG3(10);
+    Patterns["zakoG3M"] = zakoG3(20);
+    Patterns["zakoG3L"] = zakoG3(30);
 
     Patterns["bigger"] = pattern({
         "top": action(
@@ -422,7 +449,7 @@ var Patterns = {};
                 changeDirection(direction(dir, "absolute"), 1),
                 changeSpeed(speed(0.8), 1),
                 wait(140),
-                changeDirection(direction(dir*2, "absolute"), 60),
+                changeDirection(direction(dir*12, "absolute"), 60),
                 repeat(2, action(
                     fire(direction(-90, "aim"), speed(4), bulletRef("bit", 110)),
                     fire(direction(-90, "aim"), speed(2), bulletRef("bit",  90)),
@@ -447,16 +474,16 @@ var Patterns = {};
     };
 
     Patterns["middle"] = middle(0, 0);
-    Patterns["middle2L0"] = middle2(  0,   10);
-    Patterns["middle2L1"] = middle2( 50,   10);
-    Patterns["middle2L2"] = middle2(100,   10);
-    Patterns["middle2L3"] = middle2(150,   10);
-    Patterns["middle2L4"] = middle2(200,   10);
-    Patterns["middle2R0"] = middle2(  0,  -10);
-    Patterns["middle2R1"] = middle2( 50,  -10);
-    Patterns["middle2R2"] = middle2(100,  -10);
-    Patterns["middle2R3"] = middle2(150,  -10);
-    Patterns["middle2R4"] = middle2(200,  -10);
+    Patterns["middle2L0"] = middle2(  0,   5);
+    Patterns["middle2L1"] = middle2( 50,   5);
+    Patterns["middle2L2"] = middle2(100,   5);
+    Patterns["middle2L3"] = middle2(150,   5);
+    Patterns["middle2L4"] = middle2(200,   5);
+    Patterns["middle2R0"] = middle2(  0,  -5);
+    Patterns["middle2R1"] = middle2( 50,  -5);
+    Patterns["middle2R2"] = middle2(100,  -5);
+    Patterns["middle2R3"] = middle2(150,  -5);
+    Patterns["middle2R4"] = middle2(200,  -5);
 
     Patterns["middleKR"] = pattern({
         "top": action(
@@ -1144,7 +1171,7 @@ var Patterns = {};
             a[a.length] = wait(60);
             return a;
         })()),
-        bit1: bullet(action(
+        "bit1": bullet(action(
             wait(5),
             changeSpeed(speed(0), 1),
             wait("5+$1"),
@@ -1162,12 +1189,12 @@ var Patterns = {};
             )),
             vanish()
         )),
-        attack2: action(
+        "attack2": action(
             fire(direction(0), speed(0), bulletRef("bithori")),
             fire(direction(0), speed(0), bulletRef("bitvert")),
             wait(1220)
         ),
-        bitvert: bullet(action((function() {
+        "bitvert": bullet(action((function() {
             var a = [];
             for (var i = -15; i < 15; i+=3) {
                 a[a.length] = actionRef("fireBigBulletR", -80+i);
@@ -1187,7 +1214,7 @@ var Patterns = {};
             a[a.length] = vanish();
             return a;
         })())),
-        bithori: bullet(action(
+        "bithori": bullet(action(
             actionRef("fireBlueBit", 33),
             actionRef("fireBlueBit", 44),
             actionRef("fireBlueBit", 55),
@@ -1196,14 +1223,14 @@ var Patterns = {};
             actionRef("fireBlueBit", 88),
             vanish()
         )),
-        fireBlueBit: action(
+        "fireBlueBit": action(
             repeat(3, action(
                 fire(direction(-90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
                 fire(direction( 90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
                 wait(40)
             ))
         ),
-        blueBitalive: bullet(action(
+        "blueBitalive": bullet(action(
             wait(5),
             changeSpeed(speed(0), 25),
             wait(30),
@@ -1215,35 +1242,35 @@ var Patterns = {};
                 actionRef("fireBigBulletB",  90)
             ))
         )),
-        fireBigBulletR: action(
+        "fireBigBulletR": action(
             fire(direction("$rand*90", "absolute"), speed(1), bulletRef("redBB", "$1")),
             repeat(360/30-1, action(
                 fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("redBB", "$1"))
             ))
         ),
-        redBB: bullet(action(
+        "redBB": bullet(action(
             wait(10),
             fire(direction("$1", "absolute"), speed("3*$rank"), bullet()),
             vanish()
         )),
-        fireBigBulletG: action(
+        "fireBigBulletG": action(
             fire(direction("$rand*90", "absolute"), speed(1), bulletRef("greenBB", "$1")),
             repeat(360/30-1, action(
                 fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("greenBB", "$1"))
             ))
         ),
-        greenBB: bullet(action(
+        "greenBB": bullet(action(
             wait(10),
             fire(direction("$1", "absolute"), speed("3*$rank"), bullet("g")),
             vanish()
         )),
-        fireBigBulletB: action(
+        "fireBigBulletB": action(
             fire(direction("$rand*90", "absolute"), speed(1), bulletRef("blueBB", "$1")),
             repeat(360/30-1, action(
                 fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("blueBB", "$1"))
             ))
         ),
-        blueBB: bullet(action(
+        "blueBB": bullet(action(
             wait(10),
             fire(direction("$1", "absolute"), speed("3*$rank"), bullet("b")),
             vanish()

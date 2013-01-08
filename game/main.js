@@ -187,9 +187,9 @@ tm.main(function() {
 
     // enemy bullet setting
     attackParam = app.attackParam = {
-        target: player,
-        rank: INITIAL_RANK,
-        bulletFactory: function(spec) {
+        "target": player,
+        "rank": INITIAL_RANK,
+        "bulletFactory": function(spec) {
             var b = bulletPool.pop();
             if (b === void 0) return;
             b.alive = false;
@@ -230,11 +230,11 @@ tm.main(function() {
 
             return b;
         },
-        isInsideOfWorld: function(b) {
+        "isInsideOfWorld": function(b) {
             return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
         },
-        updateProperties: false,
-        speedRate: BULLET_SPEED
+        "updateProperties": false,
+        "speedRate": BULLET_SPEED
     };
 
     // clear all bullets

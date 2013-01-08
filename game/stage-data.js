@@ -1,8 +1,6 @@
-/*
-ステージステップが先に進む条件。
- 1. scene.frameが規定値に達する
- 2. 特定の敵を倒す
-*/
+// ステージステップが先に進む条件。
+//  1. scene.frameが規定値に達する
+//  2. 特定の敵を倒す
 
 var setupStageData = function(app, stage) {
 
@@ -703,12 +701,12 @@ var setupStageData = function(app, stage) {
     }
 
     var cursor = 0;
-    var last = 0;
+    var lastLaunchFrame = 0;
     StageData.next = function(frame, flags) {
         var result;
         if (this[cursor] === void 0) {
             return;
-        } else if (last + this[cursor].frame === frame) {
+        } else if (lastLaunchFrame + this[cursor].frame === frame) {
             result = this[cursor];
         } else if (flags[this[cursor].flag] === true) {
             result = this[cursor];
@@ -716,7 +714,7 @@ var setupStageData = function(app, stage) {
             return;
         }
         cursor++;
-        last = frame;
+        lastLaunchFrame = frame;
         return result;
     };
 

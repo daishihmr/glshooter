@@ -176,7 +176,7 @@ tm.main(function() {
         var b = new Sprite(Sprite.mainTexture);
         b.texX = 3;
         b.texY = 1;
-        b.scale = 0.5;
+        b.scale = 0.6;
         b.isBullet = true;
         bullets.push(b);
         bulletPool.push(b);

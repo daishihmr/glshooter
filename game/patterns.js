@@ -571,7 +571,8 @@ var Patterns = {};
                     fire(direction("$rand*30-15"), bullet()),
                     fire(direction("$rand*30-15"), bullet()),
                     wait("160*(1.1-$rank)")
-                ))
+                )),
+                vanish()
             )
         )
     });
@@ -710,6 +711,7 @@ var Patterns = {};
                     }
                     a.push(wait(15));
                 }
+                a.push(vanish());
                 return a;
             })())
         ),
@@ -1061,6 +1063,7 @@ var Patterns = {};
                 a[a.length] = actionRef("fireBigBulletR", 100+i);
                 a[a.length] = wait(50);
             }
+            a[a.length] = vanish();
             return a;
         })())),
         bithori: bullet(action(

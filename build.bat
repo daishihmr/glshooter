@@ -30,6 +30,8 @@ copy /y index-deploy.html index.html
 
 call zip glshooter.zip ^
     index.html ^
+    shaders/shader.vs ^
+    shaders/shader.fs ^
     sounds/se_maoudamashii_explosion05.mp3 ^
     sounds/voice_extend.mp3 ^
     sounds/voice_gen-bomb.mp3 ^

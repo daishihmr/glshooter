@@ -1,3 +1,8 @@
+#!/bin/sh
+
+rm glshooter.min.js
+rm glshooter.zip
+
 java -jar compiler.jar --js_output_file glshooter.min.js \
     --language_in ECMASCRIPT5 \
     --compilation_level ADVANCED_OPTIMIZATIONS \
@@ -25,6 +30,8 @@ cp index-deploy.html index.html
 
 zip glshooter.zip \
     index.html \
+    shaders/shader.vs \
+    shaders/shader.fs \
     sounds/se_maoudamashii_explosion05.mp3 \
     sounds/voice_extend.mp3 \
     sounds/voice_gen-bomb.mp3 \
@@ -40,3 +47,4 @@ zip glshooter.zip \
     glshooter.min.js
 
 cp index-backup.html index.html
+rm index-backup.html

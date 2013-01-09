@@ -22,7 +22,7 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
-var START_STAGE = 3;
+var START_STAGE = 1;
 var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
@@ -332,15 +332,14 @@ tm.main(function() {
         enemyPool.push(e);
     }
     var launchEnemy = function(x, y, enemyName, pattern, flag) {
-        var data = enemyData[enemyName];
         var e;
         if (enemyName === "boss") {
             e = boss;
-            e.alpha = 0.5;
-            e.emission = 0;
-            e.glow = 0.4;
+            e.alpha = 1.0;
+            e.glow = 0.5;
             gameScene.addChild(bossHp);
         } else {
+            var data = enemyData[enemyName];
             e = enemyPool.pop();
             if (e === void 0) {
                 e = createEnemy();
@@ -348,13 +347,13 @@ tm.main(function() {
             }
             e.texX = data.frameIndex % 8;
             e.texY = ~~(data.frameIndex / 8);
+            e.hp = data.hp;
+            e.scale = data.scale;
+            e.score = data.score;
+            e.clear = data.clear;
         }
         e.x = x;
         e.y = y;
-        e.hp = data.hp;
-        e.scale = data.scale;
-        e.score = data.score;
-        e.clear = data.clear;
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);
@@ -463,7 +462,7 @@ tm.main(function() {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dist < e.scale) {
+                if (dist < e.scale*2) {
                     MUTEKI || player.damage();
                     glowLevel = 0;
                 }
@@ -476,9 +475,8 @@ tm.main(function() {
             for (var j = enemies.length; j--; ) {
                 var e  = enemies[j];
                 if (e.parent === null) continue;
-                var dx = w.x - e.x;
-                var dy = w.y - e.y;
-                if (dx*dx+dy*dy < e.scale*2) {
+                var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
+                if (dist < e.scale*2) {
                     scene.remove(w);
                     glowLevel += GLOW_UP_PER_HIT; glowUp = true;
                     e.damage(player.power);

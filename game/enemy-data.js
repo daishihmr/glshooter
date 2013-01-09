@@ -66,11 +66,5 @@ var enemyData = {
         hp: 10,
         scale: 1.5,
         score: 200
-    },
-    "boss": {
-        frameIndex: 0,
-        hp: 16000,
-        scale: 8,
-        score: 0
     }
 };

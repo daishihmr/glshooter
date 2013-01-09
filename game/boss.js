@@ -7,9 +7,9 @@ var createBoss = function(app, explosion, stage, texture) {
 
     var boss = new Sprite(texture);
     boss.scale = 8;
-    boss.alpha = 0.5;
     boss.texScale = 8;
-    boss.glow = 0.4;
+    boss.alpha = 1.0;
+    boss.glow = 0.5;
     boss.maxHp = BOSS_HP[stage - 1];
     boss.damagePoint = 0;
     boss.damage = function(d) {
@@ -52,7 +52,7 @@ var createBoss = function(app, explosion, stage, texture) {
             var t = scene.frame + 50;
             this.update = function() {
                 app.player.disabled = true;
-                this.alpha -= 0.001;
+                this.alpha -= 0.002;
                 this.glow += 0.001;
                 this.emission += 0.002;
                 this.x = Math.sin(scene.frame*0.3)*0.1;
@@ -72,6 +72,7 @@ var createBoss = function(app, explosion, stage, texture) {
                 } else if (scene.frame === t + 250+60) {
                     this.update = function() {
                         this.alpha -= 0.001;
+                        this.glow -= 0.003;
                         if (this.alpha <= 0) {
                             scene.remove(this);
                         }

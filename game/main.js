@@ -172,7 +172,9 @@ tm.main(function() {
 
     // bomb
     var bombParticlePool = [];
-    app.fireBomber = Bomb.fireBomber(scene, bombParticlePool, mainTexture);
+    var bomber = Bomb.createBomber(scene, bombParticlePool, mainTexture);
+    app.fireBomber = bomber.normal;
+    // app.autoBomber = bomber.mini;
     app.clearBomb = function () {
         Bomb.clearBomb(scene, bombParticlePool);
     };
@@ -424,7 +426,7 @@ tm.main(function() {
             }
             clearAllBullets(false);
 
-            app.fireBomber();
+            app.fireBomber(player.x, player.y);
         }
         // damage by bomb
         if (bombing === true) {

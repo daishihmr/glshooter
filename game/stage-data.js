@@ -817,9 +817,8 @@ var setupStageData = function(app, stage) {
             .concat(tankG(0, 0, "R"))
             .concat(tankG(0, 1, "L"))
 
-            .concat(delay120)
-            .concat(delay120)
-            .concat(delay120)
+            .concat(delay120).concat(delay120)
+            .concat(delay120).concat(delay120)
 
             .concat(pZako7f( 12)).concat(delay60)
             .concat(pZako7f(  4)).concat(delay60)
@@ -827,10 +826,10 @@ var setupStageData = function(app, stage) {
             .concat(pZako7f( -4)).concat(delay60)
             .concat(pZako7f(-12)).concat(delay60)
             .concat(pZako7f( 12)).concat(delay60)
-            .concat(pZako7f(-14)).concat(delay60)
-            .concat(pZako7f( 14)).concat(delay60)
-            .concat(pZako7f(-16)).concat(delay60)
-            .concat(pZako7f( 16)).concat(delay60)
+            .concat(pZako7f(-12)).concat(delay60)
+            .concat(pZako7f( 12)).concat(delay60)
+            .concat(pZako7f(-12)).concat(delay60)
+            .concat(pZako7f( 12)).concat(delay60)
     }
 
     var cursor = 0;

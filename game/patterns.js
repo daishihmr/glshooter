@@ -220,6 +220,26 @@ var Patterns = {};
             changeDirection(direction(0), 30)
         )
     });
+    Patterns["zako7f"] = pattern({
+        "top": action(
+            wait("5+$rand*60"),
+            changeDirection(direction("0", "absolute"), 1),
+            wait(5),
+            changeDirection(direction("$rand*10-5"), 30),
+            changeSpeed("2.9+$rank", 1),
+            wait(5),
+            fire(direction("$rand*5-2.5"),speed("4.0+$rank"), bullet()),
+            wait(5),
+            fire(direction("$rand*5-2.5"),speed("4.0+$rank"), bullet()),
+            wait(5),
+            fire(direction("$rand*5-2.5"),speed("4.0+$rank"), bullet()),
+            changeDirection(direction(0), 30),
+            wait(15),
+            changeDirection(direction(0), 30),
+            wait(15),
+            changeDirection(direction(0), 30)
+        )
+    });
 
     Patterns["zako8"] = pattern({
         "top1": action(
@@ -253,11 +273,11 @@ var Patterns = {};
             "top": action(
                 wait("$rand*20"),
                 changeDirection(direction(0, "absolute"), 1),
-                changeSpeed(speed(3), 1),
-                wait(height + "+$rand*20"),
-                changeSpeed(speed(0.2), 40),
+                changeSpeed(speed(4), 1),
+                wait(height + "+$rand*15"),
+                changeSpeed(speed(0.2), 30),
                 actionRef("attack"),
-                changeSpeed(speed(-3), 30)
+                changeSpeed(speed(-4), 30)
             ),
             "attack": attack
         });
@@ -266,21 +286,21 @@ var Patterns = {};
     var zakoG1 = function(height) {
         return zakoG(height, action(
             wait(20),
-            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
             wait(60),
-            fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+            fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
             wait(120)
         ));
     };
-    Patterns["zakoG1H"] = zakoG1(10);
-    Patterns["zakoG1M"] = zakoG1(20);
-    Patterns["zakoG1L"] = zakoG1(30);
+    Patterns["zakoG1H"] = zakoG1( 0);
+    Patterns["zakoG1M"] = zakoG1(25);
+    Patterns["zakoG1L"] = zakoG1(50);
 
     var zakoG2 = function(height) {
         return zakoG(height, action(
             wait(20),
             repeat(2, action(
-                fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+                fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
                 repeat(2, action(
                     wait(3),
                     fire(direction(0, "sequence"), speed(0, "sequence"), bullet())
@@ -290,15 +310,15 @@ var Patterns = {};
             wait(60)
         ));
     };
-    Patterns["zakoG2H"] = zakoG2(10);
-    Patterns["zakoG2M"] = zakoG2(20);
-    Patterns["zakoG2L"] = zakoG2(30);
+    Patterns["zakoG2H"] = zakoG2( 0);
+    Patterns["zakoG2M"] = zakoG2(25);
+    Patterns["zakoG2L"] = zakoG2(50);
 
     var zakoG3 = function(height) {
         return zakoG(height, action(
             wait(20),
             repeat(2, action(
-                fire(direction("$rand*20-10"), speed("2.2+$rank"), bullet()),
+                fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
                 fire(direction(-30, "sequence"), speed(0, "sequence"), bullet()),
                 fire(direction( 60, "sequence"), speed(0, "sequence"), bullet()),
                 wait(60)
@@ -306,9 +326,9 @@ var Patterns = {};
             wait(60)
         ));
     };
-    Patterns["zakoG3H"] = zakoG3(10);
-    Patterns["zakoG3M"] = zakoG3(20);
-    Patterns["zakoG3L"] = zakoG3(30);
+    Patterns["zakoG3H"] = zakoG3( 0);
+    Patterns["zakoG3M"] = zakoG3(25);
+    Patterns["zakoG3L"] = zakoG3(50);
 
     Patterns["bigger"] = pattern({
         "top": action(
@@ -375,9 +395,9 @@ var Patterns = {};
             ),
             "top2": action(
                 wait(turnDelay*0.5),
-                wait("$rand*10"),
+                wait("20+$rand*10"),
                 repeat(30, action(
-                    fire(direction("$rand*20-10"), speed("1.5+$rank"), bullet("sg")),
+                    fire(direction("$rand*10-5"), speed("1.5+$rank"), bullet("sg")),
                     wait("100+(40-$rank*40)+$rand*10")
                 ))
             )

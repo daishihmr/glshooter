@@ -11,10 +11,22 @@ var enemyData = {
         scale: 1,
         score: 50,
     },
+    "zakoL": {
+        frameIndex: 23,
+        hp: 5,
+        scale: 1,
+        score: 50,
+    },
     "tank": {
         frameIndex: 21,
         hp: 5,
         scale: 1,
+        score: 100,
+    },
+    "tankEx": {
+        frameIndex: 21,
+        hp: 10,
+        scale: 1.2,
         score: 100,
     },
     "bigger": {

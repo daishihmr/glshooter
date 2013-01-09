@@ -7,6 +7,7 @@ var setupStageData = function(app, stage) {
     var delay20 = [ { frame: 20, enemies: [] } ];
     var delay40 = [ { frame: 40, enemies: [] } ];
     var delay60 = [ { frame: 60, enemies: [] } ];
+    var delay120 = [ { frame: 120, enemies: [] } ];
 
     var zako1Left = [
         {
@@ -244,6 +245,31 @@ var setupStageData = function(app, stage) {
         ]
     };
 
+    var pZako7f = function(c) {
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ c+ -3.0, 19.5, "zako", "zako7f" ],
+                    [ c+ -1.5, 19.5, "zako", "zako7f" ],
+                    [ c+  0.0, 19.5, "zako", "zako7f" ],
+                    [ c+  1.5, 19.5, "zako", "zako7f" ],
+                    [ c+  3.0, 19.5, "zako", "zako7f" ],
+                    [ c+ -3.0, 18.5, "zako", "zako7f" ],
+                    [ c+ -1.5, 18.5, "zako", "zako7f" ],
+                    [ c+  0.0, 18.5, "zako", "zako7f" ],
+                    [ c+  1.5, 18.5, "zako", "zako7f" ],
+                    [ c+  3.0, 18.5, "zako", "zako7f" ],
+                    [ c+ -3.0, 17.5, "zako", "zako7f" ],
+                    [ c+ -1.5, 17.5, "zako", "zako7f" ],
+                    [ c+  0.0, 17.5, "zako", "zako7f" ],
+                    [ c+  1.5, 17.5, "zako", "zako7f" ],
+                    [ c+  3.0, 17.5, "zako", "zako7f" ],
+                ]
+            }
+        ]
+    };
+
     var pZako8 = function(c) {
         return [
             {
@@ -251,6 +277,21 @@ var setupStageData = function(app, stage) {
                 enemies: [
                     [  c, 18, "ship", "zako8" ],
                     [ -c, 18, "ship", "zako8" ],
+                ]
+            }
+        ];
+    };
+
+    var zakoG = function(x, type, height) { // height = H or M or L
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [x-3.0, 20, "zakoL", "zakoG" + type + height],
+                    [x-1.5, 20, "zakoL", "zakoG" + type + height],
+                    [x    , 20, "zakoL", "zakoG" + type + height],
+                    [x+1.5, 20, "zakoL", "zakoG" + type + height],
+                    [x+3.0, 20, "zakoL", "zakoG" + type + height],
                 ]
             }
         ];
@@ -317,6 +358,23 @@ var setupStageData = function(app, stage) {
             ],
         },
     ];
+
+    var tankG = function(y, type, side) { // type = 0 or 1, side = L or R
+        var type = type + 3;
+        var x = (side === "L") ? -20 : 20;
+        return [
+            {
+                frame: 10,
+                enemies: [
+                    [ x, y, "tankEx", "tank" + type + side + 0 ],
+                    [ x, y, "tankEx", "tank" + type + side + 1 ],
+                    [ x, y, "tankEx", "tank" + type + side + 2 ],
+                    [ x, y, "tankEx", "tank" + type + side + 3 ],
+                    [ x, y, "tankEx", "tank" + type + side + 4 ],
+                ]
+            }
+        ];
+    };
 
     var middle0 = [
         {
@@ -409,6 +467,15 @@ var setupStageData = function(app, stage) {
             enemies: [
                 [ -5, 19, "cannon", "cannon2" ],
                 [  5, 19, "cannon", "cannon2" ],
+            ]
+        }
+    ];
+    var cannon3 = [
+        {
+            frame: 10,
+            enemies: [
+                [ -8, 19, "cannon", "cannon2" ],
+                [  8, 19, "cannon", "cannon2" ],
             ]
         }
     ];
@@ -565,20 +632,20 @@ var setupStageData = function(app, stage) {
 
     } else if (stage === 2) {
         StageData = StageData
-            .concat(delay60).concat(delay60)
-            .concat(delay60).concat(delay60)
+            .concat(delay120)
+            .concat(delay120)
 
             .concat(pZako7(8))
-            .concat(delay60).concat(delay60)
+            .concat(delay120)
 
             .concat(pZako7(-8))
-            .concat(delay60).concat(delay60)
+            .concat(delay120)
 
             .concat(pZako7(8))
-            .concat(delay60).concat(delay60)
+            .concat(delay120)
 
             .concat(pZako7(-8))
-            .concat(delay60).concat(delay60)
+            .concat(delay120)
 
             .concat(delay60)
 
@@ -596,7 +663,7 @@ var setupStageData = function(app, stage) {
             .concat(pZako8( 8)).concat(delay60)
             .concat(pZako8(12)).concat(delay60)
 
-            .concat(delay60).concat(delay60).concat(delay60)
+            .concat(delay60).concat(delay120)
 
             .concat(pZako5K(-12)).concat(delay60)
             .concat(pZako5K(-12)).concat(delay60)
@@ -697,7 +764,73 @@ var setupStageData = function(app, stage) {
             // ];
 
     }  else if (stage === 3) {
-        
+        StageData = StageData
+            .concat(delay120)
+            .concat(delay120)
+
+            .concat(zakoG( 7, 2, "M")).concat(delay20)
+            .concat(zakoG(-7, 2, "M")).concat(delay20)
+            .concat(delay20)
+            .concat(zakoG( 7, 2, "H")).concat(delay20)
+            .concat(zakoG(-7, 2, "H")).concat(delay20)
+            .concat(tankG(7, 0, "R"))
+            .concat(tankG(0, 1, "R"))
+            .concat(delay20)
+            .concat(tankG(12, 0, "L"))
+            .concat(tankG(-5, 1, "L"))
+            .concat(zakoG( 3, 2, "H")).concat(delay20)
+            .concat(delay20)
+            .concat(zakoG(-3, 2, "H")).concat(delay20)
+            .concat(delay40)
+            .concat(tankG(7, 0, "R"))
+            .concat(tankG(0, 1, "R"))
+            .concat(tankG(12, 0, "L"))
+            .concat(tankG(-5, 1, "L"))
+            .concat(zakoG(-7, 2, "H")).concat(delay20)
+            .concat(zakoG(-2, 2, "H")).concat(delay20)
+            .concat(zakoG( 7, 2, "M")).concat(delay20)
+            .concat(zakoG(10, 2, "H")).concat(delay20)
+            .concat(zakoG(-7, 2, "M")).concat(delay20)
+
+            .concat(delay120)
+            .concat(delay120)
+            .concat(delay120)
+
+            .concat(cannon2).concat(delay60)
+            .concat(cannon3).concat(delay40)
+            .concat(tankBoth)
+            .concat(zakoG( 0, 3, "H"))
+            .concat(zakoG( 0, 3, "H")).concat(delay20)
+            .concat(delay60)
+            .concat(zakoG( -7, 3, "H"))
+            .concat(zakoG( -7, 3, "H")).concat(delay20)
+            .concat(delay60)
+            .concat(zakoG(  7, 3, "H"))
+            .concat(zakoG(  7, 3, "H")).concat(delay20)
+            .concat(delay60)
+            .concat(zakoG( 0, 3, "M"))
+            .concat(zakoG( 0, 3, "M"))
+            .concat(tankG(0, 1, "R"))
+            .concat(tankG(0, 0, "L"))
+            .concat(zakoG(-7, 3, "H"))
+            .concat(zakoG( 7, 3, "H"))
+            .concat(tankG(0, 0, "R"))
+            .concat(tankG(0, 1, "L"))
+
+            .concat(delay120)
+            .concat(delay120)
+            .concat(delay120)
+
+            .concat(pZako7f( 12)).concat(delay60)
+            .concat(pZako7f(  4)).concat(delay60)
+            .concat(pZako7f(  0)).concat(delay60)
+            .concat(pZako7f( -4)).concat(delay60)
+            .concat(pZako7f(-12)).concat(delay60)
+            .concat(pZako7f( 12)).concat(delay60)
+            .concat(pZako7f(-14)).concat(delay60)
+            .concat(pZako7f( 14)).concat(delay60)
+            .concat(pZako7f(-16)).concat(delay60)
+            .concat(pZako7f( 16)).concat(delay60)
     }
 
     var cursor = 0;

@@ -9,8 +9,8 @@ tm.main(function() {
     // canvas
     var glCanvas = document.getElementById("canvas3d");
     var scene = new Scene(
-        glCanvas, 
-        tm.util.FileManager.get("vs").data, 
+        glCanvas,
+        tm.util.FileManager.get("vs").data,
         tm.util.FileManager.get("fs").data
     );
     scene.gl.clearColor(0, 0, 0, 1.0);
@@ -34,7 +34,6 @@ tm.main(function() {
 
     // 敵
     for (var i = 0; i < 5; i++) {
-
         var enemy = new Sprite(Sprite.mainTexture);
         enemy.glow = 1.0;
         enemy.texX = 4;
@@ -44,8 +43,7 @@ tm.main(function() {
         scene.add(enemy);
 
         // 攻撃パターン(game/patterns.jsを参照)
-        enemy.update = Patterns["zakoG1L"].createTicker(attackParam(player));
-
+        enemy.update = Patterns["zakoG1H"].createTicker(attackParam(player));
     }
 
     // キーボード

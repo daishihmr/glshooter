@@ -22,11 +22,13 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
-var START_STAGE = 1;
-var NUM_OF_STAGE = 2;
+var START_STAGE = 3;
+var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
+
+var LOAD_BGM_FROM_EXTERNAL_SITE = false;
 
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
@@ -37,9 +39,15 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
 
-    tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/glshooter/sounds/nc28689.mp3", 1);
-    tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/glshooter/sounds/nc784.mp3", 1);
-    tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/glshooter/sounds/nc790.mp3", 1);
+    if (LOAD_BGM_FROM_EXTERNAL_SITE) {
+        tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/glshooter/sounds/nc28689.mp3", 1);
+        tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/glshooter/sounds/nc784.mp3", 1);
+        tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/glshooter/sounds/nc790.mp3", 1);
+    } else {
+        tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
+        tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
+        tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
+    }
 
     tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3", 20);
     tm.sound.SoundManager.add("effect0",   "sounds/effect0.mp3", 1);
@@ -231,7 +239,11 @@ tm.main(function() {
             return b;
         },
         "isInsideOfWorld": function(b) {
-            return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
+            if (b.isBullet) {
+                return -16.5 < b.x && b.x < 16.5 && -16.5 < b.y && b.y < 16.5;
+            } else {
+                return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
+            }
         },
         "updateProperties": false,
         "speedRate": BULLET_SPEED

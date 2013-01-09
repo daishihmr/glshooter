@@ -370,6 +370,97 @@ var Patterns = {};
         )
     });
 
+     Patterns["bigger2"] = pattern({
+        "top": action(
+            changeDirection(direction(0, "absolute"), 1),
+            changeSpeed(speed(2), 1),
+            wait(30),
+            repeat(999, action(
+                changeDirection(direction(90, "absolute"), 1),
+                changeSpeed(speed(0.6), 1),
+                wait(60),
+                repeat(2, action(
+                    changeDirection(direction(-90, "absolute"), 1),
+                    actionRef("attack1"),
+                    wait(30),
+                    actionRef("attack2"),
+                    wait(90),
+
+                    changeDirection(direction(90, "absolute"), 1),
+                    actionRef("attack1"),
+                    wait(30),
+                    actionRef("attack2"),
+                    wait(90)
+                )),
+                changeDirection(direction(-90, "absolute"), 1),
+                actionRef("attack1"),
+                wait(30),
+                actionRef("attack2"),
+                wait(30),
+                changeSpeed(speed(0), 1),
+                wait(30),
+                actionRef("attack3")
+            ))
+        ),
+        "attack1": action(
+            fire(direction(-135, "absolute"), speed(20), bulletRef("bit1")),
+            fire(direction( -45, "absolute"), speed(20), bulletRef("bit1")),
+            fire(direction(  45, "absolute"), speed(20), bulletRef("bit1")),
+            fire(direction( 135, "absolute"), speed(20), bulletRef("bit1"))
+        ),
+        "attack2": action(
+            fire(direction(-135, "absolute"), speed(20), bulletRef("bit2")),
+            fire(direction( -45, "absolute"), speed(20), bulletRef("bit2")),
+            fire(direction(  45, "absolute"), speed(20), bulletRef("bit2")),
+            fire(direction( 135, "absolute"), speed(20), bulletRef("bit2"))
+        ),
+        "bit1": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            fire(direction(-30, "aim"), speed("3+$rank"), bullet()),
+            repeat("5+$rank", action(
+                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
+                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
+                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
+                wait(2),
+                fire(direction(-60, "sequence"), speed("3+$rank"), bullet())
+            )),
+            vanish()
+        )),
+        "bit2": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            fire(direction(-40, "aim"), speed("3.5+$rank"), bullet("g")),
+            repeat("5+$rank", action(                
+                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
+                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
+                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
+                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
+                wait(2),
+                fire(direction(-80, "sequence"), speed("3.5+$rank"), bullet("g"))
+            )),
+            vanish()
+        )),
+        "attack3": action(
+            fire(direction(0), speed("3+$rank"), bullet()),
+            repeat(360/12, action(
+                repeat(3, action(
+                    fire(direction(90, "sequence"), speed(0, "sequence"), bullet())
+                )),
+                wait(3),
+                fire(direction(90+12, "sequence"), speed(0, "sequence"), bullet())
+            )),
+            fire(direction(0), speed("3+$rank"), bullet()),
+            repeat(360/11, action(
+                repeat(3, action(
+                    fire(direction(90, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                wait(3),
+                fire(direction(90+10, "sequence"), speed(0, "sequence"), bullet("g"))
+            ))
+        )
+    });
+
     var tank1 = function(delay, dir) {
         return pattern({
             "top": action(
@@ -1177,7 +1268,7 @@ var Patterns = {};
                 a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
                 a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
                 a[a.length] = wait(40);
-                "a"[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
+                a[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
                 a[a.length] = wait(40);
                 a[a.length] = changeSpeed(speed(0), 80);
                 a[a.length] = wait(40);

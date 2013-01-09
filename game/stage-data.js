@@ -409,11 +409,21 @@ var setupStageData = function(app, stage) {
             ]
         }
     ];
-    var middleKLeft = [
+
+    var middle2 = [
         {
             frame: 10,
             enemies: [
-                [ -20, 10, "middleK", "middleKL" ],
+                [ -7, 20, "middle", "middle2L0" ],
+                [ -7, 20, "middle", "middle2L1" ],
+                [ -7, 20, "middle", "middle2L2" ],
+                [ -7, 20, "middle", "middle2L3" ],
+                [ -7, 20, "middle", "middle2L4" ],
+                [  7, 20, "middle", "middle2R0" ],
+                [  7, 20, "middle", "middle2R1" ],
+                [  7, 20, "middle", "middle2R2" ],
+                [  7, 20, "middle", "middle2R3" ],
+                [  7, 20, "middle", "middle2R4" ],
             ]
         }
     ];
@@ -427,6 +437,16 @@ var setupStageData = function(app, stage) {
         },
     ];
     var biggerKilled = [ { flag: "flag1", enemies: [] }] ;
+
+    var bigger2 = [
+        {
+            frame: 100,
+            enemies: [
+                [ 0, 17.0, "bigger2", "bigger2", "flag2" ],
+            ]
+        },
+    ];
+    var bigger2Killed = [ { flag: "flag2", enemies: [] }] ;
 
     var cannonLeft = [
         {
@@ -818,7 +838,12 @@ var setupStageData = function(app, stage) {
             .concat(tankG(0, 1, "L"))
 
             .concat(delay120).concat(delay120)
-            .concat(delay120)
+
+            .concat(middle2).concat(delay120)
+            
+            .concat(delay120).concat(delay120)
+
+            .concat(bigger2).concat(bigger2Killed)
 
             .concat(pZako7f( 12)).concat(delay60)
             .concat(pZako7f(  4)).concat(delay60)

@@ -22,7 +22,7 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
-var START_STAGE = 1;
+var START_STAGE = 3;
 var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
@@ -203,6 +203,7 @@ tm.main(function() {
             var b = bulletPool.pop();
             if (b === void 0) return;
             b.alive = false;
+            b.isBit = false;
             b.scale = 0.6;
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
@@ -215,6 +216,7 @@ tm.main(function() {
                 b.texY = 1;
             } else if (spec.label.indexOf("bit") !== -1) {
                 b.alive = true;
+                b.isBit = true;
                 b.texX = 7;
                 b.texY = 7;
             } else {
@@ -241,7 +243,7 @@ tm.main(function() {
             return b;
         },
         "isInsideOfWorld": function(b) {
-            if (b.isBullet) {
+            if (b.isBullet && !b.isBit) {
                 return -16.5 < b.x && b.x < 16.5 && -16.5 < b.y && b.y < 16.5;
             } else {
                 return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
@@ -654,7 +656,6 @@ tm.main(function() {
     app.gameContinue = function() {
         app.resetGameStatus();
         app.continueCount += 1;
-        player.level = -1;
         scene.frame = scene.returnFrame;
         scene.add(player);
         player.launch();

@@ -8,6 +8,7 @@ var Sprite;
         this.x = 0;
         this.y = 0;
         this.scale = 1;
+        this.scaleY = 0;
         this.rotation = 0;
 
         this.texX = 0;
@@ -26,10 +27,15 @@ var Sprite;
 
         this.update = function() {};
         this.onremoved = function() {};
+
+        this.isEnemy = false;
+        this.isBullet = false;
+        this.isWeapon = false;
     };
 
     Sprite.prototype.draw = function(gl) {
         if (!this.visible) return;
+        if (this.texture === null) this.texture = Sprite.mainTexture;
 
         gl.bindTexture(gl.TEXTURE_2D, this.texture);
 
@@ -37,6 +43,7 @@ var Sprite;
         gl.uniform1f(uni["x"], this.x);
         gl.uniform1f(uni["y"], this.y);
         gl.uniform1f(uni["scale"], this.scale);
+        gl.uniform1f(uni["scaleY"], this.scaleY || this.scale);
         gl.uniform1f(uni["rotation"], this.rotation);
         gl.uniform1f(uni["texX"], this.texX);
         gl.uniform1f(uni["texY"], this.texY);
@@ -52,6 +59,7 @@ var Sprite;
             gl.uniform1f(uni["texScale"], 1);
             gl.uniform1f(uni["alpha"], this.glow);
             gl.uniform1f(uni["scale"], this.scale*2);
+            gl.uniform1f(uni["scaleY"], this.scale*2);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }

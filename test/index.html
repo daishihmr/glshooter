@@ -7,15 +7,18 @@
 <script type="text/javascript">
 window.onload = function() {
     var a = [];
-    for (var i = 0; i < 500000; i++) {
-        a[a.length] = Math.random() < 5 ? undefined : 1;
+    for (var i = 0; i < 50000; i++) {
+        a[a.length] = Math.random() * 100 - 50;
     }
 
     var b = [];
 
+    console.log("start");
     var start = Date.now();
-    for (var i = a.length; i--; ) {
-        b[b.length] = (a !== void 0);
+    for (var c = 0; c < 100; c++) {
+        for (var i = a.length; i--; ) {
+            b[b.length] = Math.abs(a[i]);
+        }
     }
     console.log(Date.now() - start);
 };

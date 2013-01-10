@@ -40,7 +40,7 @@ var Scene;
         gl.uniform1f(gl.getUniformLocation(program, "texture"), 0);
 
         this.uniformLocationsForSprite = getUniformLocationsForSprite(gl, program, [
-            "x", "y", "scale", "rotation", "texX", "texY", "alpha", "texScale", "emission"
+            "x", "y", "scale", "scaleY", "rotation", "texX", "texY", "alpha", "texScale", "emission"
         ]);
 
         this.updateMatrix();
@@ -49,6 +49,19 @@ var Scene;
         this._removedChildren = [];
 
         this.frame = 0;
+
+        var img = tm.graphics.Canvas();
+        img.resize(128, 32);
+        img.fillStyle = "rgba(255, 255, 255, 0.1)";
+        img.fillRect(0, 0, 128, 32);
+        this.mask = new Sprite(createTexture(gl, img.element));
+        // this.mask = new Sprite(createTexture(gl, tm.graphics.TextureManager.get("w").element));
+        this.mask.scale = 16;
+        this.mask.scaleY = 0.1;
+        this.mask.uniforms = this.uniformLocationsForSprite;
+        this.mask.texX = 0;
+        this.mask.texY = 0;
+        this.mask.texScale = 8;
     };
 
     Scene.prototype.updateMatrix = function() {
@@ -63,7 +76,10 @@ var Scene;
         var children = this.children;
         var removedChildren = this._removedChildren;
 
-        for (var i = 0, len = children.length; i < len; i++) children[i].update();
+        for (var i = 0, len = children.length; i < len; i++) {
+            var c = children[i];
+            c.update();
+        }
 
         for (var i = 0, len = removedChildren.length; i < len; i++) {
             var index = this.children.indexOf(removedChildren[i]);
@@ -83,7 +99,16 @@ var Scene;
         var program = this.program;
         gl.clear(gl.COLOR_BUFFER_BIT);
 
-        for (var i = 0, len = children.length; i < len; i++) children[i].draw(gl);
+        for (var i = 0, len = children.length; i < len; i++) {
+            children[i].draw(gl);
+        }
+
+        gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ZERO);
+        if (this.mask.scaleY < 4) {
+            this.mask.scaleY += 0.05;
+        }
+        this.mask.draw(gl);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
         gl.flush();
 

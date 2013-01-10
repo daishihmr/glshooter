@@ -24,6 +24,11 @@ var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
 
+var PLAYER_SPEED = 0.2;
+var PLAYER_SCALE = 1.5;
+var WEAPON_SCALE = 1.0;
+var MUTEKI_TIME = 90;
+
 var START_STAGE = 3;
 var NUM_OF_STAGE = 3;
 
@@ -40,6 +45,7 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss1", "images/boss1.png");
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
+    tm.graphics.TextureManager.add("w", "images/w.png");
 
     if (LOAD_BGM_FROM_EXTERNAL_SITE) {
         tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/glshooter/sounds/nc28689.mp3", 1);
@@ -160,7 +166,7 @@ tm.main(function() {
     var explosion = new Explosion(scene, mainTexture);
     var explode = app.explode = explosion.explode;
     var explodeS = app.explodeS = explosion.explodeS;
-    var explodeL = explosion.getExplodeL(gl, scene);
+    var explodeL = explosion.getExplodeL(scene);
     var clearAllExplosion = app.clearAllExplosion = explosion.clearAll;
 
     // player
@@ -186,10 +192,10 @@ tm.main(function() {
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
         var b = new Sprite(mainTexture);
+        b.isBullet = true;
         b.texX = 3;
         b.texY = 1;
         b.scale = 0.6;
-        b.isBullet = true;
         bullets.push(b);
         bulletPool.push(b);
         b.onremoved = function() {
@@ -273,6 +279,7 @@ tm.main(function() {
     var expSoundPlaying = -1;
     var createEnemy = function() {
         var e = new Sprite(mainTexture);
+        e.isEnemy = true;
         e.alpha = 0.5;
         e.glow = 1;
         e.onremoved = function() {
@@ -387,6 +394,8 @@ tm.main(function() {
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
 
+        if (keyboard.getKey("q")) explodeL(function() {});
+
         glowUp = false;
 
         // control sound effect
@@ -443,6 +452,25 @@ tm.main(function() {
         // collision
         var px = player.x;
         var py = player.y;
+        // collision weapon vs enemy
+        for (var j = enemies.length; j--; ) {
+            var e  = enemies[j];
+            if (e.parent === null) continue;
+            var colLen = (e.scale+WEAPON_SCALE) * (e.scale+WEAPON_SCALE);
+            for (var i = weapons.length; i--; ) {
+                var w = weapons[i];
+                if (w.parent === null) continue;
+                var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
+                if (dist < colLen) {
+                    scene.remove(w);
+                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
+                    e.damage(player.power);
+                    app.incrScore(0.01, true); // hit
+                    w.update(); explodeS(w.x, w.y, 0.3);
+                    break;
+                }
+            }
+        }
         // collision player vs bullet
         if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
             for (var i = bullets.length; i--; ) {
@@ -467,11 +495,12 @@ tm.main(function() {
         }
         // collision player vs enemy
         if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
+            var colLen = (e.scale+PLAYER_SCALE) * (e.scale+PLAYER_SCALE);
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dist < e.scale*2) {
+                if (dist < e.scale*e.scale) {
                     if (app.bomb < 1 && !AUTO_BOMB) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
@@ -479,23 +508,6 @@ tm.main(function() {
                         app.bomb -= 1;
                         app.autoBomber(player.x, player.y);
                     }
-                }
-            }
-        }
-        // collision weapon vs enemy
-        for (var i = weapons.length; i--; ) {
-            var w = weapons[i];
-            if (w.parent === null) continue;
-            for (var j = enemies.length; j--; ) {
-                var e  = enemies[j];
-                if (e.parent === null) continue;
-                var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
-                if (dist < e.scale*2) {
-                    scene.remove(w);
-                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
-                    e.damage(player.power);
-                    app.incrScore(0.01, true); // hit
-                    w.update(); explodeS(w.x, w.y, 0.3);
                 }
             }
         }

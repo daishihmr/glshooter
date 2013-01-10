@@ -26,7 +26,7 @@ var enemyData = {
     "tankEx": {
         frameIndex: 21,
         hp: 10,
-        scale: 1.2,
+        scale: 1,
         score: 100,
     },
     "bigger": {
@@ -63,14 +63,14 @@ var enemyData = {
     "cannon2": {
         frameIndex: 20,
         hp: 150,
-        scale: 3.5,
+        scale: 3,
         score: 400,
         clear: true
     },
     "ship": {
         frameIndex: 24,
         hp: 10,
-        scale: 1.5,
+        scale: 2,
         score: 200
     }
 };

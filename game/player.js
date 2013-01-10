@@ -4,12 +4,9 @@
 //  -> GLOWは敵に弾がヒットすることによって上昇するため、収束ショットの方が有利になる
 //  -> マウス操作の場合、回避に圧倒的なアドバンテージがある分、収束ショットを撃つことができないデメリットがある
 
-var PLAYER_SPEED = 0.2;
-var MUTEKI_TIME = 90;
-
 var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var player = new Sprite(texture);
-    player.scale = 1.5;
+    player.scale = PLAYER_SCALE;
     player.level = 0;
     player.reset = function() {
         this.x = 0;
@@ -226,6 +223,8 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
         var w = new Sprite(texture);
+        w.scale = WEAPON_SCALE;
+        w.isWeapon = true;
         w.texX = 7;
         w.texY = 1;
         weapons.push(w);

@@ -5,6 +5,7 @@ uniform mat4 pMat;
 uniform float x;
 uniform float y;
 uniform float scale;
+uniform float scaleY;
 uniform float rotation;
 uniform float texX;
 uniform float texY;
@@ -15,7 +16,7 @@ varying vec2 vTextureCoord;
 varying float vAlpha;
 varying float vEmission;
 
-mat4 model(vec2 xy, float scale, float rot) {
+mat4 model(vec2 xy, float scale, float scaleY, float rot) {
     mat4 result = mat4(
         1.0, 0.0, 0.0, 0.0,
         0.0, 1.0, 0.0, 0.0,
@@ -30,8 +31,8 @@ mat4 model(vec2 xy, float scale, float rot) {
     );
     result = result * mat4(
         scale, 0.0, 0.0, 0.0,
-        0.0, scale, 0.0, 0.0,
-        0.0, 0.0, scale, 0.0,
+        0.0, scaleY, 0.0, 0.0,
+        0.0, 0.0, 1.0, 0.0,
         0.0, 0.0, 0.0, 1.0
     );
     result = result * mat4(
@@ -47,5 +48,5 @@ void main(void) {
     vAlpha = alpha;
     vEmission = emission;
     vTextureCoord = (texCoord * texScale) + vec2(texX*64.0/512.0, texY*64.0/512.0);
-    gl_Position = pMat * vMat * model(vec2(x, y), scale, rotation) * vec4(position, 1.0);
+    gl_Position = pMat * vMat * model(vec2(x, y), scale, scaleY, rotation) * vec4(position, 1.0);
 }

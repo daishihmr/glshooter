@@ -68,10 +68,11 @@ var Explosion = function(scene, texture) {
                 this.x = Math.cos(this.angle) * this.radius;
                 this.y = Math.sin(this.angle) * this.radius;
                 this.radius += this.radiusD;
-                // this.radiusD *= 0.9;
-                this.scale += 0.02;
-                if (2 < this.scale) {
-                    this.alpha -= 0.001;
+                if (this.scale < 18) {
+                    this.scale += 0.08;
+                } else {
+                    this.radiusD += 0.002;
+                    this.alpha -= 0.006;
                 }
                 if (this.alpha < 0) {
                     scene.remove(this);
@@ -91,7 +92,7 @@ var Explosion = function(scene, texture) {
                 var p = pool[i];
                 p.radius = tm.util.Random.randfloat(0.0, 0.5);
                 p.angle = (Math.PI*2/12) * (i%12);
-                p.radiusD = tm.util.Random.randfloat(0.005, 0.02);
+                p.radiusD = tm.util.Random.randfloat(0.02, 0.05);
                 p.alpha = 1;
                 p.scale = 0.5;
                 p.age = 0;

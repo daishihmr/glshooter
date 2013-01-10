@@ -60,7 +60,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
                 p.size = 0.3;
                 scene.add(p);
             }
-            MUTE_SE || tm.sound.SoundManager.get("bomb").play();
+            MUTE_SE || tm.sound.SoundManager.get("explode").play();
         }
     };
 };

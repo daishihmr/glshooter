@@ -29,7 +29,7 @@ var PLAYER_SCALE = 1.5;
 var WEAPON_SCALE = 1.0;
 var MUTEKI_TIME = 90;
 
-var START_STAGE = 3;
+var START_STAGE = 1;
 var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
@@ -394,7 +394,7 @@ tm.main(function() {
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
 
-        if (keyboard.getKey("q")) explodeL(function() {});
+        if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
 
         glowUp = false;
 
@@ -456,19 +456,19 @@ tm.main(function() {
         for (var j = enemies.length; j--; ) {
             var e  = enemies[j];
             if (e.parent === null) continue;
-            var colLen = (e.scale+WEAPON_SCALE) * (e.scale+WEAPON_SCALE);
+            var colLen = (e.scale*0.5+WEAPON_SCALE) * (e.scale*0.5+WEAPON_SCALE);
             for (var i = weapons.length; i--; ) {
                 var w = weapons[i];
                 if (w.parent === null) continue;
                 var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
                 if (dist < colLen) {
-                    scene.remove(w);
                     glowLevel += GLOW_UP_PER_HIT; glowUp = true;
                     e.damage(player.power);
                     app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
-                    break;
+                    scene.remove(w);
                 }
+                if (e.parent === null) break;
             }
         }
         // collision player vs bullet
@@ -482,11 +482,12 @@ tm.main(function() {
                     if (app.bomb < 1 && !AUTO_BOMB) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
+                        break;
                     } else {
                         app.bomb -= 1;
                         app.autoBomber(player.x, player.y);
+                        break;
                     }
-                    break;
                 } else if (dist < 1.5) {
                     // console.log("GRAZE");
                     app.incrScore(1, true); // graze
@@ -495,7 +496,7 @@ tm.main(function() {
         }
         // collision player vs enemy
         if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
-            var colLen = (e.scale+PLAYER_SCALE) * (e.scale+PLAYER_SCALE);
+            var colLen = (e.scale*0.5+PLAYER_SCALE) * (e.scale*0.5+PLAYER_SCALE);
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;

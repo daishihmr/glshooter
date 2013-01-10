@@ -52,7 +52,7 @@ var Scene;
 
         var img = tm.graphics.Canvas();
         img.resize(128, 32);
-        img.fillStyle = "rgba(255, 255, 255, 0.1)";
+        img.fillStyle = "rgba(200, 200, 255, 0.1)";
         img.fillRect(0, 0, 128, 32);
         this.mask = new Sprite(createTexture(gl, img.element));
         // this.mask = new Sprite(createTexture(gl, tm.graphics.TextureManager.get("w").element));
@@ -103,12 +103,12 @@ var Scene;
             children[i].draw(gl);
         }
 
-        gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ZERO);
-        if (this.mask.scaleY < 4) {
-            this.mask.scaleY += 0.05;
-        }
-        this.mask.draw(gl);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+        // gl.blendFunc(gl.ONE_MINUS_DST_COLOR, gl.ZERO);
+        // if (this.mask.scaleY < 4) {
+        //     this.mask.scaleY += 0.05;
+        // }
+        // this.mask.draw(gl);
+        // gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
 
         gl.flush();
 

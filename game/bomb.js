@@ -14,7 +14,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
             this.radius += this.radiusD;
             this.radiusD -= 0.002;
             this.scale = (17 - this.radius) * 0.6;
-            this.alpha = (28 - this.scale) * 0.1;
+            this.alpha += (0 < this.radius) ? 0 : -0.01;
             if (this.alpha < 0) {
                 scene.remove(this);
                 bombParticlePool.readyCount+=1;
@@ -33,7 +33,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
             for (var i = bombParticlePool.length; i--; ) {
                 var p = bombParticlePool[i];
                 p.radius = tm.util.Random.randfloat(16, 22);
-                p.angle = (i % 12) * Math.PI*2/12 - p.radius*0.3;
+                p.angle = (Math.PI*2/12) * (i%12);
                 p.radiusD = -0.01;
                 p.alpha = 1;
                 scene.add(p);

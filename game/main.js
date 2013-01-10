@@ -28,7 +28,7 @@ var NUM_OF_STAGE = 3;
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
 
-var LOAD_BGM_FROM_EXTERNAL_SITE = false;
+var LOAD_BGM_FROM_EXTERNAL_SITE = true;
 
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
@@ -49,7 +49,7 @@ tm.preload(function() {
         tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
     }
 
-    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3", 20);
+    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3", 10);
     tm.sound.SoundManager.add("effect0",   "sounds/effect0.mp3", 1);
     tm.sound.SoundManager.add("bomb",      "sounds/nc17909.mp3");
     tm.sound.SoundManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
@@ -61,8 +61,8 @@ tm.main(function() {
     var Random = tm.util.Random;
     if (!localStorage.getItem("jp.dev7.glshooter.settings")) {
         var s = {
-            bgm: 1.0,
-            se: 0.8
+            "bgm": 1.0,
+            "se": 0.8
         }
         localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
     }

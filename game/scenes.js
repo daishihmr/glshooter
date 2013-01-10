@@ -367,11 +367,12 @@ var ContinueScene;
 
             this.addEventListener("enter", function() {
                 var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
-                settings.bgm = s.bgm;
-                settings.se = s.se;
+                settings.bgm = s["bgm"];
+                settings.se = s["se"];
                 this.selection = 0;
             });
             this.doSetting = function(selection, updown) {
+                console.log(selection)
                 switch(selection) {
                 case 0:
                     settings.bgm += 0.01*updown;
@@ -388,8 +389,8 @@ var ContinueScene;
 
             this.addEventListener("exit", function() {
                 var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
-                s.bgm = settings.bgm;
-                s.se = settings.se;
+                s["bgm"] = settings.bgm;
+                s["se"] = settings.se;
                 localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
             });
         },

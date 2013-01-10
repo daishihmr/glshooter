@@ -74,13 +74,13 @@ var AttackPattern;
             }
 
             // move sprite
-            this.x += Math.cos(ticker.direction) * ticker.speed * conf.speedRate;
-            this.y += Math.sin(ticker.direction) * ticker.speed * conf.speedRate;
-            this.x += ticker.speedH * conf.speedRate;
-            this.y += ticker.speedV * conf.speedRate;
+            this.x += Math.cos(ticker.direction) * ticker.speed * conf["speedRate"];
+            this.y += Math.sin(ticker.direction) * ticker.speed * conf["speedRate"];
+            this.x += ticker.speedH * conf["speedRate"];
+            this.y += ticker.speedV * conf["speedRate"];
 
             // test out of world
-            if (!conf.isInsideOfWorld(this)) {
+            if (!conf["isInsideOfWorld"](this)) {
                 if (this.parent) this.parent.remove(this);
                 ticker.completed = true;
                 if (ticker.parentTicker) {
@@ -92,7 +92,7 @@ var AttackPattern;
             }
 
             // set direction, speed to bullet
-            if (conf.updateProperties) {
+            if (conf["updateProperties"]) {
                 this.direction = (ticker.direction + Math.PI / 2) * RAD_TO_DEG;
                 this.speed = ticker.speed;
             }
@@ -143,9 +143,9 @@ var AttackPattern;
 
         action = action || "top";
         if (typeof (action) === "string") {
-            ticker.walker = this._bulletml.getWalker(action, config.rank);
+            ticker.walker = this._bulletml.getWalker(action, config["rank"]);
         } else if (action instanceof BulletML.Bullet) {
-            ticker.walker = action.getWalker(config.rank);
+            ticker.walker = action.getWalker(config["rank"]);
         } else {
             console.error(config, action);
             throw new Error("引数が不正");
@@ -177,7 +177,7 @@ var AttackPattern;
         return ticker;
     };
     AttackPattern.prototype._fire = function(cmd, config, ticker, pattern) {
-        var b = config.bulletFactory({
+        var b = config["bulletFactory"]({
             label : cmd.bullet.label
         });
         if (b === void 0) {
@@ -192,8 +192,8 @@ var AttackPattern;
             // console.debug(d.type);
             switch (d.type) {
             case "aim":
-                if (config.target) {
-                    return angleAtoB(attacker, config.target) + dv;
+                if (config["target"]) {
+                    return angleAtoB(attacker, config["target"]) + dv;
                 } else {
                     return dv - Math.PI / 2;
                 }
@@ -234,7 +234,7 @@ var AttackPattern;
         var t = eval(cmd.term);
         switch (cmd.direction.type) {
         case "aim":
-            var tar = config.target;
+            var tar = config["target"];
             if (!tar) {
                 return;
             }

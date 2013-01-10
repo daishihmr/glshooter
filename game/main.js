@@ -5,6 +5,8 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 
+var AUTO_BOMB = false;
+
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
 
@@ -174,7 +176,7 @@ tm.main(function() {
     var bombParticlePool = [];
     var bomber = Bomb.createBomber(scene, bombParticlePool, mainTexture);
     app.fireBomber = bomber.normal;
-    // app.autoBomber = bomber.mini;
+    app.autoBomber = bomber.mini;
     app.clearBomb = function () {
         Bomb.clearBomb(scene, bombParticlePool);
     };
@@ -449,8 +451,13 @@ tm.main(function() {
                 var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
                     scene.remove(b);
-                    MUTEKI || player.damage();
-                    glowLevel = 0;
+                    if (app.bomb < 1 && !AUTO_BOMB) {
+                        MUTEKI || player.damage();
+                        glowLevel = 0;
+                    } else {
+                        app.bomb -= 1;
+                        app.autoBomber(player.x, player.y);
+                    }
                     break;
                 } else if (dist < 1.5) {
                     // console.log("GRAZE");
@@ -465,8 +472,13 @@ tm.main(function() {
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < e.scale*2) {
-                    MUTEKI || player.damage();
-                    glowLevel = 0;
+                    if (app.bomb < 1 && !AUTO_BOMB) {
+                        MUTEKI || player.damage();
+                        glowLevel = 0;
+                    } else {
+                        app.bomb -= 1;
+                        app.autoBomber(player.x, player.y);
+                    }
                 }
             }
         }

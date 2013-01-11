@@ -1,4 +1,4 @@
-var BOSS_HP = [ 16000, 16000, 16000 ];
+var BOSS_HP = [ 8000, 8000, 16000 ];
 
 var createBoss = function(app, explosion, stage, texture) {
     var Random = tm.util.Random;

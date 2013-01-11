@@ -348,49 +348,34 @@ var ContinueScene;
             this.addChild(title);
 
             this.menuItem = [];
-            this.menuItem[0] = createLabel("bgm", 20, 100, 130);
-            this.menuItem[1] = createLabel("sound", 20, 100, 180);
-            this.menuItem[2] = createLabel("back", 20, 100, 280);
+            this.menuItem[0] = createLabel("bgm", 20, 60, 130);
+            this.menuItem[1] = createLabel("sound", 20, 60, 180);
+            this.menuItem[2] = createLabel("auto bomb", 20, 60, 230);
+            this.menuItem[3] = createLabel("back", 20, 60, 280);
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].setAlign("left");
                 this.addChild(this.menuItem[i]);
             }
 
-            var settings = this.settings = {
-                bgm: 0,
-                se: 0
-            };
-            var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
-            settings.bgm = s.bgm;
-            settings.se = s.se;
-            this.selection = 0;
-
             this.addEventListener("enter", function() {
-                var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
-                settings.bgm = s["bgm"];
-                settings.se = s["se"];
                 this.selection = 0;
             });
             this.doSetting = function(selection, updown) {
                 switch(selection) {
                 case 0:
-                    settings.bgm += 0.01*updown;
-                    settings.bgm = Math.clamp(settings.bgm+0.01*updown, 0, 1);
-                    app.volumeBgm = settings.bgm;
-                    if (app.bgm) app.bgm.volume = settings.bgm;
+                    app.settings["bgm"] += 0.01*updown;
+                    app.settings["bgm"] = Math.clamp(app.settings["bgm"]+0.01*updown, 0, 1);
+                    if (app.bgm) app.bgm.volume = app.settings["bgm"];
                     break;
                 case 1:
-                    settings.se = Math.clamp(settings.se+0.01*updown, 0, 1);
-                    app.volumeSe = settings.se;
+                    app.settings["se"] = Math.clamp(app.settings["se"]+0.01*updown, 0, 1);
                     break;
                 }
             };
 
             this.addEventListener("exit", function() {
-                var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
-                s["bgm"] = settings.bgm;
-                s["se"] = settings.se;
-                localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
+                localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(app.settings));
+                app.setVolumeSe();
             });
         },
         update: function(app) {
@@ -416,11 +401,18 @@ var ContinueScene;
             } else if (app.keyboard.getKey("left")) {
                 this.doSetting(this.selection, -1);
             }
+            if (app.keyboard.getKeyDown("right") || app.keyboard.getKeyDown("left")) {
+                switch (this.selection) {
+                case 2: // autoBomb
+                    app.settings["autoBomb"] = !app.settings["autoBomb"];
+                    break;
+                }
+            }
 
             if (this.selection === 1) {
                 if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left") || app.pointing.getPointingEnd())) {
                     var s = tm.sound.WebAudioManager.get("explode");
-                    s.volume = this.settings.se;
+                    s.volume = app.settings["se"];
                     s.play();
                 }
             }
@@ -432,10 +424,16 @@ var ContinueScene;
                     if (px < 160) this.doSetting(this.selection, -1);
                     else this.doSetting(this.selection, 1);
                     break;
-                case 2: // back
-                    app.setVolumeSe();
+                case 3: // back
                     app.popScene();
                     app.pointing.button = 0; app.pointing.update();
+                    break;
+                }
+            }
+            if (app.pointing.getPointingEnd()) {
+                switch (this.selection) {
+                case 2: // autoBomb
+                    app.settings["autoBomb"] = !app.settings["autoBomb"];
                     break;
                 }
             }
@@ -445,8 +443,9 @@ var ContinueScene;
             }
             this.menuItem[this.selection].fillStyle = "#fff"
 
-            this.menuItem[0].text = "bgm          " + ~~(this.settings.bgm*100);
-            this.menuItem[1].text = "sound      " + ~~(this.settings.se*100);
+            this.menuItem[0].text = "bgm          " + ~~(app.settings["bgm"]*100);
+            this.menuItem[1].text = "sound      " + ~~(app.settings["se"]*100);
+            this.menuItem[2].text = "auto bomb  " + (app.settings["autoBomb"] ? "ON": "OFF");
         }
     });
 

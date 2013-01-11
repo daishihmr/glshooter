@@ -50,18 +50,18 @@ var Scene;
 
         this.frame = 0;
 
-        var img = tm.graphics.Canvas();
-        img.resize(128, 32);
-        img.fillStyle = "rgba(200, 200, 255, 0.1)";
-        img.fillRect(0, 0, 128, 32);
-        this.mask = new Sprite(createTexture(gl, img.element));
-        // this.mask = new Sprite(createTexture(gl, tm.graphics.TextureManager.get("w").element));
-        this.mask.scale = 16;
-        this.mask.scaleY = 0.1;
-        this.mask.uniforms = this.uniformLocationsForSprite;
-        this.mask.texX = 0;
-        this.mask.texY = 0;
-        this.mask.texScale = 8;
+        // var img = tm.graphics.Canvas();
+        // img.resize(256, 64);
+        // img.fillStyle = "rgba(200, 200, 255, 0.1)";
+        // img.fillRect(0, 0, 256, 64);
+        // this.mask = new Sprite(createTexture(gl, img.element));
+        // // this.mask = new Sprite(createTexture(gl, tm.graphics.TextureManager.get("w").element));
+        // this.mask.scale = 16;
+        // this.mask.scaleY = 0.1;
+        // this.mask.uniforms = this.uniformLocationsForSprite;
+        // this.mask.texX = 0;
+        // this.mask.texY = 0;
+        // this.mask.texScale = 8;
     };
 
     Scene.prototype.updateMatrix = function() {

@@ -11,10 +11,11 @@
 <script type="text/javascript">
 window.onload = function() {
     var sound = tm.sound.WebAudio("../sounds/effect0.mp3");
-    document.getElementById("play").onclick = function() {
+    play.onclick = function() {
         if (sound.loaded) {
-            sound.volume = parseFloat(document.getElementById("vol").value);
-            sound.play();
+            var s = sound.clone();
+            s.volume = parseFloat(vol.value);
+            s.play();
         }
     }
 };

@@ -5,8 +5,6 @@ var FPS = 60;
 var BULLET_SPEED = 0.10;
 var DBL_CLICK_INTERVAL = 200;
 
-var AUTO_BOMB = false;
-
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
 
@@ -73,14 +71,20 @@ tm.main(function() {
     var SoundManager = tm.sound.SoundManager;
     var WebAudioManager = tm.sound.WebAudioManager;
     var Random = tm.util.Random;
+    var settings = {
+        "bgm": 1.0,
+        "se": 0.8,
+        "autoBomb": false
+    };
     if (!localStorage.getItem("jp.dev7.glshooter.settings")) {
-        var s = {
-            "bgm": 1.0,
-            "se": 0.8
+        localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(settings));
+    } else {
+        var s = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
+        for (var prop in s) {
+            settings[prop] = s[prop];
         }
-        localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(s));
     }
-    var settings = JSON.parse(localStorage.getItem("jp.dev7.glshooter.settings"));
+    console.log(settings)
 
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
@@ -107,6 +111,7 @@ tm.main(function() {
             }
         }
     };
+    app.settings = settings;
 
     app.resetGameStatus = function () {
         app.score = 0;
@@ -115,8 +120,6 @@ tm.main(function() {
         if (player) player.level = 0;
     };
     app.bgm = null;
-    app.volumeBgm = settings.bgm;
-    app.volumeSe = settings.se;
     app.resetGameStatus();
 
     app.currentStage = START_STAGE;
@@ -124,11 +127,11 @@ tm.main(function() {
     var setVolumeSe = app.setVolumeSe = function() {
         ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
             for (var i = SoundManager.sounds[s].length; i--; ) {
-                SoundManager.sounds[s][i].volume = app.volumeBgm;
+                SoundManager.sounds[s][i].volume = app.settings["bgm"];
             }
         });
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
-            WebAudioManager.get(s).volume = app.volumeSe;
+            WebAudioManager.get(s).volume = app.settings["se"];
         });
     };
     setVolumeSe();
@@ -483,7 +486,7 @@ tm.main(function() {
                 var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
                     scene.remove(b);
-                    if (app.bomb < 1 && !AUTO_BOMB) {
+                    if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
                         break;
@@ -506,7 +509,7 @@ tm.main(function() {
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < colLen) {
-                    if (app.bomb < 1 && !AUTO_BOMB) {
+                    if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
                     } else {
@@ -565,7 +568,7 @@ tm.main(function() {
         var stage = app.currentStage;
 
         // bgm
-        var vol = settings.bgm;
+        var vol = settings["bgm"];
         if (app.bgm) {
             app.bgm.stop();
         }

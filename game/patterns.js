@@ -287,8 +287,10 @@ var Patterns = {};
         return zakoG(height, action(
             wait(20),
             fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
-            wait(60),
-            fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet()),
+            repeat(3, action(
+                wait(30),
+                fire(direction("$rand*10-5"), speed("2.2+$rank"), bullet())
+            )),
             wait(120)
         ));
     };
@@ -379,84 +381,110 @@ var Patterns = {};
                 changeDirection(direction(90, "absolute"), 1),
                 changeSpeed(speed(0.6), 1),
                 wait(60),
-                repeat(2, action(
-                    changeDirection(direction(-90, "absolute"), 1),
-                    actionRef("attack1"),
-                    wait(30),
-                    actionRef("attack2"),
-                    wait(90),
 
-                    changeDirection(direction(90, "absolute"), 1),
-                    actionRef("attack1"),
-                    wait(30),
-                    actionRef("attack2"),
-                    wait(90)
-                )),
                 changeDirection(direction(-90, "absolute"), 1),
-                actionRef("attack1"),
+                actionRef("attack1", 5),
                 wait(30),
-                actionRef("attack2"),
+                actionRef("attack2", 4),
+                wait(90),
+
+                changeDirection(direction(90, "absolute"), 1),
+                actionRef("attack1", 5),
                 wait(30),
+                actionRef("attack2", 4),
+                wait(90),
+
+                changeDirection(direction(-90, "absolute"), 1),
+                actionRef("attack1", 7),
+                wait(30),
+                actionRef("attack2", 6),
+                wait(90),
+
+                changeDirection(direction(90, "absolute"), 1),
+                actionRef("attack1", 9),
+                wait(30),
+                actionRef("attack2", 8),
+                wait(90),
+
+                changeDirection(direction(-90, "absolute"), 1),
+                actionRef("attack1", 11),
+                wait(30),
+                actionRef("attack2", 10),
+                wait(30),
+
                 changeSpeed(speed(0), 1),
                 wait(30),
                 actionRef("attack3")
             ))
         ),
         "attack1": action(
-            fire(direction(-135, "absolute"), speed(20), bulletRef("bit1")),
-            fire(direction( -45, "absolute"), speed(20), bulletRef("bit1")),
-            fire(direction(  45, "absolute"), speed(20), bulletRef("bit1")),
-            fire(direction( 135, "absolute"), speed(20), bulletRef("bit1"))
+            fire(direction(-135, "absolute"), speed(20), bulletRef("bit1", "$1")),
+            fire(direction( -45, "absolute"), speed(20), bulletRef("bit1", "$1")),
+            fire(direction(  45, "absolute"), speed(20), bulletRef("bit1", "$1")),
+            fire(direction( 135, "absolute"), speed(20), bulletRef("bit1", "$1"))
         ),
         "attack2": action(
-            fire(direction(-135, "absolute"), speed(20), bulletRef("bit2")),
-            fire(direction( -45, "absolute"), speed(20), bulletRef("bit2")),
-            fire(direction(  45, "absolute"), speed(20), bulletRef("bit2")),
-            fire(direction( 135, "absolute"), speed(20), bulletRef("bit2"))
+            fire(direction(-135, "absolute"), speed(20), bulletRef("bit2", "$1")),
+            fire(direction( -45, "absolute"), speed(20), bulletRef("bit2", "$1")),
+            fire(direction(  45, "absolute"), speed(20), bulletRef("bit2", "$1")),
+            fire(direction( 135, "absolute"), speed(20), bulletRef("bit2", "$1"))
         ),
         "bit1": bullet(action(
             wait(1),
             changeSpeed(speed(0), 1),
-            fire(direction(-30, "aim"), speed("3+$rank"), bullet()),
-            repeat("5+$rank", action(
-                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
-                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
-                fire(direction( 20, "sequence"), speed("3+$rank"), bullet()),
+            fire(direction(-90/2, "aim"), speed("3+$rank"), bullet()),
+            repeat(5, action(
+                repeat("$1", action(
+                    fire(direction("90/$1", "sequence"), speed("3+$rank"), bullet())
+                )),
                 wait(2),
-                fire(direction(-60, "sequence"), speed("3+$rank"), bullet())
+                fire(direction(-90, "sequence"), speed("3+$rank"), bullet())
             )),
             vanish()
         )),
         "bit2": bullet(action(
             wait(1),
             changeSpeed(speed(0), 1),
-            fire(direction(-40, "aim"), speed("3.5+$rank"), bullet("g")),
-            repeat("5+$rank", action(                
-                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
-                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
-                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
-                fire(direction( 20, "sequence"), speed("3.5+$rank"), bullet("g")),
+            fire(direction(-80/2, "aim"), speed("3.5+$rank"), bullet("g")),
+            repeat(5, action(
+                repeat("$1", action(
+                    fire(direction("80/$1", "sequence"), speed("3.5+$rank"), bullet("g"))
+                )),
                 wait(2),
                 fire(direction(-80, "sequence"), speed("3.5+$rank"), bullet("g"))
             )),
             vanish()
         )),
         "attack3": action(
-            fire(direction(0), speed("3+$rank"), bullet("l")),
-            repeat(360/12, action(
+            actionRef("fire3r", 14,  1),
+            actionRef("fire3g", 12, -1),
+            actionRef("fire3r", 10,  1),
+            actionRef("fire3g",  8, -1)
+        ),
+        "fire3r": action(
+            fire(direction("$1*$2", "absolute"), speed("3+$rank"), bullet("l")),
+            repeat("360/$1-2", action(
                 repeat(3, action(
                     fire(direction(90, "sequence"), speed(0, "sequence"), bullet("l"))
                 )),
                 wait(3),
-                fire(direction(90+12, "sequence"), speed(0, "sequence"), bullet("l"))
+                fire(direction("90+$1*$2", "sequence"), speed(0, "sequence"), bullet("l"))
             )),
-            fire(direction(3), speed("3+$rank"), bullet("lg")),
-            repeat(360/9, action(
+            repeat(3, action(
+                fire(direction(90, "sequence"), speed(0, "sequence"), bullet("l"))
+            ))
+        ),
+        "fire3g": action(
+            fire(direction("$1*$2", "absolute"), speed("3+$rank"), bullet("l")),
+            repeat("360/$1-2", action(
                 repeat(3, action(
                     fire(direction(90, "sequence"), speed(0, "sequence"), bullet("lg"))
                 )),
                 wait(3),
-                fire(direction(90-9, "sequence"), speed(0, "sequence"), bullet("lg"))
+                fire(direction("90+$1*$2", "sequence"), speed(0, "sequence"), bullet("lg"))
+            )),
+            repeat(3, action(
+                fire(direction(90, "sequence"), speed(0, "sequence"), bullet("lg"))
             ))
         )
     });

@@ -873,10 +873,12 @@ var setupStageData = function(app, stage) {
             .concat(zakoG(-10, 3, "H")).concat(zakoG(10, 3, "H")).concat(delay120)
             .concat(zakoG(-10, 3, "H")).concat(zakoG(10, 3, "H")).concat(delay120)
             
-            .concat(delay120)
-
             // 第五波（中ボス）
-            .concat(bigger2).concat(bigger2Killed)
+            .concat(bigger2).concat(delay180)
+            .concat(zakoG(-7, 1, "H")).concat(delay180)
+            .concat(zakoG( 7, 1, "H")).concat(delay180)
+            .concat(zakoG(-7, 1, "H")).concat(delay180)
+            .concat(bigger2Killed)
 
             // 第六波
             .concat(pZako7f( 12)).concat(delay60)

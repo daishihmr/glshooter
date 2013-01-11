@@ -115,6 +115,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         else if (3 < this.roll) this.roll = 3;
         this.texX = 3 + ~~(this.roll);
 
+        this.power = xPress ? 0.6 : 1;
         if (!this.disabled && scene.frame % 3 === 0 && !kb.getKey("c")) {
             if (xPress) {
                 (this.level < 2) || fireWeapon(-0.19, 1.2, 0);
@@ -148,8 +149,6 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
             (this.level < 2) || fireWeapon(-0.5, 0, angle*-1);
             fireWeapon(-1.0, 0, angle*-2);
             (this.level < 1) || fireWeapon(-1.5, 0, angle*-3);
-
-            this.power = xPress ? 0.6 : 1;
         }
     };
     player.damage = function() {
@@ -227,6 +226,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         w.isWeapon = true;
         w.texX = 7;
         w.texY = 1;
+        w.power = 0;
         weapons.push(w);
         weaponPool.push(w);
         w.onremoved = function() {
@@ -248,6 +248,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         };
         w.x = player.x + x;
         w.y = player.y + y;
+        w.power = player.power;
         scene.add(w);
     };
     player.clearAll = function() {

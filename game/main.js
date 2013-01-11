@@ -57,7 +57,7 @@ tm.preload(function() {
         tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
     }
 
-    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3", 10);
+    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3");
     tm.sound.SoundManager.add("effect0",   "sounds/effect0.mp3", 1);
     tm.sound.SoundManager.add("bomb",      "sounds/nc17909.mp3");
     tm.sound.SoundManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
@@ -463,7 +463,7 @@ tm.main(function() {
                 var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
                 if (dist < colLen) {
                     glowLevel += GLOW_UP_PER_HIT; glowUp = true;
-                    e.damage(player.power);
+                    e.damage(w.power);
                     app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
                     scene.remove(w);
@@ -496,12 +496,12 @@ tm.main(function() {
         }
         // collision player vs enemy
         if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
-            var colLen = (e.scale*0.5+PLAYER_SCALE) * (e.scale*0.5+PLAYER_SCALE);
+            var colLen = (e.scale*0.5) * (e.scale*0.5);
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
-                if (dist < e.scale*e.scale) {
+                if (dist < colLen) {
                     if (app.bomb < 1 && !AUTO_BOMB) {
                         MUTEKI || player.damage();
                         glowLevel = 0;

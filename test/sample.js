@@ -33,18 +33,16 @@ tm.main(function() {
     scene.add(player);
 
     // 敵
-    for (var i = 0; i < 5; i++) {
-        var enemy = new Sprite(Sprite.mainTexture);
-        enemy.glow = 1.0;
-        enemy.texX = 4;
-        enemy.texY = 2;
-        enemy.x = 5 + i*1.5;
-        enemy.y = 20;
-        scene.add(enemy);
+    var enemy = new Sprite(Sprite.mainTexture);
+    enemy.glow = 1.0;
+    enemy.texX = 4;
+    enemy.texY = 2;
+    enemy.x = -20;
+    enemy.y =  20;
+    scene.add(enemy);
 
-        // 攻撃パターン(game/patterns.jsを参照)
-        enemy.update = Patterns["zakoG1H"].createTicker(attackParam(player));
-    }
+    // 攻撃パターン(game/patterns.jsを参照)
+    enemy.update = Patterns["middle3L0"].createTicker(attackParam(player));
 
     // キーボード
     var keyboard = tm.input.Keyboard();

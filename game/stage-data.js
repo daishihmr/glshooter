@@ -429,6 +429,24 @@ var setupStageData = function(app, stage) {
         }
     ];
 
+    var middle3L = [
+        {
+            frame: 10,
+            enemies: [
+                [ -20, 20, "bigship", "middle3L0" ],
+            ]
+        }
+    ];
+
+    var middle3R = [
+        {
+            frame: 10,
+            enemies: [
+                [  20, 20, "bigship", "middle3R0" ],
+            ]
+        }
+    ];
+
     var bigger = [
         {
             frame: 100,
@@ -895,6 +913,27 @@ var setupStageData = function(app, stage) {
             .concat(pZako7f( 12)).concat(delay60)
             .concat(pZako7f(-12)).concat(delay60)
             .concat(pZako7f( 12)).concat(delay60)
+
+            .concat(delay120)
+
+            // 第七波
+            .concat(middle3L).concat(delay120)
+            .concat(middle3R).concat(delay120)
+            .concat(tankG(13, 1, "L"))
+            .concat(tankG(13, 0, "R"))
+            .concat(zakoG(0, 3, "H"))
+            .concat(delay60)
+            .concat(zakoG(-7, 2, "H"))
+            .concat(zakoG( 7, 2, "H"))
+            .concat(zakoG( 0, 3, "M"))
+            .concat(delay60)
+            .concat(zakoG( -7, 2, "M"))
+            .concat(zakoG(-10, 2, "M"))
+            .concat(zakoG(  7, 2, "M"))
+            .concat(zakoG( 10, 2, "M"))
+            .concat(zakoG( -3, 3, "L"))
+            .concat(zakoG(  3, 3, "L"))
+            .concat(delay60)
 
     }
 

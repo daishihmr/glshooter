@@ -74,5 +74,12 @@ var enemyData = {
         hp: 10,
         scale: 2,
         score: 200
-    }
+    },
+    "bigship": {
+        frameIndex: 24,
+        hp: 500,
+        scale: 4,
+        score: 1000,
+        clear: true
+    },
 };

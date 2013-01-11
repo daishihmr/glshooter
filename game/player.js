@@ -42,13 +42,13 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
         this.muteki = (scene.frame < reactFrame + MUTEKI_TIME);
 
-        var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.20;
+        var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.08;
         var firePower = (this.rebirth) ? 8 : 2;
         for (var i = 0; i < firePower; i++) {
             var z = zanzoPool.pop();
             if (z) {
                 z.x = this.x + Math.random()*0.1-0.05 - zpos;
-                z.y = this.y - 1.2;
+                z.y = this.y - 1.0;
                 z.alpha = 0.8;
                 z.scale = 0.6;
                 scene.add(z);
@@ -56,7 +56,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
             z = zanzoPool.pop();
             if (z) {
                 z.x = this.x + Math.random()*0.1-0.05 + zpos;
-                z.y = this.y - 1.2;
+                z.y = this.y - 1.0;
                 z.alpha = 0.8;
                 z.scale = 0.6;
                 scene.add(z);

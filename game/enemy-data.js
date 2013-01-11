@@ -34,12 +34,14 @@ var enemyData = {
         hp: 200,
         scale: 4,
         score: 1000,
+        clear: true,
     },
     "bigger2": {
         frameIndex: 23,
         hp: 3000,
         scale: 5,
         score: 1000,
+        clear: true,
     },
     "middle": {
         frameIndex: 22,

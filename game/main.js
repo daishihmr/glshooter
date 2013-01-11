@@ -254,6 +254,17 @@ tm.main(function() {
                 b.texX = 1;
                 b.texY = 1;
             }
+            if (spec.label === "l") {
+                b.scale = 0.8;
+            } else if (spec.label === "lg") {
+                b.scale = 0.8;
+                b.texX = 2;
+                b.texY = 1;
+            } else if (spec.label === "lb") {
+                b.scale = 0.8;
+                b.texX = 1;
+                b.texY = 1;
+            }
 
             return b;
         },
@@ -441,7 +452,8 @@ tm.main(function() {
             app.bomb -= 1;
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
-                if (e.parent !== null) e.damage(BOMB_DAMAGE1);
+                if (e.parent === null || e.x<-17 || 17<e.x || e.y<-17 || 17<e.y) continue;
+                e.damage(BOMB_DAMAGE1);
             }
             clearAllBullets(false);
 
@@ -451,7 +463,7 @@ tm.main(function() {
         if (bombing === true) {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
-                if (e.parent === null) continue;
+                if (e.parent === null || e.x<-17 || 17<e.x || e.y<-17 || 17<e.y) continue;
                 e.damage(BOMB_DAMAGE2);
             }
         }

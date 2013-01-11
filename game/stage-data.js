@@ -8,6 +8,7 @@ var setupStageData = function(app, stage) {
     var delay40 = [ { frame: 40, enemies: [] } ];
     var delay60 = [ { frame: 60, enemies: [] } ];
     var delay120 = [ { frame: 120, enemies: [] } ];
+    var delay180 = [ { frame: 180, enemies: [] } ];
 
     var zako1Left = [
         {
@@ -788,6 +789,7 @@ var setupStageData = function(app, stage) {
             .concat(delay120)
             .concat(delay120)
 
+            // 第一波
             .concat(zakoG( 7, 2, "M")).concat(delay20)
             .concat(zakoG(-7, 2, "M")).concat(delay20)
             .concat(delay20)
@@ -812,11 +814,9 @@ var setupStageData = function(app, stage) {
             .concat(zakoG(10, 2, "H")).concat(delay20)
             .concat(zakoG(-7, 2, "M")).concat(delay20)
 
-            .concat(delay120)
-            .concat(delay120)
-            .concat(delay120)
+            .concat(delay180)
 
-            .concat(cannon2).concat(delay60)
+            // 第二波
             .concat(cannon3).concat(delay40)
             .concat(tankBoth)
             .concat(zakoG( 0, 3, "H"))
@@ -837,24 +837,63 @@ var setupStageData = function(app, stage) {
             .concat(tankG(0, 0, "R"))
             .concat(tankG(0, 1, "L"))
 
-            .concat(delay120).concat(delay120)
+            .concat(delay180)
 
+            // 第三波
+            .concat(cannon2).concat(delay60)
+            .concat(zakoG( 7, 2, "M")).concat(delay20)
+            .concat(zakoG(-7, 2, "M")).concat(delay20)
+            .concat(delay20)
+            .concat(zakoG( 7, 2, "H")).concat(delay20)
+            .concat(zakoG(-7, 2, "H")).concat(delay20)
+            .concat(tankG(7, 0, "R"))
+            .concat(tankG(0, 1, "R"))
+            .concat(delay20)
+            .concat(tankG(12, 0, "L"))
+            .concat(tankG(-5, 1, "L"))
+            .concat(zakoG( 3, 2, "H")).concat(delay20)
+            .concat(delay20)
+            .concat(zakoG(-3, 2, "H")).concat(delay20)
+            .concat(delay40)
+            .concat(tankG(7, 0, "R"))
+            .concat(tankG(0, 1, "R"))
+            .concat(tankG(12, 0, "L"))
+            .concat(tankG(-5, 1, "L"))
+            .concat(zakoG(-7, 2, "H")).concat(delay20)
+            .concat(zakoG(-2, 2, "H")).concat(delay20)
+            .concat(zakoG( 7, 3, "M")).concat(delay20)
+            .concat(zakoG(10, 3, "H")).concat(delay20)
+            .concat(zakoG(-7, 3, "M")).concat(delay20)
+
+            .concat(delay180)
+
+            // 第四波
             .concat(middle2).concat(delay120)
+            .concat(zakoG(-10, 3, "H")).concat(zakoG(10, 3, "H")).concat(delay120)
+            .concat(zakoG(-10, 3, "H")).concat(zakoG(10, 3, "H")).concat(delay120)
+            .concat(zakoG(-10, 3, "H")).concat(zakoG(10, 3, "H")).concat(delay120)
             
-            .concat(delay120).concat(delay120)
+            .concat(delay120)
 
+            // 第五波（中ボス）
             .concat(bigger2).concat(bigger2Killed)
 
+            // 第六波
             .concat(pZako7f( 12)).concat(delay60)
             .concat(pZako7f(  4)).concat(delay60)
             .concat(pZako7f(  0)).concat(delay60)
             .concat(pZako7f( -4)).concat(delay60)
             .concat(pZako7f(-12)).concat(delay60)
             .concat(pZako7f( 12)).concat(delay60)
+            .concat(tankG( 1, 1, "R"))
+            .concat(tankG(-1, 0, "R"))
             .concat(pZako7f(-12)).concat(delay60)
+            .concat(tankG(-1, 1, "L"))
+            .concat(tankG( 1, 0, "L"))
             .concat(pZako7f( 12)).concat(delay60)
             .concat(pZako7f(-12)).concat(delay60)
             .concat(pZako7f( 12)).concat(delay60)
+
     }
 
     var cursor = 0;

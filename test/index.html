@@ -2,25 +2,21 @@
 <html>
 <head>
 <meta charset=UTF-8>
+<script src="../lib/tmlib.js"></script>
+<script src="../lib/webaudio.js"></script>
 </head>
 <body>
+<input type="text" id="vol" value="1.0" />
+<button id="play">play</button>
 <script type="text/javascript">
 window.onload = function() {
-    var a = [];
-    for (var i = 0; i < 50000; i++) {
-        a[a.length] = Math.random() * 100 - 50;
-    }
-
-    var b = [];
-
-    console.log("start");
-    var start = Date.now();
-    for (var c = 0; c < 100; c++) {
-        for (var i = a.length; i--; ) {
-            b[b.length] = Math.abs(a[i]);
+    var sound = tm.sound.WebAudio("../sounds/effect0.mp3");
+    document.getElementById("play").onclick = function() {
+        if (sound.loaded) {
+            sound.volume = parseFloat(document.getElementById("vol").value);
+            sound.play();
         }
     }
-    console.log(Date.now() - start);
 };
 </script>
 </body>

@@ -119,7 +119,7 @@ var ContinueScene;
                     switch (this.selection) {
                     case 0: // game start
                         this.startFlag = true;
-                        MUTE_SE || tm.sound.SoundManager.get("effect0").play();
+                        MUTE_SE || tm.sound.WebAudioManager.get("effect0").play();
                         break;
                     case 1: // setting
                         app.pointing.button = 0; app.pointing.update();
@@ -372,7 +372,6 @@ var ContinueScene;
                 this.selection = 0;
             });
             this.doSetting = function(selection, updown) {
-                console.log(selection)
                 switch(selection) {
                 case 0:
                     settings.bgm += 0.01*updown;
@@ -420,10 +419,9 @@ var ContinueScene;
 
             if (this.selection === 1) {
                 if (!MUTE_SE && (app.keyboard.getKeyUp("right") || app.keyboard.getKeyUp("left") || app.pointing.getPointingEnd())) {
-                    var s = tm.sound.SoundManager.get("explode");
+                    var s = tm.sound.WebAudioManager.get("explode");
                     s.volume = this.settings.se;
                     s.play();
-                    console.log("play");
                 }
             }
 

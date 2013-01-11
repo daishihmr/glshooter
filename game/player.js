@@ -156,7 +156,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     };
     player.miss = function() {
         app.explode(this.x, this.y, 2);
-        var sound = tm.sound.SoundManager.get("explode");
+        var sound = tm.sound.WebAudioManager.get("explode");
         if (sound !== void 0) MUTE_SE || sound.play();
 
         app.zanki -= 1;

@@ -57,15 +57,21 @@ tm.preload(function() {
         tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
     }
 
-    tm.sound.SoundManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3");
-    tm.sound.SoundManager.add("effect0",   "sounds/effect0.mp3", 1);
-    tm.sound.SoundManager.add("bomb",      "sounds/nc17909.mp3");
-    tm.sound.SoundManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
-    tm.sound.SoundManager.add("v-extend",  "sounds/voice_extend.mp3", 1);
+    if (!webkitAudioContext) {
+        MUTE_SE = true;
+        return;
+    }
+
+    tm.sound.WebAudioManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3");
+    tm.sound.WebAudioManager.add("effect0",   "sounds/effect0.mp3", 1);
+    tm.sound.WebAudioManager.add("bomb",      "sounds/nc17909.mp3");
+    tm.sound.WebAudioManager.add("v-genBomb", "sounds/voice_gen-bomb.mp3", 1);
+    tm.sound.WebAudioManager.add("v-extend",  "sounds/voice_extend.mp3", 1);
 });
 
 tm.main(function() {
     var SoundManager = tm.sound.SoundManager;
+    var WebAudioManager = tm.sound.WebAudioManager;
     var Random = tm.util.Random;
     if (!localStorage.getItem("jp.dev7.glshooter.settings")) {
         var s = {
@@ -93,11 +99,11 @@ tm.main(function() {
         if (0 < delta) {
             if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) {
                 app.bomb += 1;
-                MUTE_SE || SoundManager.get("v-genBomb").play();
+                MUTE_SE || WebAudioManager.get("v-genBomb").play();
             }
             if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE_LIFE)) {
                 app.zanki += 1;
-                MUTE_SE || SoundManager.get("v-extend").play();
+                MUTE_SE || WebAudioManager.get("v-extend").play();
             }
         }
     };
@@ -122,9 +128,7 @@ tm.main(function() {
             }
         });
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
-            for (var i = SoundManager.sounds[s].length; i--; ) {
-                SoundManager.sounds[s][i].volume = app.volumeSe;
-            }
+            WebAudioManager.get(s).volume = app.volumeSe;
         });
     };
     setVolumeSe();
@@ -311,7 +315,7 @@ tm.main(function() {
             if (this.clear !== true) {
                 explode(this.x, this.y, this.scale);
                 if (0 < expSoundPlaying) return;
-                MUTE_SE || SoundManager.get("explode").play();
+                MUTE_SE || WebAudioManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
                 var timer = new Sprite(mainTexture);
@@ -324,7 +328,7 @@ tm.main(function() {
                     clearAllBullets(false);
                     if (scene.frame % 5 === 0 && Math.random() < 0.7) {
                         if (expSoundPlaying <= 0) {
-                            MUTE_SE || SoundManager.get("explode").play();
+                            MUTE_SE || WebAudioManager.get("explode").play();
                             expSoundPlaying = 5;
                         }
                         explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);

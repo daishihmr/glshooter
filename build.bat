@@ -10,6 +10,7 @@ call java -jar compiler.jar --js_output_file glshooter.min.js ^
     --externs lib/tmlib.js ^
     --externs lib/gl-matrix.js ^
     --externs lib/bulletml.js ^
+    --externs lib/webaudio.js ^
     --js mylib/bulletml.gl2d.js ^
     --js mylib/scene.js ^
     --js mylib/sprite.js ^
@@ -45,6 +46,7 @@ call zip glshooter.zip ^
     lib/gl-matrix-min.js ^
     lib/bulletml.js ^
     lib/tmlib.js ^
+    lib/webaudio.js ^
     glshooter.min.js
 
 copy /y index-backup.html index.html

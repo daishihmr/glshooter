@@ -45,7 +45,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
                 p.size = 0.6;
                 scene.add(p);
             }
-            MUTE_SE || tm.sound.SoundManager.get("bomb").play();
+            MUTE_SE || tm.sound.WebAudioManager.get("bomb").play();
         },
         mini: function(x, y) {
             bombParticlePool.readyCount = 0;
@@ -60,7 +60,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
                 p.size = 0.3;
                 scene.add(p);
             }
-            MUTE_SE || tm.sound.SoundManager.get("explode").play();
+            MUTE_SE || tm.sound.WebAudioManager.get("explode").play();
         }
     };
 };

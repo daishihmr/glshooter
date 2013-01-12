@@ -121,6 +121,7 @@ var Labels = {};
         bossHp.x = 300*0.5 + 5;
         bossHp.y = 5;
         bossHp.update = function(app) {
+            this.visible = (boss.parent !== null);
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
             if (this.width <= 1) this.remove();

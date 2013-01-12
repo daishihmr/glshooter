@@ -35,6 +35,12 @@ var CLEAR_BONUS_BOMB = 10000;
 
 var LOAD_BGM_FROM_EXTERNAL_SITE = true;
 
+var BGM = {
+    "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
+    "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
+    "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3",
+};
+
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
     tm.util.FileManager.load("fs", { url: "shaders/shader.fs", type: "GET" });
@@ -43,17 +49,16 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss1", "images/boss1.png");
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
-    tm.graphics.TextureManager.add("w", "images/w.png");
 
-    if (LOAD_BGM_FROM_EXTERNAL_SITE) {
-        tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/glshooter/sounds/nc28689.mp3", 1);
-        tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/glshooter/sounds/nc784.mp3", 1);
-        tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/glshooter/sounds/nc790.mp3", 1);
-    } else {
-        tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
-        tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-        tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
-    }
+    // if (LOAD_BGM_FROM_EXTERNAL_SITE) {
+    //     tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3", 1);
+    //     tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3", 1);
+    //     tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3", 1);
+    // } else {
+    //     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
+    //     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
+    //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
+    // }
 
     if (!webkitAudioContext) {
         MUTE_SE = true;
@@ -84,7 +89,6 @@ tm.main(function() {
             settings[prop] = s[prop];
         }
     }
-    console.log(settings)
 
     var app = tm.app.CanvasApp("#tm");
     app.resize(320, 320);
@@ -125,11 +129,11 @@ tm.main(function() {
     app.currentStage = START_STAGE;
 
     var setVolumeSe = app.setVolumeSe = function() {
-        ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
-            for (var i = SoundManager.sounds[s].length; i--; ) {
-                SoundManager.sounds[s][i].volume = app.settings["bgm"];
-            }
-        });
+        // ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
+        //     for (var i = SoundManager.sounds[s].length; i--; ) {
+        //         SoundManager.sounds[s][i].volume = app.settings["bgm"];
+        //     }
+        // });
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
             WebAudioManager.get(s).volume = app.settings["se"];
         });
@@ -412,7 +416,7 @@ tm.main(function() {
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
 
-        if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
+        // if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
 
         glowUp = false;
 
@@ -475,7 +479,7 @@ tm.main(function() {
         for (var j = enemies.length; j--; ) {
             var e  = enemies[j];
             if (e.parent === null) continue;
-            var colLen = (e.scale*0.5+WEAPON_SCALE) * (e.scale*0.5+WEAPON_SCALE);
+            var colLen = (e.scale*0.25+WEAPON_SCALE) * (e.scale*0.25+WEAPON_SCALE);
             for (var i = weapons.length; i--; ) {
                 var w = weapons[i];
                 if (w.parent === null) continue;
@@ -515,10 +519,10 @@ tm.main(function() {
         }
         // collision player vs enemy
         if (player.parent !== null && !player.muteki && !bombing && !player.disabled) {
-            var colLen = (e.scale*0.5) * (e.scale*0.5);
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
+                var colLen = (e.scale*0.25) * (e.scale*0.25);
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < colLen) {
                     if (app.bomb < 1 || !settings["autoBomb"]) {
@@ -580,16 +584,23 @@ tm.main(function() {
         var stage = app.currentStage;
 
         // bgm
-        var vol = settings["bgm"];
-        if (app.bgm) {
-            app.bgm.stop();
-        }
-        app.bgm = SoundManager.get("bgm" + stage);
-        if (app.bgm) {
-            app.bgm.loop = true;
-            setTimeout(function() {
-                MUTE_BGM || app.bgm.play();
-            }, 100);
+        if (!MUTE_BGM) {
+            if (app.bgm) {
+                app.bgm.stop();
+            }
+            app.bgm = tm.sound.Sound(BGM["bgm" + stage]);
+            if (app.bgm) {
+                var play = function() {
+                    if (app.bgm.loaded) {
+                        app.bgm.volume = settings["bgm"];
+                        app.bgm.loop = true;
+                        app.bgm.play();
+                    } else {
+                        setTimeout(play, 100);
+                    }
+                };
+                play();
+            }
         }
 
         // boss

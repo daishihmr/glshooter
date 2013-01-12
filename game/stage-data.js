@@ -933,8 +933,50 @@ var setupStageData = function(app, stage) {
             .concat(zakoG( 10, 2, "M"))
             .concat(zakoG( -3, 3, "L"))
             .concat(zakoG(  3, 3, "L"))
-            .concat(delay60)
 
+            .concat(delay180)
+            .concat(delay180)
+
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "red",
+                        text: "WARNING!!",
+                        visible: true
+                    }
+                }
+            ])
+            .concat(delay180).concat(delay120)
+            .concat([
+                {
+                    frame: 10,
+                    enemies: [],
+                    message: {
+                        color: "white",
+                        text: "",
+                        visible: false
+                    }
+                }
+            ])
+            .concat([
+                {
+                    frame: 20,
+                    enemies: [
+                        [ 0, 21.9, "boss", "boss31", "boss3" ]
+                    ]
+                }
+            ]);
+
+            // StageData = [
+            //     {
+            //         frame: 20,
+            //         enemies: [
+            //             [ 0, 21.9, "boss", "boss31", "boss3" ]
+            //         ]
+            //     }
+            // ];
     }
 
     var cursor = 0;

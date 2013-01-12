@@ -52,14 +52,15 @@ var Sprite;
         gl.uniform1f(uni["emission"], this.emission);
         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-        if (this.glow > 0) {
-            gl.bindTexture(gl.TEXTURE_2D, Sprite.mainTexture); // TODO
+        if (0 < this.glow) {
+            gl.bindTexture(gl.TEXTURE_2D, Sprite.mainTexture);
             gl.uniform1f(uni["texX"], 4);
             gl.uniform1f(uni["texY"], 1);
             gl.uniform1f(uni["texScale"], 1);
             gl.uniform1f(uni["alpha"], this.glow);
             gl.uniform1f(uni["scale"], this.scale*2);
             gl.uniform1f(uni["scaleY"], this.scale*2);
+
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
         }

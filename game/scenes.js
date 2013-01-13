@@ -61,7 +61,7 @@ var ContinueScene;
             title.alpha = 0;
             this.addChild(title);
 
-            var version = this.version = tm.app.Label("version 1.0 beta", 10);
+            var version = this.version = tm.app.Label("version 1.0", 10);
             version.setFontFamily("Orbitron");
             version.setAlign("end");
             version.setBaseline("middle");

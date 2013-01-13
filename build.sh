@@ -39,9 +39,6 @@ zip glshooter.zip \
     sounds/voice_gen-bomb.mp3 \
     sounds/effect0.mp3 \
     sounds/nc17909.mp3 \
-    sounds/nc784.mp3 \
-    sounds/nc790.mp3 \
-    sounds/nc28689.mp3 \
     images/boss1.png \
     images/texture0.png \
     images/boss2.png \

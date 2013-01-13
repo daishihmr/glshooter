@@ -19,7 +19,6 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.disabled = false;
         this.power = 1;
         this.muteki = false;
-        this.missCount = 0;
     };
 
     var kb = app.keyboard;
@@ -156,7 +155,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.miss();
     };
     player.miss = function() {
-        this.missCount += 1;
+        app.missCount += 1;
         app.explode(this.x, this.y, 2);
         var sound = tm.sound.WebAudioManager.get("explode");
         if (sound !== void 0) MUTE_SE || sound.play();

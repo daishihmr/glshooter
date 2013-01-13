@@ -8,8 +8,8 @@ var DBL_CLICK_INTERVAL = 200;
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
 
-var EXTEND_SCORE_LIFE = 1000000;
-var EXTEND_SCORE_BOMB =  600000;
+var EXTEND_SCORE_LIFE = 2000000;
+var EXTEND_SCORE_BOMB =  800000;
 
 var GLOW_DOWN_TIME = 120;
 var GLOW_UP_PER_HIT = 1;
@@ -38,7 +38,8 @@ var LOAD_BGM_FROM_EXTERNAL_SITE = true;
 var BGM = {
     "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
     "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
-    "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3",
+    // "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3",
+    "bgm3": "sounds/nc52497.mp3",
 };
 
 tm.preload(function() {
@@ -454,6 +455,7 @@ tm.main(function() {
         // bomb
         if ((keyboard.getKeyDown("z")||mouse.doubleClick) && player.parent !== null && 0 < app.bomb && bombing === false) {
             app.bomb -= 1;
+            app.useBombCount += 1;
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null || e.x<-17 || 17<e.x || e.y<-17 || 17<e.y) continue;
@@ -509,6 +511,7 @@ tm.main(function() {
                     } else {
                         app.bomb -= 1;
                         app.autoBomber(player.x, player.y);
+                        app.useBombCount += 1;
                         break;
                     }
                 } else if (dist < 1.5) {
@@ -576,6 +579,17 @@ tm.main(function() {
 
     // stage data
     var stageData;
+
+    // game start
+    app.gameStart = function() {
+        app.allStageClear = false;
+        app.continueCount = 0;
+        app.currentStage = START_STAGE;
+        app.useBombCount = 0;
+        app.missCount = 0;
+        app.resetGameStatus();
+        app.stageStart();
+    };
 
     // stage start
     app.stageStart = function() {
@@ -679,6 +693,7 @@ tm.main(function() {
 
     // game clear
     app.gameClear = function() {
+        app.allStageClear = true;
         message.fillStyle = "white";
         message.setFontSize(30);
         message.text = "all stage clear";

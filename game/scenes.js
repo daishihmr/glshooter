@@ -149,7 +149,7 @@ var ContinueScene;
                         l.visible = false;
                     });
                     app.pushScene(app.gameScene);
-                    app.stageStart();
+                    app.gameStart();
                 }
             } else { // fade in
                 this.title.alpha += 0.01;
@@ -307,9 +307,6 @@ var ContinueScene;
                         app.popScene(); // pop this
                         app.popScene(); // pop pauseScene
                     } else if (app.pauseScene.selection === 3) { // back to title
-                        app.continueCount = 0;
-                        app.currentStage = 1;
-                        app.resetGameStatus();
                         app.popScene(); // pop this
                         app.popScene(); // pop pauseScene
                         app.popScene(); // pop gameScene
@@ -475,11 +472,31 @@ var ContinueScene;
             if (0.5 < this.gameover.alpha) {
                 this.update = function() {};
                 app.highScore = Math.max(app.score, app.highScore);
-                var message =
-                    "SCORE: " + ~~(app.highScore) + " (" +
-                    "stage: " + app.currentStage + ", " +
-                    "continue: " + app.continueCount +
-                    ")";
+                var status = [];
+                if (app.allStageClear) {
+                    status[status.length] = "ALL STAGE CLEAR!"
+                    var star = 0;
+                    if (app.useBombCount === 0) {
+                        status[status.length] = "no bomn";
+                        star += 1;
+                    }
+                    if (app.missCount === 0) {
+                        status[status.length] = "no miss";
+                        star += 1;
+                    }
+                    if (app.continueCount === 0) {
+                        status[status.length] = "no continue"
+                        star += 1;
+                    }
+                    status[status.length] = "☆".repeat(star);
+                } else {
+                    status[status.length] = "stage: " + app.currentStage;
+                    status[status.length] = "continue: " + app.continueCount;
+                }
+                var message = "SCORE: {score} ({status})".format({
+                    score: ~~(app.highScore),
+                    status: status.join(" ")
+                });
                 console.log("entry 9leap", ~~(app.highScore), message);
                 tm.social.Nineleap.postRanking(~~(app.highScore), message);
             }

@@ -1470,13 +1470,13 @@ var Patterns = {};
     Patterns["boss31"] = pattern({
         "top": action(
             actionRef("launch"),
-            repeat(900, action(
+            repeat(999, action(
                 actionRef("attack1"),
-                actionRef("attack2",  1),
                 actionRef("attack3", -1),
+                actionRef("attack4"),
                 actionRef("attack1"),
-                actionRef("attack2", -1),
                 actionRef("attack3",  1),
+                actionRef("attack4"),
                 wait(1)
             ))
         ),
@@ -1504,46 +1504,6 @@ var Patterns = {};
                 fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("l")),
                 wait(3),
                 fire(direction("13*$1", "sequence"), speed(0, "sequence"), bullet("l"))
-            )),
-            vanish()
-        )),
-        "attack2": action(function() {
-            var a = [];
-            a[a.length] = changeDirection(direction(90, "absolute"), 1);
-            a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
-            a[a.length] = wait(15 * 7);
-            for (var i = 0; i < 14; i++) {
-                if (i === 0) {
-                    a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
-                } else if (i === 7) {
-                    a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
-                }
-                a[a.length] = boss3Gun[1](bulletRef("bit21"));
-                a[a.length] = boss3Gun[4](bulletRef("bit21"));
-                a[a.length] = wait(15);
-                a[a.length] = boss3Gun[1](bulletRef("bit22"));
-                a[a.length] = boss3Gun[4](bulletRef("bit22"));
-                a[a.length] = wait(15);
-            }
-            a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
-            a[a.length] = wait(15 * 8.5);
-            a[a.length] = changeSpeed(speed(0), 1);
-            a[a.length] = wait(100);
-            return a;
-        }),
-        "bit21": bullet(action(
-            wait(1),
-            fire(direction(0, "absolute"), speed("0.5+($rank*3-1)"), bullet("g")),
-            repeat(360/15-1, action(
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("g"))
-            )),
-            vanish()
-        )),
-        "bit22": bullet(action(
-            wait(1),
-            fire(direction(0, "absolute"), speed("0.8+($rank*3-1)"), bullet("b")),
-            repeat(360/15-1, action(
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("b"))
             )),
             vanish()
         )),
@@ -1617,21 +1577,194 @@ var Patterns = {};
                 wait(60)
             )),
             vanish()
+        )),
+        "attack4": action(function() {
+            var a = [];
+            for (var i = 0; i < 50; i++) {
+                if (i % 7 === 0) {
+                    a[a.length] = boss3Gun[0](bulletRef("bit42", i, -1));
+                    a[a.length] = boss3Gun[1](bulletRef("bit42", i, -1));
+                    a[a.length] = boss3Gun[2](bulletRef("bit42", i, -1));
+                    a[a.length] = boss3Gun[3](bulletRef("bit42", i,  1));
+                    a[a.length] = boss3Gun[4](bulletRef("bit42", i,  1));
+                    a[a.length] = boss3Gun[5](bulletRef("bit42", i,  1));
+                } else {
+                    a[a.length] = boss3Gun[0](bulletRef("bit41", i, -1));
+                    a[a.length] = boss3Gun[1](bulletRef("bit41", i, -1));
+                    a[a.length] = boss3Gun[2](bulletRef("bit41", i, -1));
+                    a[a.length] = boss3Gun[3](bulletRef("bit41", i,  1));
+                    a[a.length] = boss3Gun[4](bulletRef("bit41", i,  1));
+                    a[a.length] = boss3Gun[5](bulletRef("bit41", i,  1));
+                }
+                a[a.length] = wait(5);
+            }
+            a[a.length] = wait(600);
+            return a;
+        }),
+        "bit41": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            wait(1),
+            fire(direction("(60-$1)*$2"), speed(5), bulletRef("blueVanish", "$1")),
+            wait(1),
+            vanish()
+        )),
+        "bit42": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            wait(1),
+            fire(direction("(60-$1)*$2"), speed(5), bulletRef("blueBomb", "$1")),
+            wait(1),
+            vanish()
+        )),
+        "blueVanish": bullet(action(
+            wait("10+$1"),
+            changeSpeed(speed(0), 5),
+            wait(300),
+            vanish()
+        )),
+        "blueBomb": bullet(action(
+            wait("10+$1"),
+            changeSpeed(speed(0), 5),
+            wait(300),
+            fire(direction(0, "absolute"), speed("0.2+($rank*3-1)"), bullet("sg")),
+            repeat(20-1, action(
+                fire(direction(360/20, "sequence"), speed(0, "sequence"), bullet("sg"))
+            )),
+            vanish()
         ))
     });
 
     Patterns["boss32"] = pattern({
         "top": action(
-            repeat(999, action(
-                actionRef("attack4"),
+            repeat(900, action(
+                actionRef("attack2",  1),
+                actionRef("attack5"),
+                actionRef("attack6"),
+                actionRef("attack2", -1),
+                actionRef("attack5"),
+                actionRef("attack6"),
                 wait(1)
             ))
         ),
-        "attack4": action(function() {
+        "attack2": action(function() {
             var a = [];
-            
+            a[a.length] = changeDirection(direction(90, "absolute"), 1);
+            a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
+            a[a.length] = wait(15 * 7);
+            for (var i = 0; i < 14; i++) {
+                if (i === 0) {
+                    a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
+                } else if (i === 7) {
+                    a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
+                }
+                a[a.length] = boss3Gun[1](bulletRef("bit21"));
+                a[a.length] = boss3Gun[4](bulletRef("bit21"));
+                a[a.length] = wait(15);
+                a[a.length] = boss3Gun[1](bulletRef("bit22"));
+                a[a.length] = boss3Gun[4](bulletRef("bit22"));
+                a[a.length] = wait(15);
+            }
+            a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
+            a[a.length] = wait(15 * 8.5);
+            a[a.length] = changeSpeed(speed(0), 1);
+            a[a.length] = wait(100);
             return a;
-        })
+        }),
+        "bit21": bullet(action(
+            wait(1),
+            fire(direction(0, "absolute"), speed("0.5+($rank*3-1)"), bullet("g")),
+            repeat(360/15-1, action(
+                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("g"))
+            )),
+            vanish()
+        )),
+        "bit22": bullet(action(
+            wait(1),
+            fire(direction(0, "absolute"), speed("0.8+($rank*3-1)"), bullet("b")),
+            repeat(360/15-1, action(
+                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("b"))
+            )),
+            vanish()
+        )),
+        "attack5": action(function() {
+            var a = [];
+            for (var j = 2; j--; ) {
+                for (var i = 0; i < 360; i++) {
+                    var t = Math.sin(i*Math.DEG_TO_RAD*3) * 60;
+                    if (i%27 < 4) {
+                        a[a.length] = boss3Gun[0](bulletRef("bit51", t, -1));
+                        a[a.length] = boss3Gun[5](bulletRef("bit51", t,  1));
+                    } else if (i%27 < 8) {
+                        a[a.length] = boss3Gun[1](bulletRef("bit51", t, -1));
+                        a[a.length] = boss3Gun[4](bulletRef("bit51", t,  1));
+                    } else if (i%27 < 12) {
+                        a[a.length] = boss3Gun[2](bulletRef("bit51", t, -1));
+                        a[a.length] = boss3Gun[3](bulletRef("bit51", t,  1));
+                    }
+                    a[a.length] = wait(1);
+                }
+            }
+            return a;
+        }),
+        "bit51": bullet(action(
+            wait(1),
+            changeSpeed(0, 1),
+            fire(direction("$1*$2-15", "absolute"), speed("1.8+($rank*3-1)"), bullet()),
+            fire(direction("$1*$2+15", "absolute"), speed("1.8+($rank*3-1)"), bullet()),
+            vanish()
+        )),
+        "attack6": action(function() {
+            var a = [];
+            var d = [1.5, 0.5, 0, 0, 0.5, 1.5];
+            for (var i = 0; i < 12; i++) {
+                var bit = (i%2 === 0) ? "bit61": "bit62";
+                a[a.length] = boss3Gun[i%6](bulletRef(bit, d[i%6]));
+                a[a.length] = wait(60);
+            }
+            a[a.length] = wait(120);
+            for (var i = 0; i < 6; i++) {
+                a[a.length] = boss3Gun[i%6](bulletRef("bit62", d[i%6]));
+                a[a.length] = wait(30);
+            }
+            for (var i = 0; i < 6; i++) {
+                a[a.length] = boss3Gun[i%6](bulletRef("bit61", d[i%6]));
+                a[a.length] = wait(30);
+            }
+            return a;
+        }),
+        "bit61": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            fire(direction(-80/2), speed("2.2+($rank*3-1)+$1"), bullet("g")),
+            repeat(4, action(
+                repeat(80/8, action(
+                    fire(direction(8, "sequence"), speed(0, "sequence"), bullet("g"))
+                )),
+                wait(3),
+                fire(direction(-80, "sequence"), speed(0, "sequence"), bullet("g"))
+            )),
+            repeat(80/8, action(
+                fire(direction(8, "sequence"), speed(0, "sequence"), bullet("g"))
+            )),
+            vanish()
+        )),
+        "bit62": bullet(action(
+            wait(1),
+            changeSpeed(speed(0), 1),
+            fire(direction(-63/2), speed("1.8+($rank*3-1)+$1"), bullet()),
+            repeat(4, action(
+                repeat(63/7, action(
+                    fire(direction(7, "sequence"), speed(0, "sequence"), bullet())
+                )),
+                wait(3),
+                fire(direction(-63, "sequence"), speed(0, "sequence"), bullet())
+            )),
+            repeat(63/7, action(
+                fire(direction(7, "sequence"), speed(0, "sequence"), bullet())
+            )),
+            vanish()
+        ))
     });
 
 })();

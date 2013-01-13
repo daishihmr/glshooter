@@ -969,14 +969,14 @@ var setupStageData = function(app, stage) {
                 }
             ]);
 
-            StageData = [
-                {
-                    frame: 20,
-                    enemies: [
-                        [ 0, 21.9, "boss", "boss31", "boss3" ]
-                    ]
-                }
-            ];
+            // StageData = [
+            //     {
+            //         frame: 220,
+            //         enemies: [
+            //             [ 0, 8, "boss", "boss32", "boss3" ]
+            //         ]
+            //     }
+            // ];
     }
 
     var cursor = 0;

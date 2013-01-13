@@ -27,7 +27,7 @@ var PLAYER_SCALE = 1.5;
 var WEAPON_SCALE = 1.0;
 var MUTEKI_TIME = 90;
 
-var START_STAGE = 3;
+var START_STAGE = 1;
 var NUM_OF_STAGE = 3;
 
 var CLEAR_BONUS_ZANKI = 100000;
@@ -38,8 +38,7 @@ var LOAD_BGM_FROM_EXTERNAL_SITE = true;
 var BGM = {
     "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
     "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
-    // "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3",
-    "bgm3": "sounds/nc52497.mp3",
+    "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
 };
 
 tm.preload(function() {
@@ -74,6 +73,8 @@ tm.preload(function() {
 });
 
 tm.main(function() {
+    document.getElementById("loading").style.display = "none";
+
     var SoundManager = tm.sound.SoundManager;
     var WebAudioManager = tm.sound.WebAudioManager;
     var Random = tm.util.Random;

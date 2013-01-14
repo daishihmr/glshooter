@@ -81,7 +81,7 @@ tm.main(function() {
     var settings = {
         "bgm": 1.0,
         "se": 0.8,
-        "autoBomb": false
+        "autoBomb": true
     };
     if (!localStorage.getItem("jp.dev7.glshooter.settings")) {
         localStorage.setItem("jp.dev7.glshooter.settings", JSON.stringify(settings));
@@ -131,11 +131,6 @@ tm.main(function() {
     app.currentStage = START_STAGE;
 
     var setVolumeSe = app.setVolumeSe = function() {
-        // ["bgm1", "bgm2", "bgm3"].forEach(function(s) {
-        //     for (var i = SoundManager.sounds[s].length; i--; ) {
-        //         SoundManager.sounds[s][i].volume = app.settings["bgm"];
-        //     }
-        // });
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
             WebAudioManager.get(s).volume = app.settings["se"];
         });
@@ -217,7 +212,7 @@ tm.main(function() {
     }
 
     // enemy bullet setting
-    attackParam = app.attackParam = {
+    var attackParam = {
         "target": player,
         "rank": INITIAL_RANK,
         "bulletFactory": function(spec) {
@@ -624,7 +619,7 @@ tm.main(function() {
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
-        boss = createBoss(app, explosion, stage, textures["boss" + stage]);
+        boss = createBoss(app, attackParam, explosion, stage, textures["boss" + stage]);
         enemies.push(boss);
         boss.killed = function() {
             app.stageClear();

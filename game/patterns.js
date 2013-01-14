@@ -660,7 +660,8 @@ var Patterns = {};
                 wait(3),
                 changeSpeed(0, 1),
                 fire(direction("$1*$2-15", "absolute"), speed("1.2+($rank*3-1)"), bullet()),
-                fire(direction("$1*$2+15", "absolute"), speed("1.2+($rank*3-1)"), bullet())
+                fire(direction("$1*$2+15", "absolute"), speed("1.2+($rank*3-1)"), bullet()),
+                vanish()
             ))
         });
     };

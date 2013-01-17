@@ -503,7 +503,7 @@ var ContinueScene;
                     status[status.length] = "ALL STAGE CLEAR!"
                     var star = 0;
                     if (app.useBombCount === 0) {
-                        status[status.length] = "no bomn";
+                        status[status.length] = "no bomb";
                         star += 1;
                     }
                     if (app.missCount === 0) {

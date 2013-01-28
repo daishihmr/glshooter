@@ -27,22 +27,22 @@
 var Patterns = {};
 (function() {
     // import BulletML.dsl namespace
-    var action = BulletML.dsl.action;
-    var actionRef = BulletML.dsl.actionRef;
-    var bullet = BulletML.dsl.bullet;
-    var bulletRef = BulletML.dsl.bulletRef;
-    var fire = BulletML.dsl.fire;
-    var fireRef = BulletML.dsl.fireRef;
-    var changeDirection = BulletML.dsl.changeDirection;
-    var changeSpeed = BulletML.dsl.changeSpeed;
-    var accel = BulletML.dsl.accel;
-    var wait = BulletML.dsl.wait;
-    var vanish = BulletML.dsl.vanish;
-    var repeat = BulletML.dsl.repeat;
-    var direction = BulletML.dsl.direction;
-    var speed = BulletML.dsl.speed;
-    var horizontal = BulletML.dsl.horizontal;
-    var vertical = BulletML.dsl.vertical;
+    var action           = BulletML.dsl.action;
+    var actionRef        = BulletML.dsl.actionRef;
+    var bullet           = BulletML.dsl.bullet;
+    var bulletRef        = BulletML.dsl.bulletRef;
+    var fire             = BulletML.dsl.fire;
+    var fireRef          = BulletML.dsl.fireRef;
+    var changeDirection  = BulletML.dsl.changeDirection;
+    var changeSpeed      = BulletML.dsl.changeSpeed;
+    var accel            = BulletML.dsl.accel;
+    var wait             = BulletML.dsl.wait;
+    var vanish           = BulletML.dsl.vanish;
+    var repeat           = BulletML.dsl.repeat;
+    var direction        = BulletML.dsl.direction;
+    var speed            = BulletML.dsl.speed;
+    var horizontal       = BulletML.dsl.horizontal;
+    var vertical         = BulletML.dsl.vertical;
 
     var pattern = function(dsl) {
         return new AttackPattern(new BulletML.Root(dsl));

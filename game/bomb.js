@@ -43,7 +43,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
             this.angle += 0.03;
             this.radius += this.radiusD;
             this.radiusD -= 0.002;
-            this.scale = (17 - this.radius) * this.size;
+            this.scaleX = this.scaleY = (17 - this.radius) * this.size;
             this.alpha += (0 < this.radius) ? 0 : -0.01;
             if (this.alpha < 0.1) {
                 scene.removeChild(this);

@@ -232,7 +232,7 @@ tm.main(function() {
         b.isBullet = true;
         b.texX = 3;
         b.texY = 1;
-        b.scale = 0.6;
+        b.scaleX = b.scaleY = 0.6;
         bullets.push(b);
         bulletPool.push(b);
         b.onremoved = function() {
@@ -249,7 +249,7 @@ tm.main(function() {
             if (b === void 0) return;
             b.alive = false;
             b.isBit = false;
-            b.scale = 0.6;
+            b.scaleX = b.scaleY = 0.6;
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
                 b.texY = 1;
@@ -274,24 +274,24 @@ tm.main(function() {
             }
 
             if (spec.label === "s") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
             } else if (spec.label === "sg") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "sb") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 1;
                 b.texY = 1;
             }
             if (spec.label === "l") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
             } else if (spec.label === "lg") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "lb") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
                 b.texX = 1;
                 b.texY = 1;
             }
@@ -349,7 +349,7 @@ tm.main(function() {
                 clearAllBullets(false);
             }
 
-            var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scale+this.scale);
+            var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scaleX+this.scaleX);
             var K = 5*5;
             d = Math.clamp(d, 0, K);
             var rate = Math.max(1, ((K-d)/K)*4);
@@ -357,7 +357,7 @@ tm.main(function() {
             app.incrScore(this.score*rate*rate, true); // mega rate
 
             if (this.clear !== true) {
-                explode(this.x, this.y, this.scale);
+                explode(this.x, this.y, this.scaleX);
                 if (0 < expSoundPlaying) return;
                 MUTE_SE || WebAudioManager.get("explode").play();
                 expSoundPlaying = 5;
@@ -407,7 +407,7 @@ tm.main(function() {
             e.texX = data.frameIndex % 8;
             e.texY = ~~(data.frameIndex / 8);
             e.hp = data.hp;
-            e.scale = data.scale;
+            e.scaleX = e.scaleY = data.scale;
             e.score = data.score;
             e.clear = data.clear;
         }
@@ -506,7 +506,7 @@ tm.main(function() {
         for (var j = enemies.length; j--; ) {
             var e  = enemies[j];
             if (e.parent === null) continue;
-            var colLen = (e.scale*0.25+WEAPON_SCALE) * (e.scale*0.25+WEAPON_SCALE);
+            var colLen = (e.scaleX*0.25+WEAPON_SCALE) * (e.scaleX*0.25+WEAPON_SCALE);
             for (var i = weapons.length; i--; ) {
                 var w = weapons[i];
                 if (w.parent === null) continue;
@@ -550,7 +550,7 @@ tm.main(function() {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
-                var colLen = (e.scale*0.25) * (e.scale*0.25);
+                var colLen = (e.scaleX*0.25) * (e.scaleX*0.25);
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < colLen) {
                     if (app.bomb < 1 || !settings["autoBomb"]) {
@@ -577,8 +577,8 @@ tm.main(function() {
         glowBonus = (1+glowLevel*GLOW_BONUS_RATE)*(1+glowLevel*GLOW_BONUS_RATE);
         player.glow = glowLevel * 0.001;
 
-        scene.update();
-        scene.draw();
+        scene._update();
+        scene._draw();
     };
 
     app.update = function() {

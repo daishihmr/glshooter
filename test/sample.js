@@ -27,7 +27,7 @@ tm.main(function() {
     player.glow = 1.0;
     player.texX = 3;
     player.texY = 0;
-    player.scale = 1.5;
+    player.scaleX = player.scaleY = 1.5;
     player.x = 0;
     player.y = -7;
     scene.addChild(player);
@@ -84,7 +84,7 @@ var attackParam = function(target) {
             var b = new glslib.Sprite(Sprite.mainTexture);
             b.texX = 3;
             b.texY = 1;
-            b.scale = 0.6;
+            b.scaleX = b.scaleY = 0.6;
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
                 b.texY = 1;
@@ -108,13 +108,13 @@ var attackParam = function(target) {
             }
 
             if (spec.label === "s") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
             } else if (spec.label === "sg") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "sb") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 1;
                 b.texY = 1;
             }

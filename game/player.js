@@ -31,7 +31,7 @@
 //  -> マウス操作の場合、回避に圧倒的なアドバンテージがある分、収束ショットを撃つことができないデメリットがある
 
 var setupPlayer = function(app, scene, weapons, mouse, texture) {
-    var player = new Sprite(texture);
+    var player = new glslib.Sprite(texture);
     player.scale = PLAYER_SCALE;
     player.level = 0;
     player.reset = function() {
@@ -77,7 +77,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
                 z.scale = 0.6;
-                scene.add(z);
+                scene.addChild(z);
             }
             z = zanzoPool.pop();
             if (z) {
@@ -85,7 +85,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
                 z.scale = 0.6;
-                scene.add(z);
+                scene.addChild(z);
             }
         }
 
@@ -188,7 +188,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
         app.zanki -= 1;
         if (app.zanki === 0) {
-            scene.remove(this);
+            scene.removeChild(this);
             this.visible = false;
             this.rebirth = false;
             app.confirmContinue();
@@ -209,9 +209,9 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.roll = 0;
         this.texX = 3;
     };
-    scene.add(player);
+    scene.addChild(player);
 
-    var centerMarker = new Sprite(texture);
+    var centerMarker = new glslib.Sprite(texture);
     centerMarker.x = player.x;
     centerMarker.y = player.y;
     centerMarker.texX = 2; centerMarker.texY = 1;
@@ -222,12 +222,12 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.visible = player.visible && player.parent !== null;
         this.scale = 0.3 + Math.sin(scene.frame * 0.2) * 0.2;
     };
-    scene.add(centerMarker);
+    scene.addChild(centerMarker);
 
     var zanzos = [];
     var zanzoPool = [];
     for (var i = 0; i < 200; i++) {
-        var z = new Sprite(texture);
+        var z = new glslib.Sprite(texture);
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
@@ -236,7 +236,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
             this.scale -= 0.08;
             this.alpha -= 0.08;
             if (this.alpha < 0) {
-                scene.remove(this);
+                scene.removeChild(this);
             }
         };
         z.onremoved = function() {
@@ -248,7 +248,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
-        var w = new Sprite(texture);
+        var w = new glslib.Sprite(texture);
         w.scale = WEAPON_SCALE;
         w.isWeapon = true;
         w.texX = 7;
@@ -270,13 +270,13 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
             this.x += c * 1.3;
             this.y += s * 1.3;
             if (this.x < -16.2 || 16.2 < this.x || this.y < -16.2 || 16.2 < this.y) {
-                scene.remove(this);
+                scene.removeChild(this);
             }
         };
         w.x = player.x + x;
         w.y = player.y + y;
         w.power = player.power;
-        scene.add(w);
+        scene.addChild(w);
     };
     player.clearAll = function() {
         for (var i = zanzos.length; i--; ) {

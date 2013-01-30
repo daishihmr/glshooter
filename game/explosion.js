@@ -30,7 +30,7 @@ var Explosion = function(scene, texture) {
     var particles = [];
     var explodePool = [];
     for (var i = 0; i < 600; i++) {
-        var e = new Sprite(texture);
+        var e = new glslib.Sprite(texture);
         e.texX = 5;
         e.texY = 1;
         e.incrScale = 0.2;
@@ -38,7 +38,7 @@ var Explosion = function(scene, texture) {
             this.scale += this.incrScale;
             this.alpha *= 0.9;
             if (this.alpha < 0.001) {
-                scene.remove(this);
+                scene.removeChild(this);
                 explodePool.push(this);
             }
         }
@@ -55,7 +55,7 @@ var Explosion = function(scene, texture) {
             e.x = x + Random.randfloat(-0.2, 0.2);
             e.y = y + Random.randfloat(-0.2, 0.2);
             e.incrScale = scale * 0.2;
-            scene.add(e);
+            scene.addChild(e);
         }
     };
 
@@ -67,7 +67,7 @@ var Explosion = function(scene, texture) {
         e.x = x + Random.randfloat(-0.2, 0.2);
         e.y = y + Random.randfloat(-0.2, 0.2);
         e.incrScale = scale * 0.2;
-        scene.add(e);
+        scene.addChild(e);
     };
 
     this.clearAll = function() {
@@ -78,7 +78,7 @@ var Explosion = function(scene, texture) {
 
     this.getExplodeL = function(scene) {
         var createParticle = function() {
-            var p = new Sprite(texture);
+            var p = new glslib.Sprite(texture);
             p.texX = 4;
             p.texY = 1;
             p.radius = 0;
@@ -101,7 +101,7 @@ var Explosion = function(scene, texture) {
                     this.alpha -= 0.006;
                 }
                 if (this.alpha < 0) {
-                    scene.remove(this);
+                    scene.removeChild(this);
                 }
             };
             return p;
@@ -128,7 +128,7 @@ var Explosion = function(scene, texture) {
                 p.onremoved = function() {
                     readyCount += 1;
                 };
-                scene.add(p);
+                scene.addChild(p);
             }
             MUTE_SE || tm.sound.WebAudioManager.get("bomb").play();
             var check = function() {

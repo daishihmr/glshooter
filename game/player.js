@@ -32,7 +32,7 @@
 
 var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var player = new glslib.Sprite(texture);
-    player.scale = PLAYER_SCALE;
+    player.scaleX = player.scaleY = PLAYER_SCALE;
     player.level = 0;
     player.reset = function() {
         this.x = 0;
@@ -76,7 +76,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
                 z.x = this.x + Math.random()*0.1-0.05 - zpos;
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
-                z.scale = 0.6;
+                z.scaleX = z.scaleY = 0.6;
                 scene.addChild(z);
             }
             z = zanzoPool.pop();
@@ -84,7 +84,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
                 z.x = this.x + Math.random()*0.1-0.05 + zpos;
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
-                z.scale = 0.6;
+                z.scaleX = z.scaleY = 0.6;
                 scene.addChild(z);
             }
         }
@@ -215,12 +215,12 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     centerMarker.x = player.x;
     centerMarker.y = player.y;
     centerMarker.texX = 2; centerMarker.texY = 1;
-    centerMarker.scale = 0.5;
+    centerMarker.scaleX = centerMarker.scaleY = 0.5;
     centerMarker.update = function() {
         this.x = player.x;
         this.y = player.y;
         this.visible = player.visible && player.parent !== null;
-        this.scale = 0.3 + Math.sin(scene.frame * 0.2) * 0.2;
+        this.scaleX = this.scaleY = 0.3 + Math.sin(scene.frame * 0.2) * 0.2;
     };
     scene.addChild(centerMarker);
 
@@ -233,7 +233,8 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         z.update = function() {
             this.visible = player.visible;
             this.y -= 0.2;
-            this.scale -= 0.08;
+            this.scaleX -= 0.08;
+            this.scaleY -= 0.08;
             this.alpha -= 0.08;
             if (this.alpha < 0) {
                 scene.removeChild(this);
@@ -249,7 +250,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var weaponPool = [];
     for (var i = 0; i < 400; i++) {
         var w = new glslib.Sprite(texture);
-        w.scale = WEAPON_SCALE;
+        w.scaleX = w.scaleY = WEAPON_SCALE;
         w.isWeapon = true;
         w.texX = 7;
         w.texY = 1;

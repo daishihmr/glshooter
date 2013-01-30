@@ -27,7 +27,7 @@
 var Bomb = {};
 Bomb.createBomber = function(scene, bombParticlePool, texture) {
     var createBombParticle = function() {
-        var p = new Sprite(texture);
+        var p = new glslib.Sprite(texture);
         p.npr = true;
         p.centerX = 0;
         p.centerY = 0;
@@ -46,7 +46,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
             this.scale = (17 - this.radius) * this.size;
             this.alpha += (0 < this.radius) ? 0 : -0.01;
             if (this.alpha < 0.1) {
-                scene.remove(this);
+                scene.removeChild(this);
                 bombParticlePool.readyCount+=1;
             }
         };
@@ -69,7 +69,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
                 p.radiusD = -0.01;
                 p.alpha = 1;
                 p.size = 0.6;
-                scene.add(p);
+                scene.addChild(p);
             }
             MUTE_SE || tm.sound.WebAudioManager.get("bomb").play();
         },
@@ -84,7 +84,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
                 p.radiusD = -0.16;
                 p.alpha = 0.3;
                 p.size = 0.3;
-                scene.add(p);
+                scene.addChild(p);
             }
             MUTE_SE || tm.sound.WebAudioManager.get("explode").play();
         }
@@ -92,7 +92,7 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
 };
 Bomb.clearBomb = function(scene, bombParticlePool) {
     for (var i = bombParticlePool.length; i--; ) {
-        scene.remove(bombParticlePool[i]);
+        scene.removeChild(bombParticlePool[i]);
     }
     bombParticlePool.readyCount = bombParticlePool.length;
 };

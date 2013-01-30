@@ -107,7 +107,7 @@ var AttackPattern;
 
             // test out of world
             if (!conf["isInsideOfWorld"](this)) {
-                if (this.parent) this.parent.remove(this);
+                if (this.parent) this.parent.removeChild(this);
                 ticker.completed = true;
                 if (ticker.parentTicker) {
                     ticker.parentTicker.completeChild();
@@ -153,7 +153,7 @@ var AttackPattern;
                     ptn._accel.call(this, cmd, ticker);
                     break;
                 case "vanish":
-                    if (this.parent) this.parent.remove(this);
+                    if (this.parent) this.parent.removeChild(this);
                     break;
                 }
             }
@@ -253,7 +253,7 @@ var AttackPattern;
         b.y = this.y + ((this.height || 0) - (b.height || 0)) / 2;
 
         b.update = bt;
-        if (this.parent !== null) this.parent.add(b);
+        if (this.parent !== null) this.parent.addChild(b);
     };
     AttackPattern.prototype._changeDirection = function(cmd, config, ticker) {
         var d = eval(cmd.direction.value) * DEG_TO_RAD;

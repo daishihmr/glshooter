@@ -169,7 +169,7 @@ tm.main(function() {
 
     // webgl canvas
     var glCanvas = document.getElementById("world");
-    fitWindow(glCanvas);
+    glslib.fitWindow(glCanvas);
 
     // input
     var keyboard = app.keyboard;
@@ -189,15 +189,15 @@ tm.main(function() {
     // main 3D scene
     var vs = tm.util.FileManager.get("vs").data;
     var fs = tm.util.FileManager.get("fs").data;
-    var scene = new Scene(glCanvas, vs, fs);
+    var scene = new glslib.Scene(glCanvas, vs, fs);
     var gl = scene.gl;
 
     // GL Textures
     var textures = {};
     for (var name in tm.graphics.TextureManager.textures) {
-        textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
+        textures[name] = glslib.createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
-    var mainTexture = Sprite.mainTexture = textures["texture0"];
+    var mainTexture = textures["texture0"];
 
     // explosion
     var explosion = new Explosion(scene, mainTexture);
@@ -228,7 +228,7 @@ tm.main(function() {
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
-        var b = new Sprite(mainTexture);
+        var b = new glslib.Sprite(mainTexture);
         b.isBullet = true;
         b.texX = 3;
         b.texY = 1;
@@ -315,7 +315,7 @@ tm.main(function() {
             var b = bullets[i];
             if (b.parent !== null && (!b.alive || a)) {
                 explode(b.x, b.y, 0.2);
-                scene.remove(b);
+                scene.removeChild(b);
             }
         }
     };
@@ -326,7 +326,7 @@ tm.main(function() {
     var enemyPool = [];
     var expSoundPlaying = -1;
     var createEnemy = function() {
-        var e = new Sprite(mainTexture);
+        var e = new glslib.Sprite(mainTexture);
         e.isEnemy = true;
         e.alpha = 0.5;
         e.glow = 1;
@@ -337,7 +337,7 @@ tm.main(function() {
         e.damage = function(dmg) {
             this.hp -= dmg;
             if (0 < this.hp) return;
-            scene.remove(this);
+            scene.removeChild(this);
             this.onkilled();
         }
         e.onkilled = function() {
@@ -362,7 +362,7 @@ tm.main(function() {
                 MUTE_SE || WebAudioManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
-                var timer = new Sprite(mainTexture);
+                var timer = new glslib.Sprite(mainTexture);
                 timer.texX = 7;
                 timer.texY = 7;
                 timer.x = this.x;
@@ -377,10 +377,10 @@ tm.main(function() {
                         }
                         explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);
                     } else if (scene.frame > t+60) {
-                        scene.remove(this);
+                        scene.removeChild(this);
                     }
                 };
-                scene.add(timer);
+                scene.addChild(timer);
             }
         };
         return e;
@@ -416,13 +416,13 @@ tm.main(function() {
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);
-        scene.add(e);
+        scene.addChild(e);
     };
     var clearAllEnemies = app.clearAllEnemies = function(a) {
         for (var i = enemies.length; i--; ) {
             var e = enemies[i];
             if (e.parent !== null) {
-                scene.remove(e);
+                scene.removeChild(e);
             }
         }
     };
@@ -516,7 +516,7 @@ tm.main(function() {
                     e.damage(w.power);
                     app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
-                    scene.remove(w);
+                    scene.removeChild(w);
                 }
                 if (e.parent === null) break;
             }
@@ -528,7 +528,7 @@ tm.main(function() {
                 if (b.parent === null) continue;
                 var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
-                    scene.remove(b);
+                    scene.removeChild(b);
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
@@ -644,7 +644,7 @@ tm.main(function() {
 
         // boss
         if (boss !== void 0) {
-            scene.remove(boss);
+            scene.removeChild(boss);
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
@@ -768,7 +768,7 @@ tm.main(function() {
         app.resetGameStatus();
         app.continueCount += 1;
         scene.frame = scene.returnFrame;
-        scene.add(player);
+        scene.addChild(player);
         player.launch();
     };
 

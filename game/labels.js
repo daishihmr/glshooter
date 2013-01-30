@@ -176,12 +176,12 @@ var Labels = {};
                 this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
                 this.x = this.width*0.5 + 5;
                 if (this.width <= 1) {
-                    this.remove();
+                    this.removeChild();
                 }
             }
         };
 
         return bossHp;
     };
-    
+
 })();

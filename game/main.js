@@ -126,11 +126,13 @@ tm.main(function() {
     app.continueCount = 0;
     app.highScore = 0;
     app.score = 0;
+    app.practiceMode = false;
     app.incrScore = function(delta, calcGlow) {
         var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
         var beforeExtZanki = ~~(app.score / EXTEND_SCORE_LIFE);
 
         this.score += delta * (calcGlow ? glowBonus : 1);
+        this.highScore = Math.max(this.score, this.highScore);
 
         if (0 < delta) {
             if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) {
@@ -176,6 +178,7 @@ tm.main(function() {
 
     var titleScene = app.titleScene = TitleScene();
     var pauseScene = app.pauseScene = PauseScene();
+    var practiceScene = app.practiceScene = PracticeScene(app);
     var settingScene = app.settingScene = SettingScene(app);
     var confirmScene = app.confirmScene = ConfirmScene();
     var continueScene = app.continueScene = ContinueScene();
@@ -718,19 +721,35 @@ tm.main(function() {
         app.allStageClear = true;
         message.fillStyle = "white";
         message.setFontSize(30);
-        message.text = "all stage clear";
+        message.text = "";
         message.visible = true;
-        var t = scene.frame;
+        var t = scene.frame + 5;
         var bonus = ~~(app.zanki * CLEAR_BONUS_ZANKI + app.bomb * CLEAR_BONUS_BOMB);
         message.addEventListener("enterframe", function() {
-            if (scene.frame === t + 180*1) {
-                message.text = "bonus " + bonus;
-                app.incrScore(bonus, false);
-            } else if (scene.frame === t + 180*2) {
-                message.fillStyle = "yellow";
-                message.text = "THANK YOU!!";
-            } else if (scene.frame === t + 180*3) {
-                return app.gameOver();
+            if (app.practiceMode) {
+                if (scene.frame === t + 180*0) {
+                    message.text = "stage clear";
+                } else if (scene.frame === t + 180*1) {
+                    message.text = "bonus " + bonus;
+                    app.incrScore(bonus, false);
+                } else if (scene.frame === t + 180*2) {
+                    app.popScene();
+                    if (app.bgm) app.bgm.stop();
+                    this.removeEventListener("enterframe", arguments.callee);
+                }
+            } else {
+                if (scene.frame === t + 180*0) {
+                    message.text = "all stage clear";
+                } else if (scene.frame === t + 180*1) {
+                    message.text = "bonus " + bonus;
+                    app.incrScore(bonus, false);
+                } else if (scene.frame === t + 180*2) {
+                    message.fillStyle = "yellow";
+                    message.text = "THANK YOU!!";
+                } else if (scene.frame === t + 180*3) {
+                    app.gameOver();
+                    this.removeEventListener("enterframe", arguments.callee);
+                }
             }
         });
         gameScene.addChild(message);

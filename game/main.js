@@ -174,7 +174,7 @@ tm.main(function() {
     // input
     var keyboard = app.keyboard;
     if (tm.isMobile) {
-        var mouse = app.pointing = app.mouse = tm.input.Touch(window);
+        var mouse = app.pointing = app.mouse = tm.input.Touch(glCanvas);
     } else {
         var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
     }

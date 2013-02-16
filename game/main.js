@@ -173,7 +173,11 @@ tm.main(function() {
 
     // input
     var keyboard = app.keyboard;
-    var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
+    if (tm.isMobile) {
+        var mouse = app.pointing = app.mouse = tm.input.Touch(window);
+    } else {
+        var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
+    }
     mouse.lastLeftUp = -1;
 
     var titleScene = app.titleScene = TitleScene();

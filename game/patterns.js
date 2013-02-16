@@ -1,6 +1,6 @@
 /**
  * @author daishihmr
- * @version 1.0
+ * @version 1.5
  *
  * The MIT License (MIT)
  * Copyright (c) 2012 dev7.jp

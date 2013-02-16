@@ -59,8 +59,8 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
 
     return {
         normal: function(x, y) {
-            bombParticlePool.readyCount = 0;
             for (var i = bombParticlePool.length; i--; ) {
+                bombParticlePool.readyCount -= 1;
                 var p = bombParticlePool[i];
                 p.centerX = x;
                 p.centerY = y;
@@ -74,12 +74,12 @@ Bomb.createBomber = function(scene, bombParticlePool, texture) {
             MUTE_SE || tm.sound.WebAudioManager.get("bomb").play();
         },
         mini: function(x, y) {
-            bombParticlePool.readyCount = 0;
-            for (var i = bombParticlePool.length; i--; ) {
+            for (var i = bombParticlePool.length/2; i--; ) {
+                bombParticlePool.readyCount -= 1;
                 var p = bombParticlePool[i];
                 p.centerX = x;
                 p.centerY = y;
-                p.radius = tm.util.Random.randfloat(6, 12);
+                p.radius = 4;
                 p.angle = (Math.PI*2/12) * (i%12);
                 p.radiusD = -0.16;
                 p.alpha = 0.3;

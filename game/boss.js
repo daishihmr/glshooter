@@ -31,8 +31,8 @@ var createBoss = function(app, attackParam, explosion, stage, texture) {
     var WebAudioManager = tm.sound.WebAudioManager;
     var explode = explosion.explode;
 
-    var boss = new Sprite(texture);
-    boss.scale = (stage < 3) ? 8 : 16;
+    var boss = new glslib.Sprite(texture);
+    boss.scaleX = boss.scaleY = (stage < 3) ? 8 : 16;
     boss.texScale = 8;
     boss.alpha = 1.0;
     boss.glow = 0.3;
@@ -92,7 +92,8 @@ var createBoss = function(app, attackParam, explosion, stage, texture) {
                 this.emission += 0.002;
                 this.x += Math.sin(scene.frame*0.3)*0.02;
                 this.y += dy / (250+60);
-                this.scale -= 0.005;
+                this.scaleX -= 0.005;
+                this.scaleY -= 0.005;
                 this.rotation -= 0.03;
                 if (t < scene.frame && (scene.frame - t) % 5 === 0 && Math.random() < 0.5) {
                     WebAudioManager.get("explode").play();
@@ -108,12 +109,13 @@ var createBoss = function(app, attackParam, explosion, stage, texture) {
                     this.update = function() {
                         this.x += Math.sin(scene.frame*0.3)*0.02;
                         this.y += dy / (250+60);
-                        this.scale -= 0.003;
+                        this.scaleX -= 0.003;
+                        this.scaleY -= 0.003;
                         this.rotation -= 0.03;
                         this.alpha -= 0.01;
                         this.glow -= 0.01;
                         if (this.alpha <= 0) {
-                            scene.remove(this);
+                            scene.removeChild(this);
                         }
                     };
                 }

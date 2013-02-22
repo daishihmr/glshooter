@@ -126,11 +126,13 @@ tm.main(function() {
     app.continueCount = 0;
     app.highScore = 0;
     app.score = 0;
+    app.practiceMode = false;
     app.incrScore = function(delta, calcGlow) {
         var beforeExtBomb = ~~(app.score / EXTEND_SCORE_BOMB);
         var beforeExtZanki = ~~(app.score / EXTEND_SCORE_LIFE);
 
         this.score += delta * (calcGlow ? glowBonus : 1);
+        this.highScore = Math.max(this.score, this.highScore);
 
         if (0 < delta) {
             if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) {
@@ -167,7 +169,7 @@ tm.main(function() {
 
     // webgl canvas
     var glCanvas = document.getElementById("world");
-    fitWindow(glCanvas);
+    glslib.fitWindow(glCanvas);
 
     // input
     var keyboard = app.keyboard;
@@ -176,6 +178,7 @@ tm.main(function() {
 
     var titleScene = app.titleScene = TitleScene();
     var pauseScene = app.pauseScene = PauseScene();
+    var practiceScene = app.practiceScene = PracticeScene(app);
     var settingScene = app.settingScene = SettingScene(app);
     var confirmScene = app.confirmScene = ConfirmScene();
     var continueScene = app.continueScene = ContinueScene();
@@ -186,15 +189,15 @@ tm.main(function() {
     // main 3D scene
     var vs = tm.util.FileManager.get("vs").data;
     var fs = tm.util.FileManager.get("fs").data;
-    var scene = new Scene(glCanvas, vs, fs);
+    var scene = new glslib.Scene(glCanvas, vs, fs);
     var gl = scene.gl;
 
     // GL Textures
     var textures = {};
     for (var name in tm.graphics.TextureManager.textures) {
-        textures[name] = createTexture(gl, tm.graphics.TextureManager.get(name).element);
+        textures[name] = glslib.createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
-    var mainTexture = Sprite.mainTexture = textures["texture0"];
+    var mainTexture = textures["texture0"];
 
     // explosion
     var explosion = new Explosion(scene, mainTexture);
@@ -225,11 +228,11 @@ tm.main(function() {
     var bullets = [];
     var bulletPool = [];
     for (var i = 0; i < 2000; i++) {
-        var b = new Sprite(mainTexture);
+        var b = new glslib.Sprite(mainTexture);
         b.isBullet = true;
         b.texX = 3;
         b.texY = 1;
-        b.scale = 0.6;
+        b.scaleX = b.scaleY = 0.6;
         bullets.push(b);
         bulletPool.push(b);
         b.onremoved = function() {
@@ -246,7 +249,7 @@ tm.main(function() {
             if (b === void 0) return;
             b.alive = false;
             b.isBit = false;
-            b.scale = 0.6;
+            b.scaleX = b.scaleY = 0.6;
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
                 b.texY = 1;
@@ -271,24 +274,24 @@ tm.main(function() {
             }
 
             if (spec.label === "s") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
             } else if (spec.label === "sg") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "sb") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 1;
                 b.texY = 1;
             }
             if (spec.label === "l") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
             } else if (spec.label === "lg") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "lb") {
-                b.scale = 0.8;
+                b.scaleX = b.scaleY = 0.8;
                 b.texX = 1;
                 b.texY = 1;
             }
@@ -312,7 +315,7 @@ tm.main(function() {
             var b = bullets[i];
             if (b.parent !== null && (!b.alive || a)) {
                 explode(b.x, b.y, 0.2);
-                scene.remove(b);
+                scene.removeChild(b);
             }
         }
     };
@@ -323,7 +326,7 @@ tm.main(function() {
     var enemyPool = [];
     var expSoundPlaying = -1;
     var createEnemy = function() {
-        var e = new Sprite(mainTexture);
+        var e = new glslib.Sprite(mainTexture);
         e.isEnemy = true;
         e.alpha = 0.5;
         e.glow = 1;
@@ -334,7 +337,7 @@ tm.main(function() {
         e.damage = function(dmg) {
             this.hp -= dmg;
             if (0 < this.hp) return;
-            scene.remove(this);
+            scene.removeChild(this);
             this.onkilled();
         }
         e.onkilled = function() {
@@ -346,7 +349,7 @@ tm.main(function() {
                 clearAllBullets(false);
             }
 
-            var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scale+this.scale);
+            var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scaleX+this.scaleX);
             var K = 5*5;
             d = Math.clamp(d, 0, K);
             var rate = Math.max(1, ((K-d)/K)*4);
@@ -354,12 +357,12 @@ tm.main(function() {
             app.incrScore(this.score*rate*rate, true); // mega rate
 
             if (this.clear !== true) {
-                explode(this.x, this.y, this.scale);
+                explode(this.x, this.y, this.scaleX);
                 if (0 < expSoundPlaying) return;
                 MUTE_SE || WebAudioManager.get("explode").play();
                 expSoundPlaying = 5;
             } else {
-                var timer = new Sprite(mainTexture);
+                var timer = new glslib.Sprite(mainTexture);
                 timer.texX = 7;
                 timer.texY = 7;
                 timer.x = this.x;
@@ -374,10 +377,10 @@ tm.main(function() {
                         }
                         explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);
                     } else if (scene.frame > t+60) {
-                        scene.remove(this);
+                        scene.removeChild(this);
                     }
                 };
-                scene.add(timer);
+                scene.addChild(timer);
             }
         };
         return e;
@@ -404,7 +407,7 @@ tm.main(function() {
             e.texX = data.frameIndex % 8;
             e.texY = ~~(data.frameIndex / 8);
             e.hp = data.hp;
-            e.scale = data.scale;
+            e.scaleX = e.scaleY = data.scale;
             e.score = data.score;
             e.clear = data.clear;
         }
@@ -413,13 +416,13 @@ tm.main(function() {
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);
-        scene.add(e);
+        scene.addChild(e);
     };
     var clearAllEnemies = app.clearAllEnemies = function(a) {
         for (var i = enemies.length; i--; ) {
             var e = enemies[i];
             if (e.parent !== null) {
-                scene.remove(e);
+                scene.removeChild(e);
             }
         }
     };
@@ -503,7 +506,7 @@ tm.main(function() {
         for (var j = enemies.length; j--; ) {
             var e  = enemies[j];
             if (e.parent === null) continue;
-            var colLen = (e.scale*0.25+WEAPON_SCALE) * (e.scale*0.25+WEAPON_SCALE);
+            var colLen = (e.scaleX*0.25+WEAPON_SCALE) * (e.scaleX*0.25+WEAPON_SCALE);
             for (var i = weapons.length; i--; ) {
                 var w = weapons[i];
                 if (w.parent === null) continue;
@@ -513,7 +516,7 @@ tm.main(function() {
                     e.damage(w.power);
                     app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
-                    scene.remove(w);
+                    scene.removeChild(w);
                 }
                 if (e.parent === null) break;
             }
@@ -525,7 +528,7 @@ tm.main(function() {
                 if (b.parent === null) continue;
                 var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
-                    scene.remove(b);
+                    scene.removeChild(b);
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                         glowLevel = 0;
@@ -547,7 +550,7 @@ tm.main(function() {
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
                 if (e.parent === null) continue;
-                var colLen = (e.scale*0.25) * (e.scale*0.25);
+                var colLen = (e.scaleX*0.25) * (e.scaleX*0.25);
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < colLen) {
                     if (app.bomb < 1 || !settings["autoBomb"]) {
@@ -574,8 +577,8 @@ tm.main(function() {
         glowBonus = (1+glowLevel*GLOW_BONUS_RATE)*(1+glowLevel*GLOW_BONUS_RATE);
         player.glow = glowLevel * 0.001;
 
-        scene.update();
-        scene.draw();
+        scene._update();
+        scene._draw();
     };
 
     app.update = function() {
@@ -641,7 +644,7 @@ tm.main(function() {
 
         // boss
         if (boss !== void 0) {
-            scene.remove(boss);
+            scene.removeChild(boss);
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);
         }
@@ -718,19 +721,35 @@ tm.main(function() {
         app.allStageClear = true;
         message.fillStyle = "white";
         message.setFontSize(30);
-        message.text = "all stage clear";
+        message.text = "";
         message.visible = true;
-        var t = scene.frame;
+        var t = scene.frame + 5;
         var bonus = ~~(app.zanki * CLEAR_BONUS_ZANKI + app.bomb * CLEAR_BONUS_BOMB);
         message.addEventListener("enterframe", function() {
-            if (scene.frame === t + 180*1) {
-                message.text = "bonus " + bonus;
-                app.incrScore(bonus, false);
-            } else if (scene.frame === t + 180*2) {
-                message.fillStyle = "yellow";
-                message.text = "THANK YOU!!";
-            } else if (scene.frame === t + 180*3) {
-                return app.gameOver();
+            if (app.practiceMode) {
+                if (scene.frame === t + 180*0) {
+                    message.text = "stage clear";
+                } else if (scene.frame === t + 180*1) {
+                    message.text = "bonus " + bonus;
+                    app.incrScore(bonus, false);
+                } else if (scene.frame === t + 180*2) {
+                    app.popScene();
+                    if (app.bgm) app.bgm.stop();
+                    this.removeEventListener("enterframe", arguments.callee);
+                }
+            } else {
+                if (scene.frame === t + 180*0) {
+                    message.text = "all stage clear";
+                } else if (scene.frame === t + 180*1) {
+                    message.text = "bonus " + bonus;
+                    app.incrScore(bonus, false);
+                } else if (scene.frame === t + 180*2) {
+                    message.fillStyle = "yellow";
+                    message.text = "THANK YOU!!";
+                } else if (scene.frame === t + 180*3) {
+                    app.gameOver();
+                    this.removeEventListener("enterframe", arguments.callee);
+                }
             }
         });
         gameScene.addChild(message);
@@ -749,7 +768,7 @@ tm.main(function() {
         app.resetGameStatus();
         app.continueCount += 1;
         scene.frame = scene.returnFrame;
-        scene.add(player);
+        scene.addChild(player);
         player.launch();
     };
 

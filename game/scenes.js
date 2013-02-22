@@ -27,6 +27,7 @@
 var TitleScene;
 var PauseScene;
 var ConfirmScene;
+var PracticeScene;
 var SettingScene;
 var GameOverScene;
 var ContinueScene;
@@ -98,11 +99,13 @@ var ContinueScene;
             this.addChild(version);
 
             this.menuItem = [];
-            var start = this.menuItem[0] = createLabel("game start", 20, 160, 210);
+            var start = this.menuItem[0] = createLabel("game start", 20, 160, 170);
             this.addChild(start);
-            var settings = this.menuItem[1] = createLabel("setting", 20, 160, 250);
+            var practice = this.menuItem[1] = createLabel("practice", 20, 160, 210);
+            this.addChild(practice);
+            var settings = this.menuItem[2] = createLabel("setting", 20, 160, 250);
             this.addChild(settings);
-            var exit = this.menuItem[2] = createLabel("exit", 20, 160, 290);
+            var exit = this.menuItem[3] = createLabel("exit", 20, 160, 290);
             this.addChild(exit);
 
             this.selection = 0;
@@ -145,13 +148,21 @@ var ContinueScene;
                     switch (this.selection) {
                     case 0: // game start
                         this.startFlag = true;
+                        START_STAGE = 1;
+                        NUM_OF_STAGE = 3;
+                        app.practiceMode = false;
                         MUTE_SE || tm.sound.WebAudioManager.get("effect0").play();
                         break;
-                    case 1: // setting
+                    case 1: // practice
+                        app.pointing.button = 0; app.pointing.update();
+                        app.pushScene(app.practiceScene);
+                        break;
+                    case 2: // setting
                         app.pointing.button = 0; app.pointing.update();
                         app.pushScene(app.settingScene);
                         break;
-                    case 2: // exit
+                    case 3: // exit
+                        app.allStageClear = false;
                         app.gameOver();
                         break;
                     }
@@ -353,6 +364,97 @@ var ContinueScene;
         }
     });
 
+    PracticeScene = tm.createClass({
+        superClass: tm.app.Scene,
+        init: function(app) {
+            this.superInit();
+
+            var bg = tm.app.RectangleShape(320, 320, {
+                fillStyle: "rgba(0,0,0,0.97)",
+                strokeStyle: "none"
+            });
+            bg.x = 160;
+            bg.y = 160;
+            this.addChild(bg);
+
+            var title = createLabel("stage select", 35, 160, 60);
+            title.fillStyle = "#ffffff";
+            this.addChild(title);
+
+            this.menuItem = [];
+            this.menuItem[0] = createLabel("stage 1", 20, 160, 130);
+            this.menuItem[1] = createLabel("stage 2", 20, 160, 180);
+            this.menuItem[2] = createLabel("stage 3", 20, 160, 230);
+            this.menuItem[3] = createLabel("back", 20, 160, 280);
+            for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].setAlign("center");
+                this.addChild(this.menuItem[i]);
+            }
+
+            this.selection = 0;
+            this.addEventListener("enter", function() {
+            });
+
+            this.addEventListener("exit", function() {
+            });
+        },
+        update: function(app) {
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+
+            if (app.keyboard.getKeyDown("down")) {
+                this.selection += 1;
+                if (this.selection === this.menuItem.length) this.selection = 0;
+            } else if (app.keyboard.getKeyDown("up")) {
+                this.selection -= 1;
+                if (this.selection === -1) this.selection = this.menuItem.length - 1;
+            } else if (1 < app.pointing.deltaPosition.length()) {
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                    }
+                }
+            }
+            for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].fillStyle = "#333";
+            }
+            this.menuItem[this.selection].fillStyle = "#fff"
+
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointing()) {
+                switch (this.selection) {
+                case 0: // stage 1
+                    START_STAGE = 1;
+                    NUM_OF_STAGE = 1;
+                    app.pointing.button = 0; app.pointing.update();
+                    app.popScene();
+                    app.titleScene.startFlag = true;
+                    app.practiceMode = true;
+                    break;
+                case 1: // stage 2
+                    START_STAGE = 2;
+                    NUM_OF_STAGE = 2;
+                    app.pointing.button = 0; app.pointing.update();
+                    app.popScene();
+                    app.titleScene.startFlag = true;
+                    app.practiceMode = true;
+                    break;
+                case 2: // stage 3
+                    START_STAGE = 3;
+                    NUM_OF_STAGE = 3;
+                    app.pointing.button = 0; app.pointing.update();
+                    app.popScene();
+                    app.titleScene.startFlag = true;
+                    app.practiceMode = true;
+                    break;
+                case 3: // back
+                    app.pointing.button = 0; app.pointing.update();
+                    app.popScene();
+                    break;
+                }
+            }
+        }
+    });
+
     SettingScene = tm.createClass({
         superClass: tm.app.Scene,
         init: function(app) {
@@ -503,7 +605,7 @@ var ContinueScene;
                     status[status.length] = "ALL STAGE CLEAR!"
                     var star = 0;
                     if (app.useBombCount === 0) {
-                        status[status.length] = "no bomn";
+                        status[status.length] = "no bomb";
                         star += 1;
                     }
                     if (app.missCount === 0) {

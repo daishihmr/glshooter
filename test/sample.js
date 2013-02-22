@@ -23,23 +23,23 @@ tm.main(function() {
     Sprite.mainTexture = textures["main"];
 
     // 自機
-    var player = new Sprite(Sprite.mainTexture);
+    var player = new glslib.Sprite(Sprite.mainTexture);
     player.glow = 1.0;
     player.texX = 3;
     player.texY = 0;
-    player.scale = 1.5;
+    player.scaleX = player.scaleY = 1.5;
     player.x = 0;
     player.y = -7;
-    scene.add(player);
+    scene.addChild(player);
 
     // 敵
-    var enemy = new Sprite(Sprite.mainTexture);
+    var enemy = new glslib.Sprite(Sprite.mainTexture);
     enemy.glow = 1.0;
     enemy.texX = 4;
     enemy.texY = 2;
     enemy.x = -20;
     enemy.y =  20;
-    scene.add(enemy);
+    scene.addChild(enemy);
 
     // 攻撃パターン(game/patterns.jsを参照)
     enemy.update = Patterns["middle3L0"].createTicker(attackParam(player));
@@ -81,10 +81,10 @@ var attackParam = function(target) {
         target: target,
         rank: 0.5,
         bulletFactory: function(spec) {
-            var b = new Sprite(Sprite.mainTexture);
+            var b = new glslib.Sprite(Sprite.mainTexture);
             b.texX = 3;
             b.texY = 1;
-            b.scale = 0.6;
+            b.scaleX = b.scaleY = 0.6;
             if (spec.label === null || spec.label === void 0) {
                 b.texX = 3;
                 b.texY = 1;
@@ -108,13 +108,13 @@ var attackParam = function(target) {
             }
 
             if (spec.label === "s") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
             } else if (spec.label === "sg") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 2;
                 b.texY = 1;
             } else if (spec.label === "sb") {
-                b.scale = 0.4;
+                b.scaleX = b.scaleY = 0.4;
                 b.texX = 1;
                 b.texY = 1;
             }

@@ -86,7 +86,7 @@ tm.preload(function() {
     //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
     // }
 
-    if (!webkitAudioContext) {
+    if (!window.webkitAudioContext) {
         MUTE_SE = true;
         return;
     }

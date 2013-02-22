@@ -53,6 +53,8 @@ glslib.Scene.prototype._draw = function() {
     var program = this.program;
     this.clear();
 
+    ctx.scale = this.canvas.width/32;
+
     ctx.globalCompositeOperation = "lighter";
     for (var i = 0, len = children.length; i < len; i++) {
         children[i]._draw(this.canvas, ctx);
@@ -138,10 +140,10 @@ glslib.Sprite.prototype._update = function() {
 glslib.Sprite.prototype._draw = function(canvas, ctx) {
     if (!this.visible) return;
 
-    var x = (this.x + 16) * canvas.width/32;
-    var y = (16 - this.y) * canvas.height/48;
-    var w = 2 * this.scaleX * canvas.width/32;
-    var h = 2 * this.scaleY * canvas.height/48;
+    var x = (this.x + 16) * ctx.scale;
+    var y = (16 - this.y) * ctx.scale;
+    var w = 2 * this.scaleX * ctx.scale;
+    var h = 2 * this.scaleY * ctx.scale;
 
     if (this.texture != null) {
         ctx.save();

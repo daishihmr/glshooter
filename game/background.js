@@ -1,6 +1,6 @@
 /**
  * @author daishihmr
- * @version 1.0
+ * @version 1.5
  *
  * The MIT License (MIT)
  * Copyright (c) 2012 dev7.jp
@@ -60,8 +60,9 @@ function createBackground(app, player, stage) {
         ]);
         var grad2 = tm.graphics.RadialGradient(160, 160, 0, 160, 160, 160*1.5);
         grad2.addColorStopList([
-            { offset: 0, color: "rgba(255,255,255,0.0)" },
-            { offset: 1, color: "rgba(255,255,255,0.3)" }
+            { offset: 0.0, color: "rgba(255,255,255,0.0)" },
+            { offset: 0.1, color: "rgba(255,255,255,0.2)" },
+            { offset: 1.0, color: "rgba(255,255,255,0.6)" },
         ]);
 
         var polygons = [];

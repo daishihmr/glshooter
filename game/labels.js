@@ -1,6 +1,6 @@
 /**
  * @author daishihmr
- * @version 1.0
+ * @version 1.5
  *
  * The MIT License (MIT)
  * Copyright (c) 2012 dev7.jp
@@ -26,10 +26,22 @@
 
 var Labels = {};
 (function() {
+    var MyLabel = tm.createClass({
+        superClass: tm.app.Label,
+        init: function(text, size) {
+            this.superInit(text, size);
+            this.setFontFamily("Orbitron");
+        },
+        draw: function(canvas) {
+            canvas.setText(this.fontStyle, this.align, this.baseline);
+            canvas.fillText(this.text, 0, 0, this.width);
+        }
+    });
 
     Labels.createScore = function(player) {
-        var score = tm.app.Label("", 30);
+        var score = MyLabel("", 30);
 
+        var lastValue = null;
         score.update = function(app) {
             var a = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             if (player.y < 0 && !player.disabled) {
@@ -37,9 +49,11 @@ var Labels = {};
             } else {
                 this.alpha = a;
             }
-            this.text= "SCORE:" + ~~(app.score);
+            if (app.score !== lastValue) {
+                this.text= "SCORE:" + ~~(app.score);
+                lastValue = app.score;
+            }
         };
-        score.setFontFamily("Orbitron");
         score.setBaseline("bottom");
         score.x = 2;
         score.y = 320;
@@ -49,12 +63,12 @@ var Labels = {};
     };
 
     Labels.createHighScore = function(player) {
-        var highScore = tm.app.Label("", 10);
-        highScore.setFontFamily("Orbitron");
+        var highScore = MyLabel("", 10);
         highScore.setBaseline("bottom");
         highScore.width = 320;
         highScore.x = 4;
         highScore.y = 320 - 32;
+        var lastValue = null;
         highScore.update = function(app) {
             var a = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             if (player.y < 0) {
@@ -62,20 +76,25 @@ var Labels = {};
             } else {
                 this.alpha = a;
             }
-            app.highScore = Math.max(app.score, app.highScore);
-            this.text = "high score:" + ~~(app.highScore);
+            if (app.highScore !== lastValue) {
+                this.text = "high score:" + ~~(app.highScore);
+                lastValue = app.highScore;
+            }
         };
 
         return highScore;
     };
 
     Labels.createLife = function() {
-        var life = tm.app.Label("", 12);
+        var life = MyLabel("", 12);
+        var lastValue = null;
         life.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
-            this.text= "LIFE:" + app.zanki;
+            if (app.zanki !== lastValue) {
+                this.text= "LIFE:" + app.zanki;
+                lastValue = app.zanki;
+            }
         };
-        life.setFontFamily("Orbitron");
         life.setBaseline("top");
         life.x = 2;
         life.y = 12;
@@ -100,12 +119,15 @@ var Labels = {};
     };
 
     Labels.createBomb = function() {
-        var bomb = tm.app.Label("", 12);
+        var bomb = MyLabel("", 12);
+        var lastValue = null;
         bomb.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
-            this.text= "BOMB:" + app.bomb;
+            if (app.bomb !== lastValue) {
+                this.text= "BOMB:" + app.bomb;
+                lastValue = app.bomb;
+            }
         };
-        bomb.setFontFamily("Orbitron");
         bomb.setBaseline("top");
         bomb.x = 2;
         bomb.y = 26;
@@ -115,8 +137,7 @@ var Labels = {};
     };
 
     Labels.createFps = function() {
-        var fps = tm.app.Label("fps:", 10);
-        fps.setFontFamily("Orbitron");
+        var fps = MyLabel("fps:", 10);
         fps.setBaseline("top");
         fps.width = 50;
         fps.x = 320 - fps.width;
@@ -146,15 +167,20 @@ var Labels = {};
         });
         bossHp.x = 300*0.5 + 5;
         bossHp.y = 5;
+        var lastValue = null;
         bossHp.update = function(app) {
-            this.visible = (boss.parent !== null);
-            this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
-            this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
-            if (this.width <= 1) this.removeChild();
-            this.x = this.width*0.5 + 5;
+            if (this.visible && boss.damagePoint !== lastValue) {
+                lastValue = boss.damagePoint;
+                this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
+                this.width = 300 * Math.max(1, boss.maxHp-boss.damagePoint) / boss.maxHp;
+                this.x = this.width*0.5 + 5;
+                if (this.width <= 1) {
+                    this.remove();
+                }
+            }
         };
 
         return bossHp;
     };
-    
+
 })();

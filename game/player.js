@@ -170,7 +170,6 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
             (this.level < 2) || fireWeapon(+sin*0.75, 1.4, 0);
 
             var angle = xPress ? 0 : 4;
-            if (mouse.getPointing()) angle *= 1.2;
             if (scene.frame % 3 === 0) {
                 (this.level < 2) || fireWeapon(+1.5, 0, angle*+6);
                 fireWeapon(+1.0, 0, angle*+4);

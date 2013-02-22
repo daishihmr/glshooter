@@ -139,9 +139,9 @@ glslib.Sprite.prototype._draw = function(canvas, ctx) {
     if (!this.visible) return;
 
     var x = (this.x + 16) * canvas.width/32;
-    var y = (16 - this.y) * canvas.height/32;
+    var y = (16 - this.y) * canvas.height/48;
     var w = 2 * this.scaleX * canvas.width/32;
-    var h = 2 * this.scaleY * canvas.height/32;
+    var h = 2 * this.scaleY * canvas.height/48;
 
     if (this.texture != null) {
         ctx.save();
@@ -169,14 +169,14 @@ glslib.fitWindow = function(domElement) {
     domElement.style.position = "absolute";
     domElement.style.top = 0;
     domElement.style.left = 0;
-    if (window.innerHeight < window.innerWidth) {
-        domElement.width = window.innerHeight;
-        domElement.height = window.innerHeight;
-    } else {
+    if (window.innerWidth / window.innerHeight < 3/4) {
         domElement.width = window.innerWidth;
-        domElement.height = window.innerWidth;
+        domElement.height = window.innerWidth*4/3;
+    } else {
+        domElement.height = window.innerHeight;
+        domElement.width = window.innerHeight*3/4;
     }
-}
+};
 
 /**
  * @param {Image} image

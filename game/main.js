@@ -119,7 +119,7 @@ tm.main(function() {
     }
 
     var app = tm.app.CanvasApp("#tm");
-    app.resize(320, 320);
+    app.resize(320, 480);
     app.fitWindow(false);
     app.background = "rgba(0,0,0,1)"
     app.fps = FPS;
@@ -176,7 +176,7 @@ tm.main(function() {
     if (tm.isMobile) {
         var mouse = app.pointing = app.mouse = tm.input.Touch(glCanvas);
     } else {
-        var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
+        var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
     }
     mouse.lastLeftUp = -1;
 

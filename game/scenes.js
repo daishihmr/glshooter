@@ -145,6 +145,15 @@ var ContinueScene;
                 }
 
                 if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                    if (tm.isMobile) {
+                        var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                        var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                        for (var i = this.menuItem.length; i--; ) {
+                            if (this.menuItem[i].isHitPointRect(px, py)) {
+                                this.selection = i;
+                            }
+                        }
+                    }
                     switch (this.selection) {
                     case 0: // game start
                         this.startFlag = true;
@@ -263,6 +272,15 @@ var ContinueScene;
             }
 
             if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 switch (this.selection) {
                 case 0: // resume
                     app.popScene();
@@ -335,6 +353,15 @@ var ContinueScene;
             }
 
             if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 switch (this.selection) {
                 case 0:
                     if (app.pauseScene.selection === 1) { // restart
@@ -420,7 +447,16 @@ var ContinueScene;
             }
             this.menuItem[this.selection].fillStyle = "#fff"
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointing()) {
+            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 switch (this.selection) {
                 case 0: // stage 1
                     START_STAGE = 1;
@@ -556,6 +592,15 @@ var ContinueScene;
                 }
             }
             if (app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 switch (this.selection) {
                 case 2: // autoBomb
                     app.settings["autoBomb"] = !app.settings["autoBomb"];
@@ -678,6 +723,15 @@ var ContinueScene;
             }
 
             if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 app.popScene();
                 switch(this.selection) {
                 case 0:

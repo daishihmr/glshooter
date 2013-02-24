@@ -336,10 +336,10 @@ var ContinueScene;
             });
         },
         update: function(app) {
-            if (app.keyboard.getKeyDown("right")) {
+            if (app.keyboard.getKeyDown("down")) {
                 this.selection += 1;
                 if (this.selection === this.menuItem.length) this.selection = 0;
-            } else if (app.keyboard.getKeyDown("left")) {
+            } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
             }

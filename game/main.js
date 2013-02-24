@@ -59,13 +59,22 @@ var NUM_OF_STAGE = 3;
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
 
-var LOAD_BGM_FROM_EXTERNAL_SITE = true;
+var LOAD_BGM_FROM_EXTERNAL_SITE = false;
 
-var BGM = {
-    "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
-    "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
-    "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
-};
+var BGM;
+if (LOAD_BGM_FROM_EXTERNAL_SITE) {
+    BGM = {
+        "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
+        "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
+        "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
+    };
+} else {
+    BGM = {
+        "bgm1": "sounds/nc28689.mp3",
+        "bgm2": "sounds/nc784.mp3",
+        "bgm3": "sounds/nc52497.mp3",
+    };
+}
 
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
@@ -75,16 +84,6 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss1", "images/boss1.png");
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
-
-    // if (LOAD_BGM_FROM_EXTERNAL_SITE) {
-    //     tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3", 1);
-    // } else {
-    //     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
-    // }
 
     if (!webkitAudioContext) {
         MUTE_SE = true;

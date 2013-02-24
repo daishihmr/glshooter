@@ -90,9 +90,9 @@ var Labels = {};
         life.setAlign("left");
         life.setBaseline("top");
         life.width = 320;
-        life.x = 320 - 4;
-        life.y = 30;
-        life.rotation = 90;
+        life.x = 4;
+        life.y = 430;
+        life.rotation = -90;
         var lastValue = null;
         life.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
@@ -110,9 +110,9 @@ var Labels = {};
         bomb.setAlign("left");
         bomb.setBaseline("top");
         bomb.width = 320;
-        bomb.x = 320 - 4;
-        bomb.y = 100;
-        bomb.rotation = 90;
+        bomb.x = 4;
+        bomb.y = 370;
+        bomb.rotation = -90;
         var lastValue = null;
         bomb.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
@@ -123,6 +123,17 @@ var Labels = {};
         };
 
         return bomb;
+    };
+
+    Labels.createPauseButton = function() {
+        var pause = MyLabel("pause", 12);
+        pause.setAlign("left");
+        pause.setBaseline("top");
+        pause.width = 320;
+        pause.x = 320 - 4;
+        pause.y = 32;
+        pause.rotation = 90;
+        return pause;
     };
 
     Labels.createMessage = function() {

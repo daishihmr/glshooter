@@ -29,7 +29,7 @@ var MUTE_SE =  false; // if true, not play sounds.
 var MUTE_BGM = false; // if true, not play bgm.
 var FPS = 60;
 var BULLET_SPEED = 0.10;
-var DBL_CLICK_INTERVAL = 200;
+var DBL_CLICK_INTERVAL = 220;
 
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
@@ -450,6 +450,7 @@ tm.main(function() {
     var message = app.message = Labels.createMessage();
     var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
     var fps = Labels.createFps();                   //SHOW_FPS && gameScene.addChild(fps);
+    var pauseButton = Labels.createPauseButton();   gameScene.addChild(pauseButton);
     var bossHp;
 
     // game main loop
@@ -599,6 +600,7 @@ tm.main(function() {
         scene._draw();
     };
 
+    // mouse or touch
     app.update = function() {
         mouse.doubleClick = false;
         if (mouse.getPointingEnd()) {
@@ -606,6 +608,12 @@ tm.main(function() {
                 mouse.doubleClick = true;
             } else {
                 mouse.lastLeftUp = Date.now();
+            }
+
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+            if (pauseButton.isHitPointRect(px, py)) {
+                app.pushScene(app.pauseScene);
             }
         }
 

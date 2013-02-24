@@ -152,7 +152,7 @@ var ContinueScene;
                     }
                 }
 
-                if (app.keyboard.getKeyDown("space") || d) {
+                if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                     switch (this.selection) {
                     case 0: // game start
                         this.startFlag = true;
@@ -279,7 +279,7 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || d) {
+            if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                 switch (this.selection) {
                 case 0: // resume
                     app.popScene();
@@ -359,7 +359,7 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || d) {
+            if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                 switch (this.selection) {
                 case 0:
                     if (app.pauseScene.selection === 1) { // restart
@@ -450,7 +450,7 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || d) {
+            if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                 switch (this.selection) {
                 case 0: // stage 1
                     START_STAGE = 1;
@@ -585,7 +585,7 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || d) {
+            if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                 switch (this.selection) {
                 case 0: // bgm
                 case 1: // se
@@ -625,7 +625,7 @@ var ContinueScene;
             this.superInit();
 
             var gameover = this.gameover = tm.app.Label("Game Over", 35);
-            gameover.fillStyle = "rgba(0,0,255,0.6)";
+            gameover.fillStyle = "rgba(255,0,0,0.8)";
             gameover.setFontFamily("Orbitron");
             gameover.setAlign("center");
             gameover.setBaseline("middle");
@@ -642,7 +642,7 @@ var ContinueScene;
         },
         update: function(app) {
             this.gameover.alpha += 0.01;
-            if (0.5 < this.gameover.alpha) {
+            if (1 < this.gameover.alpha) {
                 this.update = function() {};
                 app.highScore = Math.max(app.score, app.highScore);
                 var status = [];
@@ -730,7 +730,7 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || d) {
+            if (app.keyboard.getKeyDown("space") || app.keyboard.getKeyDown("z") || d) {
                 app.popScene();
                 switch(this.selection) {
                 case 0:

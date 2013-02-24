@@ -37,6 +37,9 @@ zip glshooter.zip \
     sounds/voice_gen-bomb.mp3 \
     sounds/effect0.mp3 \
     sounds/nc17909.mp3 \
+    sounds/nc28689.mp3 \
+    sounds/nc784.mp3 \
+    sounds/nc52497.mp3 \
     images/boss1.png \
     images/texture0.png \
     images/boss2.png \
@@ -45,7 +48,8 @@ zip glshooter.zip \
     lib/bulletml.min.js \
     lib/tmlib.min.js \
     lib/webaudio.js \
-    glshooter.min.js
+    glshooter.min.js \
+    glshooter.appcache
 
 cp index-backup.html index.html
 rm index-backup.html

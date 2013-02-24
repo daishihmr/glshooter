@@ -145,39 +145,26 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.power = xPress ? 0.8 : 1.2;
         if (!this.disabled && scene.frame % 3 === 0 && !kb.getKey("c")) {
             if (xPress) {
-                // (lv < 2) || fireWeapon(-0.19, 1.2, 0);
-                (lv < 1) || fireWeapon(-0.18, 1.3, 0);
-                // (lv < 1) || fireWeapon(-0.17, 1.4, 0);
-                (lv < 1) || fireWeapon(-0.16, 1.5, 0);
-                // fireWeapon(-0.15, 1.6, 0);
-                // fireWeapon(-0.10, 1.7, 0);
                 fireWeapon(-0.05, 1.8, 0);
-                // fireWeapon( 0.00, 1.9, 0);
+                fireWeapon( 0.00, 1.2, 0);
                 fireWeapon( 0.05, 1.8, 0);
-                // fireWeapon( 0.10, 1.7, 0);
-                // fireWeapon( 0.15, 1.6, 0);
-                (lv < 1) || fireWeapon( 0.16, 1.5, 0);
-                // (lv < 1) || fireWeapon( 0.17, 1.4, 0);
-                (lv < 1) || fireWeapon( 0.18, 1.3, 0);
-                // (lv < 2) || fireWeapon( 0.19, 1.2, 0);
             }
 
             var sin = Math.sin(scene.frame*0.1);
-            (lv < 2) || fireWeapon(-sin*0.75, 1.4, 0);
-            (lv < 1) || fireWeapon(-sin*0.5, 1.4, 0);
-            // fireWeapon(+sin*0.25, 1.4, 0);
-            // fireWeapon(-sin*0.25, 1.4, 0);
-            (lv < 1) || fireWeapon(+sin*0.5, 1.4, 0);
-            (lv < 2) || fireWeapon(+sin*0.75, 1.4, 0);
+            fireWeapon(-sin*0.75, 1.4, 0);
+            fireWeapon(-sin*0.5, 1.4, 0);
+            fireWeapon(+sin*0.5, 1.4, 0);
+            fireWeapon(+sin*0.75, 1.4, 0);
 
+            var sideBit = xPress ? 0 : 1;
             var angle = xPress ? 0 : 4;
-            if (scene.frame % 3 === 0) {
-                (lv < 2) || fireWeapon(+1.5, 0, angle*+6);
-                fireWeapon(+1.0, 0, angle*+4);
-                (lv < 1) || fireWeapon(+0.5, 0, angle*+2);
-                (lv < 1) || fireWeapon(-0.5, 0, angle*-2);
-                fireWeapon(-1.0, 0, angle*-4);
-                (lv < 2) || fireWeapon(-1.5, 0, angle*-6);
+            if (scene.frame % 6 === 0) {
+                (lv < 2) || fireWeapon(+(sideBit + 1.2), 0, angle*+2.1);
+                (lv < 1) || fireWeapon(+(sideBit + 0.8), 0, angle*+1.4);
+                            fireWeapon(+(sideBit + 0.4), 0, angle*+0.7);
+                            fireWeapon(-(sideBit + 0.4), 0, angle*-0.7);
+                (lv < 1) || fireWeapon(-(sideBit + 0.8), 0, angle*-1.4);
+                (lv < 2) || fireWeapon(-(sideBit + 1.2), 0, angle*-2.1);
             }
         }
     };

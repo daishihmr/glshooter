@@ -458,6 +458,13 @@ tm.main(function() {
     var noGlowUpTime = 0;
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
+        if (mouse.getPointingEnd()) {
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+            if (pauseButton.isHitPointRect(px, py)) {
+                app.pushScene(app.pauseScene);
+            }
+        }
 
         // if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
 
@@ -609,12 +616,6 @@ tm.main(function() {
             } else {
                 mouse.lastLeftUp = Date.now();
             }
-
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 480 / parseInt(app.element.style.height);
-            if (pauseButton.isHitPointRect(px, py)) {
-                app.pushScene(app.pauseScene);
-            }
         }
 
         if (app.currentScene !== gameScene) {
@@ -650,7 +651,7 @@ tm.main(function() {
 
         // bgm
         if (!MUTE_BGM) {
-            if (app.bgm) {
+            if (app.bgm && app.bgm.loaded) {
                 app.bgm.stop();
             }
             app.bgm = tm.sound.Sound(BGM["bgm" + stage]);
@@ -760,7 +761,7 @@ tm.main(function() {
                     app.incrScore(bonus, false);
                 } else if (scene.frame === t + 180*2) {
                     app.popScene();
-                    if (app.bgm) app.bgm.stop();
+                    if (app.bgm && app.bgm.loaded) app.bgm.stop();
                     this.removeEventListener("enterframe", arguments.callee);
                 }
             } else {
@@ -800,7 +801,7 @@ tm.main(function() {
 
     // game over
     app.gameOver = function() {
-        if (app.bgm) app.bgm.stop();
+        if (app.bgm && app.bgm.loaded) app.bgm.stop();
         app.replaceScene(gameOverScene);
     };
 

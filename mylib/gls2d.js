@@ -22,7 +22,7 @@ glslib.Scene = function(canvas) {
 };
 
 /**
- * 
+ *
  */
 glslib.Scene.prototype._update = function() {
     this.update();
@@ -45,13 +45,15 @@ glslib.Scene.prototype._update = function() {
 };
 
 /**
- * 
+ *
  */
 glslib.Scene.prototype._draw = function() {
     var children = this.children;
     var ctx = this.ctx;
     var program = this.program;
     this.clear();
+
+    ctx.scale = this.canvas.width/32;
 
     ctx.globalCompositeOperation = "lighter";
     for (var i = 0, len = children.length; i < len; i++) {
@@ -60,11 +62,11 @@ glslib.Scene.prototype._draw = function() {
 };
 
 /**
- * 
+ *
  */
 glslib.Scene.prototype.clear = function() {
     this.ctx.globalCompositeOperation = "copy";
-    this.ctx.fillStyle = "rgba(0,0,0,0)";
+    this.ctx.fillStyle = "rgba(0,0,0,0.2)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 };
 
@@ -138,18 +140,18 @@ glslib.Sprite.prototype._update = function() {
 glslib.Sprite.prototype._draw = function(canvas, ctx) {
     if (!this.visible) return;
 
-    var x = (this.x + 16) * canvas.width/32;
-    var y = (16 - this.y) * canvas.height/32;
-    var w = 2 * this.scaleX * canvas.width/32;
-    var h = 2 * this.scaleY * canvas.height/32;
+    var x = (this.x + 16) * ctx.scale;
+    var y = (24 - this.y) * ctx.scale;
+    var w = 2 * this.scaleX * ctx.scale;
+    var h = 2 * this.scaleY * ctx.scale;
 
     if (this.texture != null) {
         ctx.save();
         ctx.globalAlpha = this.alpha;
         ctx.translate(x, y);
         ctx.rotate(this.rotation*Math.DEG_TO_RAD);
-        ctx.drawImage(this.texture, 
-            this.texX*64, this.texY*64, 64*this.texScale, 64*this.texScale, 
+        ctx.drawImage(this.texture,
+            this.texX*64, this.texY*64, 64*this.texScale, 64*this.texScale,
             -w*0.5, -h*0.5, w, h);
 
         if (this.glow > 0) {
@@ -169,14 +171,14 @@ glslib.fitWindow = function(domElement) {
     domElement.style.position = "absolute";
     domElement.style.top = 0;
     domElement.style.left = 0;
-    if (window.innerHeight < window.innerWidth) {
-        domElement.width = window.innerHeight;
-        domElement.height = window.innerHeight;
-    } else {
+    if (window.innerWidth / window.innerHeight < 2/3) {
         domElement.width = window.innerWidth;
-        domElement.height = window.innerWidth;
+        domElement.height = window.innerWidth*3/2;
+    } else {
+        domElement.height = window.innerHeight;
+        domElement.width = window.innerHeight*2/3;
     }
-}
+};
 
 /**
  * @param {Image} image

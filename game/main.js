@@ -1,6 +1,6 @@
 /**
  * @author daishihmr
- * @version 1.0
+ * @version 1.5
  *
  * The MIT License (MIT)
  * Copyright (c) 2012 dev7.jp
@@ -34,16 +34,16 @@ var DBL_CLICK_INTERVAL = 200;
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
 
-var EXTEND_SCORE_LIFE = 2000000;
-var EXTEND_SCORE_BOMB =  800000;
+var EXTEND_SCORE_LIFE = 5000000;
+var EXTEND_SCORE_BOMB = 2400000;
 
-var GLOW_DOWN_TIME = 120;
+var GLOW_DOWN_TIME = 60;
 var GLOW_UP_PER_HIT = 1;
-var GLOW_DOWN = 5;
+var GLOW_DOWN = 12;
 var GLOW_MAX = 1100;
-var GLOW_BONUS_RATE = 0.004;
+var GLOW_BONUS_RATE = 0.012;
 
-var SHOW_FPS = true;
+var SHOW_FPS = false;
 var MUTEKI = false;
 var INITIAL_RANK = 0.5;
 var COLLISION_RADUIS = 0.2*0.2;
@@ -118,7 +118,7 @@ tm.main(function() {
     }
 
     var app = tm.app.CanvasApp("#tm");
-    app.resize(320, 320);
+    app.resize(320, 480);
     app.fitWindow(false);
     app.background = "rgba(0,0,0,1)"
     app.fps = FPS;
@@ -150,7 +150,7 @@ tm.main(function() {
         app.score = 0;
         app.zanki = 3;
         app.bomb = 3;
-        if (player) player.level = 0;
+        if (player) player.level = 1;
     };
     app.bgm = null;
     app.resetGameStatus();
@@ -172,7 +172,11 @@ tm.main(function() {
 
     // input
     var keyboard = app.keyboard;
-    var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
+    if (tm.isMobile) {
+        var mouse = app.pointing = app.mouse = tm.input.Touch(glCanvas);
+    } else {
+        var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
+    }
     mouse.lastLeftUp = -1;
 
     var titleScene = app.titleScene = TitleScene();
@@ -197,6 +201,19 @@ tm.main(function() {
         textures[name] = glslib.createTexture(gl, tm.graphics.TextureManager.get(name).element);
     }
     var mainTexture = textures["texture0"];
+
+    var glowTexture = tm.graphics.Canvas().resize(64, 64);
+    glowTexture.setFillStyle(
+        tm.graphics.RadialGradient(32, 32, 0, 32, 32, 32)
+        .addColorStopList([
+            { offset: 0.0, color: "rgba(200, 200, 255, 0.5)" },
+            { offset: 0.5, color: "rgba(200, 200, 255, 0.5)" },
+            { offset: 1.0, color: "rgba(  0,   0, 255, 0.0)" },
+        ])
+        .toStyle()
+    );
+    glowTexture.fillCircle(32, 32, 32);
+    glslib.Sprite.glowTexture = glowTexture.element;
 
     // explosion
     var explosion = new Explosion(scene, mainTexture);
@@ -299,9 +316,9 @@ tm.main(function() {
         },
         "isInsideOfWorld": function(b) {
             if (b.isBullet && !b.isBit) {
-                return -16.5 < b.x && b.x < 16.5 && -16.5 < b.y && b.y < 16.5;
+                return -16.5 < b.x && b.x < 16.5 && -24.5 < b.y && b.y < 24.5;
             } else {
-                return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
+                return -(16.5+6) < b.x && b.x < (16.5+6) && -(24.5+6) < b.y && b.y < (24.5+6);
             }
         },
         "updateProperties": false,
@@ -349,11 +366,11 @@ tm.main(function() {
             }
 
             var d = (player.x-this.x)*(player.x-this.x)+(player.y-this.y)*(player.y-this.y)-(player.scaleX+this.scaleX);
-            var K = 5*5;
+            var K = 2*2;
             d = Math.clamp(d, 0, K);
             var rate = Math.max(1, ((K-d)/K)*4);
             // if (1<rate) console.log("RATE " + rate*rate);
-            app.incrScore(this.score*rate*rate, true); // mega rate
+            app.incrScore(this.score*rate, true); // mega rate
 
             if (this.clear !== true) {
                 explode(this.x, this.y, this.scaleX);
@@ -432,7 +449,7 @@ tm.main(function() {
     var life = Labels.createLife();                 gameScene.addChild(life);
     var message = app.message = Labels.createMessage();
     var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
-    var fps = Labels.createFps();                   SHOW_FPS && gameScene.addChild(fps);
+    var fps = Labels.createFps();                   //SHOW_FPS && gameScene.addChild(fps);
     var bossHp;
 
     // game main loop
@@ -479,6 +496,7 @@ tm.main(function() {
         // bomb
         if ((keyboard.getKeyDown("z")||mouse.doubleClick) && player.parent !== null && 0 < app.bomb && bombing === false) {
             app.bomb -= 1;
+            glowLevel = 0;
             app.useBombCount += 1;
             for (var i = enemies.length; i--; ) {
                 var e = enemies[i];
@@ -511,7 +529,8 @@ tm.main(function() {
                 if (w.parent === null) continue;
                 var dist = (e.x-w.x)*(e.x-w.x)+(e.y-w.y)*(e.y-w.y);
                 if (dist < colLen) {
-                    glowLevel += GLOW_UP_PER_HIT; glowUp = true;
+                    glowLevel += GLOW_UP_PER_HIT;
+                    glowUp = true;
                     e.damage(w.power);
                     app.incrScore(0.01, true); // hit
                     w.update(); explodeS(w.x, w.y, 0.3);
@@ -528,9 +547,9 @@ tm.main(function() {
                 var dist = (b.x-px)*(b.x-px)+(b.y-py)*(b.y-py);
                 if (dist < COLLISION_RADUIS) {
                     scene.removeChild(b);
+                    glowLevel = 0;
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
-                        glowLevel = 0;
                         break;
                     } else {
                         app.bomb -= 1;
@@ -538,9 +557,9 @@ tm.main(function() {
                         app.useBombCount += 1;
                         break;
                     }
-                } else if (dist < 1.5) {
+                } else if (dist < 1.0) {
                     // console.log("GRAZE");
-                    app.incrScore(1, true); // graze
+                    app.incrScore(4, true); // graze
                 }
             }
         }
@@ -552,9 +571,9 @@ tm.main(function() {
                 var colLen = (e.scaleX*0.25) * (e.scaleX*0.25);
                 var dist = (e.x-px)*(e.x-px)+(e.y-py)*(e.y-py);
                 if (dist < colLen) {
+                    glowLevel = 0;
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
-                        glowLevel = 0;
                     } else {
                         app.bomb -= 1;
                         app.autoBomber(player.x, player.y);

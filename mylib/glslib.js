@@ -241,14 +241,14 @@ glslib.fitWindow = function(domElement) {
     domElement.style.position = "absolute";
     domElement.style.top = 0;
     domElement.style.left = 0;
-    if (window.innerHeight < window.innerWidth) {
-        domElement.width = window.innerHeight;
-        domElement.height = window.innerHeight;
-    } else {
+    if (window.innerWidth / window.innerHeight < 3/4) {
         domElement.width = window.innerWidth;
-        domElement.height = window.innerWidth;
+        domElement.height = window.innerWidth*4/3;
+    } else {
+        domElement.height = window.innerHeight;
+        domElement.width = window.innerHeight*3/4;
     }
-}
+};
 
 /**
  * @param {WebGLRenderingContext} gl

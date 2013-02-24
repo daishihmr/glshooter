@@ -1,6 +1,6 @@
 /**
  * @author daishihmr
- * @version 1.0
+ * @version 1.5
  *
  * The MIT License (MIT)
  * Copyright (c) 2012 dev7.jp
@@ -33,7 +33,7 @@
 var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var player = new glslib.Sprite(texture);
     player.scaleX = player.scaleY = PLAYER_SCALE;
-    player.level = 0;
+    player.level = 1;
     player.reset = function() {
         this.x = 0;
         this.y = -10;
@@ -50,6 +50,8 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var kb = app.keyboard;
     var reactFrame = 0;
     player.update = function() {
+        var lv = this.level;
+
         if (this.disabled || this.muteki) {
             this.visible = (~~(scene.frame/2)) % 2 === 0;
         } else {
@@ -129,8 +131,8 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
             if (this.x < -16) this.x = -16;
             if (16 < this.x) this.x = 16;
-            if (this.y < -16) this.y = -16;
-            if (16 < this.y) this.y = 16;
+            if (this.y < -24) this.y = -24;
+            if (24 < this.y) this.y = 24;
         }
 
         if (beforeRoll === this.roll) {
@@ -141,40 +143,43 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         else if (3 < this.roll) this.roll = 3;
         this.texX = 3 + ~~(this.roll);
 
-        this.power = xPress ? 0.6 : 1;
+        this.power = xPress ? 0.8 : 1.2;
         if (!this.disabled && scene.frame % 3 === 0 && !kb.getKey("c")) {
             if (xPress) {
-                (this.level < 2) || fireWeapon(-0.19, 1.2, 0);
-                (this.level < 2) || fireWeapon(-0.18, 1.3, 0);
-                (this.level < 1) || fireWeapon(-0.17, 1.4, 0);
-                (this.level < 1) || fireWeapon(-0.16, 1.5, 0);
-                fireWeapon(-0.15, 1.6, 0);
-                fireWeapon(-0.10, 1.7, 0);
+                // (lv < 2) || fireWeapon(-0.19, 1.2, 0);
+                (lv < 1) || fireWeapon(-0.18, 1.3, 0);
+                // (lv < 1) || fireWeapon(-0.17, 1.4, 0);
+                (lv < 1) || fireWeapon(-0.16, 1.5, 0);
+                // fireWeapon(-0.15, 1.6, 0);
+                // fireWeapon(-0.10, 1.7, 0);
                 fireWeapon(-0.05, 1.8, 0);
-                fireWeapon( 0.00, 1.9, 0);
+                // fireWeapon( 0.00, 1.9, 0);
                 fireWeapon( 0.05, 1.8, 0);
-                fireWeapon( 0.10, 1.7, 0);
-                fireWeapon( 0.15, 1.6, 0);
-                (this.level < 1) || fireWeapon( 0.16, 1.5, 0);
-                (this.level < 1) || fireWeapon( 0.17, 1.4, 0);
-                (this.level < 2) || fireWeapon( 0.18, 1.3, 0);
-                (this.level < 2) || fireWeapon( 0.19, 1.2, 0);
+                // fireWeapon( 0.10, 1.7, 0);
+                // fireWeapon( 0.15, 1.6, 0);
+                (lv < 1) || fireWeapon( 0.16, 1.5, 0);
+                // (lv < 1) || fireWeapon( 0.17, 1.4, 0);
+                (lv < 1) || fireWeapon( 0.18, 1.3, 0);
+                // (lv < 2) || fireWeapon( 0.19, 1.2, 0);
             }
 
-            (this.level < 2) || fireWeapon(-Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
-            (this.level < 1) || fireWeapon(-Math.sin(scene.frame*0.1)*0.5, 1.4, 0);
-            fireWeapon(+Math.sin(scene.frame*0.1)*0.25, 1.4, 0);
-            fireWeapon(-Math.sin(scene.frame*0.1)*0.25, 1.4, 0);
-            (this.level < 1) || fireWeapon(+Math.sin(scene.frame*0.1)*0.5, 1.4, 0);
-            (this.level < 2) || fireWeapon(+Math.sin(scene.frame*0.1)*0.75, 1.4, 0);
+            var sin = Math.sin(scene.frame*0.1);
+            (lv < 2) || fireWeapon(-sin*0.75, 1.4, 0);
+            (lv < 1) || fireWeapon(-sin*0.5, 1.4, 0);
+            // fireWeapon(+sin*0.25, 1.4, 0);
+            // fireWeapon(-sin*0.25, 1.4, 0);
+            (lv < 1) || fireWeapon(+sin*0.5, 1.4, 0);
+            (lv < 2) || fireWeapon(+sin*0.75, 1.4, 0);
 
             var angle = xPress ? 0 : 4;
-            (this.level < 1) || fireWeapon(+1.5, 0, angle*+3);
-            fireWeapon(+1.0, 0, angle*+2);
-            (this.level < 2) || fireWeapon(+0.5, 0, angle*+1);
-            (this.level < 2) || fireWeapon(-0.5, 0, angle*-1);
-            fireWeapon(-1.0, 0, angle*-2);
-            (this.level < 1) || fireWeapon(-1.5, 0, angle*-3);
+            if (scene.frame % 3 === 0) {
+                (lv < 2) || fireWeapon(+1.5, 0, angle*+6);
+                fireWeapon(+1.0, 0, angle*+4);
+                (lv < 1) || fireWeapon(+0.5, 0, angle*+2);
+                (lv < 1) || fireWeapon(-0.5, 0, angle*-2);
+                fireWeapon(-1.0, 0, angle*-4);
+                (lv < 2) || fireWeapon(-1.5, 0, angle*-6);
+            }
         }
     };
     player.damage = function() {
@@ -270,7 +275,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         w.update = function() {
             this.x += c * 1.3;
             this.y += s * 1.3;
-            if (this.x < -16.2 || 16.2 < this.x || this.y < -16.2 || 16.2 < this.y) {
+            if (this.x < -16.2 || 16.2 < this.x || this.y < -24.2 || 24.2 < this.y) {
                 scene.removeChild(this);
             }
         };

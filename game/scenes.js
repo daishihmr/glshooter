@@ -61,12 +61,12 @@ var ContinueScene;
                 { offset: 0, color: "rgba(0,0,255,0.3)" },
                 { offset: 1, color: "rgba(0,0,255,0.0)" }
             ]);
-            var bg = this.bg = tm.app.RectangleShape(320, 320, {
+            var bg = this.bg = tm.app.RectangleShape(320, 480, {
                 fillStyle: bgGrad.toStyle(),
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             bg.blendMode = "lighter";
             this.addChild(bg);
 
@@ -99,16 +99,14 @@ var ContinueScene;
             this.addChild(version);
 
             this.menuItem = [];
-            var start = this.menuItem[0] = createLabel("game start", 20, 160, 170);
+            var start = this.menuItem[0] = createLabel("game start", 20, 160, 320);
             this.addChild(start);
-            var practice = this.menuItem[1] = createLabel("practice", 20, 160, 210);
+            var practice = this.menuItem[1] = createLabel("practice", 20, 160, 360);
             this.addChild(practice);
-            var settings = this.menuItem[2] = createLabel("setting", 20, 160, 250);
+            var settings = this.menuItem[2] = createLabel("setting", 20, 160, 400);
             this.addChild(settings);
-            var exit = this.menuItem[3] = createLabel("exit", 20, 160, 290);
+            var exit = this.menuItem[3] = createLabel("exit", 20, 160, 440);
             this.addChild(exit);
-
-            this.selection = 0;
 
             this.addEventListener("enter", function() {
                 this.startFlag = false;
@@ -118,6 +116,8 @@ var ContinueScene;
                 this.bg.visible = true;
                 this.title.alpha = 0;
                 this.version.alpha = 0;
+
+                this.selection = 0;
 
                 this.menuItem.forEach(function(l) {
                     l.visible = true;
@@ -133,18 +133,26 @@ var ContinueScene;
                 } else if (app.keyboard.getKeyDown("up")) {
                     this.selection -= 1;
                     if (this.selection === -1) this.selection = this.menuItem.length - 1;
-                } else if (1 < app.pointing.deltaPosition.length()) {
-                    // mouse
-                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-                    for (var i = this.menuItem.length; i--; ) {
-                        if (this.menuItem[i].isHitPointRect(px, py)) {
-                            this.selection = i;
+                }
+
+                var d = false;
+                if (app.pointing.getPointingEnd()) {
+                    var beforeSel = this.selection;
+                    if (app.pointing.getPointingEnd()) {
+                        var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                        var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+                        for (var i = this.menuItem.length; i--; ) {
+                            if (this.menuItem[i].isHitPointRect(px, py)) {
+                                this.selection = i;
+                                if (beforeSel === this.selection) {
+                                    d = true;
+                                }
+                            }
                         }
                     }
                 }
 
-                if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+                if (app.keyboard.getKeyDown("space") || d) {
                     switch (this.selection) {
                     case 0: // game start
                         this.startFlag = true;
@@ -173,7 +181,9 @@ var ContinueScene;
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
-            this.menuItem[this.selection].fillStyle = "#fff"
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff"
+            }
 
             if (this.startFlag) { // game start (fade out)
                 this.title.alpha -= 0.01;
@@ -199,9 +209,10 @@ var ContinueScene;
             var p = tm.app.Sprite(32, 32, tm.graphics.TextureManager.get("texture0"));
             p.setFrameIndex(12, 64, 64);
             p.dir = Math.random() * Math.PI * 2;
-            p.x = Math.cos(p.dir) * 160;
-            p.y = Math.sin(p.dir) * 160;
+            p.x = Math.cos(p.dir) * 240;
+            p.y = Math.sin(p.dir) * 240;
             p.alpha = 0;
+            p.blendMode = "lighter";
             p.update = function() {
                 this.alpha += 0.01;
                 this.x -= Math.cos(this.dir);
@@ -219,12 +230,12 @@ var ContinueScene;
         init: function() {
             this.superInit();
 
-            var bg = tm.app.RectangleShape(320, 320, {
+            var bg = tm.app.RectangleShape(320, 480, {
                 fillStyle: "rgba(0,0,0,0.7)",
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             this.addChild(bg);
 
             var title = createLabel("pause", 35, 160, 60);
@@ -240,9 +251,8 @@ var ContinueScene;
                 this.addChild(this.menuItem[i]);
             }
 
-            this.selection = 0;
             this.addEventListener("enter", function() {
-                this.selection = 0;
+                this.selection = -1;
             });
         },
         update: function(app) {
@@ -252,17 +262,24 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            } else if (1 < app.pointing.deltaPosition.length()) {
+            }
+
+            var d = false;
+            if (app.pointing.getPointingEnd()) {
+                var beforeSel = this.selection;
                 var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                var py = app.pointing.y * 480 / parseInt(app.element.style.height);
                 for (var i = this.menuItem.length; i--; ) {
                     if (this.menuItem[i].isHitPointRect(px, py)) {
                         this.selection = i;
+                        if (beforeSel === this.selection) {
+                            d = true;
+                        }
                     }
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+            if (app.keyboard.getKeyDown("space") || d) {
                 switch (this.selection) {
                 case 0: // resume
                     app.popScene();
@@ -284,7 +301,9 @@ var ContinueScene;
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
-            this.menuItem[this.selection].fillStyle = "#fff"
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff"
+            }
         }
     });
 
@@ -293,12 +312,12 @@ var ContinueScene;
         init: function() {
             this.superInit();
 
-            var bg = tm.app.RectangleShape(320, 320, {
+            var bg = tm.app.RectangleShape(320, 480, {
                 fillStyle: "rgba(0,0,0,0.9)",
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             this.addChild(bg);
 
             var title = createLabel("really?", 35, 160, 60);
@@ -306,15 +325,14 @@ var ContinueScene;
             this.addChild(title);
 
             this.menuItem = [];
-            this.menuItem[0] = createLabel("ok", 20, 80, 160);
-            this.menuItem[1] = createLabel("no", 20, 240, 160);
+            this.menuItem[0] = createLabel("ok", 20, 160, 230);
+            this.menuItem[1] = createLabel("no", 20, 160, 280);
             for (var i = this.menuItem.length; i--; ) {
                 this.addChild(this.menuItem[i]);
             }
 
-            this.selection = 1;
             this.addEventListener("enter", function() {
-                this.selection = 1;
+                this.selection = -1;
             });
         },
         update: function(app) {
@@ -324,17 +342,24 @@ var ContinueScene;
             } else if (app.keyboard.getKeyDown("left")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            } else if (1 < app.pointing.deltaPosition.length()) {
+            }
+
+            var d = false;
+            if (app.pointing.getPointingEnd()) {
+                var beforeSel = this.selection;
                 var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                var py = app.pointing.y * 480 / parseInt(app.element.style.height);
                 for (var i = this.menuItem.length; i--; ) {
                     if (this.menuItem[i].isHitPointRect(px, py)) {
                         this.selection = i;
+                        if (beforeSel === this.selection) {
+                            d = true;
+                        }
                     }
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+            if (app.keyboard.getKeyDown("space") || d) {
                 switch (this.selection) {
                 case 0:
                     if (app.pauseScene.selection === 1) { // restart
@@ -360,7 +385,9 @@ var ContinueScene;
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
-            this.menuItem[this.selection].fillStyle = "#fff"
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff"
+            }
         }
     });
 
@@ -369,12 +396,12 @@ var ContinueScene;
         init: function(app) {
             this.superInit();
 
-            var bg = tm.app.RectangleShape(320, 320, {
+            var bg = tm.app.RectangleShape(320, 480, {
                 fillStyle: "rgba(0,0,0,0.97)",
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             this.addChild(bg);
 
             var title = createLabel("stage select", 35, 160, 60);
@@ -391,36 +418,39 @@ var ContinueScene;
                 this.addChild(this.menuItem[i]);
             }
 
-            this.selection = 0;
+            this.selection;
             this.addEventListener("enter", function() {
+                this.selection = -1;
             });
 
             this.addEventListener("exit", function() {
             });
         },
         update: function(app) {
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-
             if (app.keyboard.getKeyDown("down")) {
                 this.selection += 1;
                 if (this.selection === this.menuItem.length) this.selection = 0;
             } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            } else if (1 < app.pointing.deltaPosition.length()) {
+            }
+
+            var d = false;
+            if (app.pointing.getPointingEnd()) {
+                var beforeSel = this.selection;
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 480 / parseInt(app.element.style.height);
                 for (var i = this.menuItem.length; i--; ) {
                     if (this.menuItem[i].isHitPointRect(px, py)) {
                         this.selection = i;
+                        if (beforeSel === this.selection) {
+                            d = true;
+                        }
                     }
                 }
             }
-            for (var i = this.menuItem.length; i--; ) {
-                this.menuItem[i].fillStyle = "#333";
-            }
-            this.menuItem[this.selection].fillStyle = "#fff"
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointing()) {
+            if (app.keyboard.getKeyDown("space") || d) {
                 switch (this.selection) {
                 case 0: // stage 1
                     START_STAGE = 1;
@@ -452,6 +482,13 @@ var ContinueScene;
                     break;
                 }
             }
+
+            for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].fillStyle = "#333";
+            }
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff";
+            }
         }
     });
 
@@ -460,12 +497,12 @@ var ContinueScene;
         init: function(app) {
             this.superInit();
 
-            var bg = tm.app.RectangleShape(320, 320, {
+            var bg = tm.app.RectangleShape(320, 480, {
                 fillStyle: "rgba(0,0,0,0.97)",
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             this.addChild(bg);
 
             var title = createLabel("setting", 35, 160, 60);
@@ -483,7 +520,7 @@ var ContinueScene;
             }
 
             this.addEventListener("enter", function() {
-                this.selection = 0;
+                this.selection = -1;
             });
             this.doSetting = function(selection, updown) {
                 switch(selection) {
@@ -504,21 +541,12 @@ var ContinueScene;
             });
         },
         update: function(app) {
-            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-            var py = app.pointing.y * 320 / parseInt(app.element.style.height);
-
             if (app.keyboard.getKeyDown("down")) {
                 this.selection += 1;
                 if (this.selection === this.menuItem.length) this.selection = 0;
             } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            } else if (1 < app.pointing.deltaPosition.length()) {
-                for (var i = this.menuItem.length; i--; ) {
-                    if (this.menuItem[i].isHitPointRect(px, py)) {
-                        this.selection = i;
-                    }
-                }
             }
 
             if (app.keyboard.getKey("right")) {
@@ -542,7 +570,22 @@ var ContinueScene;
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointing()) {
+            var d = false;
+            if (app.pointing.getPointingEnd()) {
+                var beforeSel = this.selection;
+                var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+                for (var i = this.menuItem.length; i--; ) {
+                    if (this.menuItem[i].isHitPointRect(px, py)) {
+                        this.selection = i;
+                        if (beforeSel === this.selection) {
+                            d = true;
+                        }
+                    }
+                }
+            }
+
+            if (app.keyboard.getKeyDown("space") || d) {
                 switch (this.selection) {
                 case 0: // bgm
                 case 1: // se
@@ -566,7 +609,9 @@ var ContinueScene;
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
-            this.menuItem[this.selection].fillStyle = "#fff"
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff"
+            }
 
             this.menuItem[0].text = "bgm          " + ~~(app.settings["bgm"]*100);
             this.menuItem[1].text = "sound      " + ~~(app.settings["se"]*100);
@@ -586,7 +631,7 @@ var ContinueScene;
             gameover.setBaseline("middle");
             gameover.width = 320;
             gameover.x = 160;
-            gameover.y = 160;
+            gameover.y = 240;
             gameover.alpha = 0;
             this.addChild(gameover);
 
@@ -636,48 +681,56 @@ var ContinueScene;
         init: function() {
             this.superInit();
 
-            var bg = tm.app.RectangleShape(320, 320, {
-                fillStyle: "rgba(0,0,0,0.3)",
+            var bg = tm.app.RectangleShape(320, 480, {
+                fillStyle: "rgba(0,0,0,0.1)",
                 strokeStyle: "none"
             });
             bg.x = 160;
-            bg.y = 160;
+            bg.y = 240;
             this.addChild(bg);
 
-            var title = createLabel("continue?", 35, 160, 60);
+            var title = createLabel("continue?", 35, 160, 120);
             title.fillStyle = "#ffffff";
             this.addChild(title);
 
             this.menuItem = [];
-            this.menuItem[0] = createLabel("yes", 20, 80, 160);
-            this.menuItem[1] = createLabel("no", 20, 240, 160);
+            this.menuItem[0] = createLabel("yes", 20, 160, 230);
+            this.menuItem[1] = createLabel("no",  20, 160, 280);
             for (var i = this.menuItem.length; i--; ) {
+                this.menuItem[i].setAlign("center");
                 this.addChild(this.menuItem[i]);
             }
 
-            this.selection = 0;
+            this.selection;
             this.addEventListener("enter", function() {
                 this.selection = 0;
             });
         },
         update: function(app) {
-            if (app.keyboard.getKeyDown("right")) {
+            if (app.keyboard.getKeyDown("down")) {
                 this.selection += 1;
                 if (this.selection === this.menuItem.length) this.selection = 0;
-            } else if (app.keyboard.getKeyDown("left")) {
+            } else if (app.keyboard.getKeyDown("up")) {
                 this.selection -= 1;
                 if (this.selection === -1) this.selection = this.menuItem.length - 1;
-            } else if (1 < app.pointing.deltaPosition.length()) {
+            }
+
+            var d = false;
+            if (app.pointing.getPointingEnd()) {
+                var beforeSel = this.selection;
                 var px = app.pointing.x * 320 / parseInt(app.element.style.width);
-                var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                var py = app.pointing.y * 480 / parseInt(app.element.style.height);
                 for (var i = this.menuItem.length; i--; ) {
                     if (this.menuItem[i].isHitPointRect(px, py)) {
                         this.selection = i;
+                        if (beforeSel === this.selection) {
+                            d = true;
+                        }
                     }
                 }
             }
 
-            if (app.keyboard.getKeyDown("space") || app.pointing.getPointingEnd()) {
+            if (app.keyboard.getKeyDown("space") || d) {
                 app.popScene();
                 switch(this.selection) {
                 case 0:
@@ -692,7 +745,9 @@ var ContinueScene;
             for (var i = this.menuItem.length; i--; ) {
                 this.menuItem[i].fillStyle = "#333";
             }
-            this.menuItem[this.selection].fillStyle = "#fff"
+            if (this.menuItem[this.selection]) {
+                this.menuItem[this.selection].fillStyle = "#fff"
+            }
         }
     });
 

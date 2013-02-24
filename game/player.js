@@ -36,7 +36,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     player.level = 1;
     player.reset = function() {
         this.x = 0;
-        this.y = -10;
+        this.y = -16;
         this.texX = 3;
         this.glow = 0;
         this.roll = 0;
@@ -60,7 +60,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
         if (this.rebirth) {
             this.y += 0.1;
-            if (-10 < this.y) {
+            if (-16 < this.y) {
                 this.rebirth = false;
                 this.disabled = false;
                 this.visible = true;
@@ -71,14 +71,13 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.muteki = (scene.frame < reactFrame + MUTEKI_TIME);
 
         var zpos = 0.25 * (1-Math.abs(this.roll/3)) + 0.08;
-        var firePower = (this.rebirth) ? 8 : 2;
-        for (var i = 0; i < firePower; i++) {
+        for (var i = 0; i < 2; i++) {
             var z = zanzoPool.pop();
             if (z) {
                 z.x = this.x + Math.random()*0.1-0.05 - zpos;
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
-                z.scaleX = z.scaleY = 0.6;
+                z.scaleX = z.scaleY = 0.8;
                 scene.addChild(z);
             }
             z = zanzoPool.pop();
@@ -86,7 +85,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
                 z.x = this.x + Math.random()*0.1-0.05 + zpos;
                 z.y = this.y - 1.0;
                 z.alpha = 0.8;
-                z.scaleX = z.scaleY = 0.6;
+                z.scaleX = z.scaleY = 0.8;
                 scene.addChild(z);
             }
         }
@@ -206,7 +205,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         app.bomb = Math.max(3, app.bomb);
         if (this.level !== 2) this.level += 1;
         this.x = 0;
-        this.y = -17;
+        this.y = -25;
         this.visible = true;
         this.disabled = true;
         this.rebirth = true;
@@ -236,17 +235,14 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         z.texX = 4;
         z.texY = 1;
         z.update = function() {
-            this.visible = player.visible;
-            this.y -= 0.2;
-            this.scaleX -= 0.08;
-            this.scaleY -= 0.08;
-            this.alpha -= 0.08;
-            if (this.alpha < 0) {
+            this.y -= 0.15;
+            this.scaleX -= 0.06;
+            this.scaleY -= 0.06;
+            this.alpha -= 0.06;
+            if (this.scaleX < 0) {
                 scene.removeChild(this);
+                zanzoPool.push(this);
             }
-        };
-        z.onremoved = function() {
-            zanzoPool.push(this);
         };
         zanzos.push(z);
         zanzoPool.push(z);

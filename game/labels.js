@@ -170,7 +170,7 @@ var Labels = {};
             strokeStyle: "none"
         });
         bossHp.x = 300*0.5 + 5;
-        bossHp.y = 5;
+        bossHp.y = 25;
         var lastValue = null;
         bossHp.update = function(app) {
             if (this.visible && boss.damagePoint !== lastValue) {

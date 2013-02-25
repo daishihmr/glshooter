@@ -94,7 +94,8 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
 
         if (!this.disabled) {
             // キーボード操作
-            var xPress = kb.getKey("x");
+            var xPress = kb.getKey("x") || 
+                (!kb.getKey("left") && !kb.getKey("right") && !kb.getKey("up") && !kb.getKey("down"));
             if (xPress) {
                 this.speed = PLAYER_SPEED*0.5;
             } else {

@@ -24,7 +24,7 @@
  * IN THE SOFTWARE.
  */
 
-var BOSS_HP = [ 8000, 8000, 16000 ];
+var BOSS_HP = [ 6000, 8000, 16000 ];
 
 var createBoss = function(app, attackParam, explosion, stage, texture) {
     var explode = explosion.explode;

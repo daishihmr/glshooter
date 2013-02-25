@@ -586,7 +586,7 @@ tm.main(function() {
                         MUTEKI || player.damage();
                         break;
                     } else {
-                        app.bomb -= 1;
+                        app.bomb = 0;
                         app.autoBomber(player.x, player.y);
                         app.useBombCount += 1;
                         break;
@@ -609,7 +609,7 @@ tm.main(function() {
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                     } else {
-                        app.bomb -= 1;
+                        app.bomb = 0;
                         app.autoBomber(player.x, player.y);
                     }
                 }

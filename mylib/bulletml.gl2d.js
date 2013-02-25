@@ -70,7 +70,7 @@
      *
      * @param {bulletml.AttackParam} config
      * @param {(string|bulletml.Bullet)=} action
-     * @return {function}
+     * @return {bulletml.Ticker}
      */
     bulletml.AttackPattern.prototype.createTicker = function(config, action) {
         var topLabels = this._bulletml.getTopActionLabels();
@@ -112,10 +112,11 @@
     /**
      * @param {bulletml.AttackParam} config
      * @param {(string|bulletml.Bullet)=} action
-     * @return {function}
+     * @return {bulletml.Ticker}
      */
     bulletml.AttackPattern.prototype._createTicker = function(config, action) {
         /**
+         * @type {bulletml.Ticker}
          * @this {glslib.Sprite}
          */
         var ticker = function() {
@@ -154,7 +155,6 @@
 
             // test out of world
             if (!ticker.config.isInsideOfWorld(this)) {
-                console.log(this);
                 if (this.parent) this.parent.removeChild(this);
                 ticker.completed = true;
                 if (ticker.parentTicker) {
@@ -256,6 +256,7 @@
 
     bulletml.AttackPattern.prototype._createSimpleTicker = function(config) {
         /**
+         * @type {bulletml.Ticker}
          * @this {glslib.Sprite}
          */
         var ticker = function() {
@@ -286,6 +287,13 @@
         return ticker;
     };
 
+    /**
+     * @param {bulletml.Fire} cmd
+     * @param {bulletml.AttackParam} config
+     * @param {function} ticker
+     * @param {bulletml.AttackPattern} pattern
+     * @this {glslib.Sprite}
+     */
     bulletml.AttackPattern.prototype._fire = function(cmd, config, ticker, pattern) {
         var spec = { label: cmd.bullet.label };
         for (var key in cmd.bullet.option) {
@@ -297,7 +305,7 @@
         }
 
         // 等速直進弾?
-        var uniformLinearBullet = !!cmd.bullet.actions.length;
+        var uniformLinearBullet = cmd.bullet.actions.length === 0;
 
         var bt = uniformLinearBullet ? (
             pattern._createSimpleTicker(config)
@@ -366,6 +374,13 @@
 
         config.onFire(b);
     };
+
+    /**
+     * @param {bulletml.ChangeDirection} cmd
+     * @param {bulletml.AttackParam} config
+     * @param {function} ticker
+     * @this {glslib.Sprite}
+     */
     bulletml.AttackPattern.prototype._changeDirection = function(cmd, config, ticker) {
         var d = eval(cmd.direction.value) * DEG_TO_RAD;
         var t = eval(cmd.term);
@@ -393,6 +408,12 @@
         }
         ticker.chDirEnd = this.age + t;
     };
+
+    /**
+     * @param {bulletml.ChangeSpeed} cmd
+     * @param {function} ticker
+     * @this {glslib.Sprite}
+     */
     bulletml.AttackPattern.prototype._changeSpeed = function(cmd, ticker) {
         var s = eval(cmd.speed.value);
         var t = eval(cmd.term);
@@ -412,6 +433,12 @@
         }
         ticker.chSpdEnd = this.age + t;
     };
+
+    /**
+     * @param {bulletml.Accel} cmd
+     * @param {function} ticker
+     * @this {glslib.Sprite}
+     */
     bulletml.AttackPattern.prototype._accel = function(cmd, ticker) {
         var t = eval(cmd.term);
         ticker.aclEnd = this.age + t;
@@ -453,21 +480,29 @@
         }
     };
 
+    /**
+     * @param {bulletml.Notify} cmd
+     * @this {glslib.Sprite}
+     */
     bulletml.AttackPattern.prototype._notify = function(cmd) {
-        var e = tm.event.Event(cmd.eventName);
-        if (cmd.params) {
-            for (var key in cmd.params) {
-                e[key] = cmd.params[key];
-            }
-        }
-        this.dispatchEvent(e);
+        // var e = tm.event.Event(cmd.eventName);
+        // if (cmd.params) {
+        //     for (var key in cmd.params) {
+        //         e[key] = cmd.params[key];
+        //     }
+        // }
+        // this.dispatchEvent(e);
     };
 
+    /** @const */
     var RAD_TO_DEG = 180 / Math.PI;
+    /** @const */
     var DEG_TO_RAD = Math.PI / 180;
 
     /**
      * ラジアンを -π<= rad < π の範囲に正規化する.
+     * @param {number} radian
+     * @return {number}
      */
     function normalizeRadian(radian) {
         while (radian <= -Math.PI) {
@@ -480,9 +515,41 @@
     }
     /**
      * スプライトAから見たスプライトBの方向をラジアンで返す.
+     * @param {glslib.Sprite} a
+     * @param {glslib.Sprite} b
+     * @return {number}
      */
     function angleAtoB(a, b) {
         return Math.atan2(b.y - a.y, b.x - a.x);
     }
+
+    /**
+     * @constructor
+     */
+    bulletml.Ticker = function() {
+        this._pattern = this;
+        /** @type {?bulletml.AttackParam} */
+        this.config = null;
+        this.waitTo = -1;
+        this.completed = false;
+        this.direction = 0;
+        this.lastDirection = 0;
+        this.speed = 0;
+        this.lastSpeed = 0;
+        this.speedH = 0;
+        this.speedV = 0;
+        this.dirIncr = 0;
+        this.dirFin = 0;
+        this.chDirEnd = -1;
+        this.spdIncr = 0;
+        this.spdFin = 0;
+        this.chSpdEnd = -1;
+        this.aclIncrH = 0;
+        this.aclFinH = 0;
+        this.aclIncrV = 0;
+        this.aclFinV = 0;
+        this.aclEnd = -1;
+        this.isDanmaku = true;
+    };
 
 })();

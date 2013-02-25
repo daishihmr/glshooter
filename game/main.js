@@ -25,47 +25,77 @@
  */
 
 // config
+/** @const */
 var MUTE_SE =  false; // if true, not play sounds.
+/** @const */
 var MUTE_BGM = false; // if true, not play bgm.
+/** @const */
 var FPS = 60;
+/** @const */
 var BULLET_SPEED = 0.10;
-var DBL_CLICK_INTERVAL = 200;
+/** @const */
+var DBL_CLICK_INTERVAL = 220;
 
+/** @const */
 var BOMB_DAMAGE1 = 20;
+/** @const */
 var BOMB_DAMAGE2 = 1;
 
+/** @const */
 var EXTEND_SCORE_LIFE = 5000000;
+/** @const */
 var EXTEND_SCORE_BOMB = 2400000;
 
+/** @const */
 var GLOW_DOWN_TIME = 60;
+/** @const */
 var GLOW_UP_PER_HIT = 1;
+/** @const */
 var GLOW_DOWN = 12;
+/** @const */
 var GLOW_MAX = 1100;
+/** @const */
 var GLOW_BONUS_RATE = 0.012;
 
+/** @const */
 var SHOW_FPS = false;
+/** @const */
 var MUTEKI = false;
-var INITIAL_RANK = 0.5;
+/** @const */
+var INITIAL_RANK = 0.7;
+/** @const */
 var COLLISION_RADUIS = 0.2*0.2;
 
+/** @const */
 var PLAYER_SPEED = 0.2;
+/** @const */
 var PLAYER_SCALE = 1.5;
+/** @const */
 var WEAPON_SCALE = 1.0;
+/** @const */
 var MUTEKI_TIME = 90;
 
-var START_STAGE = 1;
-var NUM_OF_STAGE = 3;
-
+/** @const */
 var CLEAR_BONUS_ZANKI = 100000;
+/** @const */
 var CLEAR_BONUS_BOMB = 10000;
 
-var LOAD_BGM_FROM_EXTERNAL_SITE = true;
+/** @const */
+var LOAD_BGM_FROM_EXTERNAL_SITE = false;
 
-var BGM = {
+/** @const */
+var BGM = LOAD_BGM_FROM_EXTERNAL_SITE ? {
     "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
     "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
     "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
+} : {
+    "bgm1": "sounds/nc28689.mp3",
+    "bgm2": "sounds/nc784.mp3",
+    "bgm3": "sounds/nc52497.mp3",
 };
+
+var START_STAGE = 1;
+var NUM_OF_STAGE = 3;
 
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
@@ -76,21 +106,6 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
 
-    // if (LOAD_BGM_FROM_EXTERNAL_SITE) {
-    //     tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3", 1);
-    // } else {
-    //     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
-    // }
-
-    if (!window.webkitAudioContext) {
-        MUTE_SE = true;
-        return;
-    }
-
     tm.sound.WebAudioManager.add("explode",   "sounds/se_maoudamashii_explosion05.mp3");
     tm.sound.WebAudioManager.add("effect0",   "sounds/effect0.mp3", 1);
     tm.sound.WebAudioManager.add("bomb",      "sounds/nc17909.mp3");
@@ -98,12 +113,24 @@ tm.preload(function() {
     tm.sound.WebAudioManager.add("v-extend",  "sounds/voice_extend.mp3", 1);
 });
 
-tm.main(function() {
-    document.getElementById("loading").style.display = "none";
+/** @param {string} sound */
+var playSound = function(sound) {
+    if (MUTE_SE) return;
+    var s = tm.sound.WebAudioManager.get(sound);
+    if (s !== undefined) s.play();
+};
 
-    var SoundManager = tm.sound.SoundManager;
-    var WebAudioManager = tm.sound.WebAudioManager;
-    var Random = tm.util.Random;
+/**
+ * @param {number} min
+ * @param {number} max
+ */
+var randfloat = function(min, max) {
+    return Math.random() * (max - min) + min;
+};
+
+tm.main(function() {
+    window.document.getElementById("loading").style.display = "none";
+
     var settings = {
         "bgm": 1.0,
         "se": 0.8,
@@ -137,11 +164,11 @@ tm.main(function() {
         if (0 < delta) {
             if (beforeExtBomb !== ~~(app.score / EXTEND_SCORE_BOMB)) {
                 app.bomb += 1;
-                MUTE_SE || WebAudioManager.get("v-genBomb").play();
+                playSound("v-genBomb");
             }
             if (beforeExtZanki !== ~~(app.score / EXTEND_SCORE_LIFE)) {
                 app.zanki += 1;
-                MUTE_SE || WebAudioManager.get("v-extend").play();
+                playSound("v-extend");
             }
         }
     };
@@ -160,7 +187,7 @@ tm.main(function() {
 
     var setVolumeSe = app.setVolumeSe = function() {
         ["explode", "effect0", "bomb", "v-genBomb", "v-extend"].forEach(function(s) {
-            WebAudioManager.get(s).volume = app.settings["se"];
+            tm.sound.WebAudioManager.get(s).volume = app.settings["se"];
         });
     };
     setVolumeSe();
@@ -174,9 +201,9 @@ tm.main(function() {
     // input
     var keyboard = app.keyboard;
     if (tm.isMobile) {
-        var mouse = app.pointing = app.mouse = tm.input.Touch(glCanvas);
+        var mouse = app.pointing = app.mouse = tm.input.Touch(window);
     } else {
-        var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
+        var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
     }
     mouse.lastLeftUp = -1;
 
@@ -258,73 +285,71 @@ tm.main(function() {
     }
 
     // enemy bullet setting
-    var attackParam = {
-        "target": player,
-        "rank": INITIAL_RANK,
-        "bulletFactory": function(spec) {
-            var b = bulletPool.pop();
-            if (b === void 0) return;
-            b.alive = false;
-            b.isBit = false;
-            b.scaleX = b.scaleY = 0.6;
-            if (spec.label === null || spec.label === void 0) {
-                b.texX = 3;
-                b.texY = 1;
-            } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
-                b.texX = 2;
-                b.texY = 1;
-            } else if (spec.label === "b" || spec.label.indexOf("blue") === 0) {
-                b.texX = 1;
-                b.texY = 1;
-            } else if (spec.label.indexOf("bit") !== -1) {
-                b.alive = true;
-                b.isBit = true;
-                b.texX = 7;
-                b.texY = 7;
-            } else {
-                b.texX = 3;
-                b.texY = 1;
-            }
+    var attackParam = new bulletml.AttackParam();
+    attackParam.target = player;
+    attackParam.rank = INITIAL_RANK;
+    attackParam.bulletFactory = function(spec) {
+        var b = bulletPool.pop();
+        if (b === void 0) return;
+        b.alive = false;
+        b.isBit = false;
+        b.scaleX = b.scaleY = 0.6;
+        if (spec.label === null || spec.label === void 0) {
+            b.texX = 3;
+            b.texY = 1;
+        } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
+            b.texX = 2;
+            b.texY = 1;
+        } else if (spec.label === "b" || spec.label.indexOf("blue") === 0) {
+            b.texX = 1;
+            b.texY = 1;
+        } else if (spec.label.indexOf("bit") !== -1) {
+            b.alive = true;
+            b.isBit = true;
+            b.texX = 7;
+            b.texY = 7;
+        } else {
+            b.texX = 3;
+            b.texY = 1;
+        }
 
-            if (spec.label && spec.label.indexOf("alive") !== -1) {
-                b.alive =  true;
-            }
+        if (spec.label && spec.label.indexOf("alive") !== -1) {
+            b.alive =  true;
+        }
 
-            if (spec.label === "s") {
-                b.scaleX = b.scaleY = 0.4;
-            } else if (spec.label === "sg") {
-                b.scaleX = b.scaleY = 0.4;
-                b.texX = 2;
-                b.texY = 1;
-            } else if (spec.label === "sb") {
-                b.scaleX = b.scaleY = 0.4;
-                b.texX = 1;
-                b.texY = 1;
-            }
-            if (spec.label === "l") {
-                b.scaleX = b.scaleY = 0.8;
-            } else if (spec.label === "lg") {
-                b.scaleX = b.scaleY = 0.8;
-                b.texX = 2;
-                b.texY = 1;
-            } else if (spec.label === "lb") {
-                b.scaleX = b.scaleY = 0.8;
-                b.texX = 1;
-                b.texY = 1;
-            }
+        if (spec.label === "s") {
+            b.scaleX = b.scaleY = 0.4;
+        } else if (spec.label === "sg") {
+            b.scaleX = b.scaleY = 0.4;
+            b.texX = 2;
+            b.texY = 1;
+        } else if (spec.label === "sb") {
+            b.scaleX = b.scaleY = 0.4;
+            b.texX = 1;
+            b.texY = 1;
+        }
+        if (spec.label === "l") {
+            b.scaleX = b.scaleY = 0.8;
+        } else if (spec.label === "lg") {
+            b.scaleX = b.scaleY = 0.8;
+            b.texX = 2;
+            b.texY = 1;
+        } else if (spec.label === "lb") {
+            b.scaleX = b.scaleY = 0.8;
+            b.texX = 1;
+            b.texY = 1;
+        }
 
-            return b;
-        },
-        "isInsideOfWorld": function(b) {
-            if (b.isBullet && !b.isBit) {
-                return -16.5 < b.x && b.x < 16.5 && -16.5 < b.y && b.y < 16.5;
-            } else {
-                return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
-            }
-        },
-        "updateProperties": false,
-        "speedRate": BULLET_SPEED
+        return b;
+    }
+    attackParam.isInsideOfWorld = function(b) {
+        if (b.isBullet && !b.isBit) {
+            return -16.5 < b.x && b.x < 16.5 && -24.5 < b.y && b.y < 24.5;
+        } else {
+            return -(16.5+6) < b.x && b.x < (16.5+6) && -(24.5+6) < b.y && b.y < (24.5+6);
+        }
     };
+    attackParam.speedRate = BULLET_SPEED;
 
     // clear all bullets
     var clearAllBullets = app.clearAllBullets = function(a) {
@@ -376,7 +401,7 @@ tm.main(function() {
             if (this.clear !== true) {
                 explode(this.x, this.y, this.scaleX);
                 if (0 < expSoundPlaying) return;
-                MUTE_SE || WebAudioManager.get("explode").play();
+                playSound("explode");
                 expSoundPlaying = 5;
             } else {
                 var timer = new glslib.Sprite(mainTexture);
@@ -389,7 +414,7 @@ tm.main(function() {
                     clearAllBullets(false);
                     if (scene.frame % 5 === 0 && Math.random() < 0.7) {
                         if (expSoundPlaying <= 0) {
-                            MUTE_SE || WebAudioManager.get("explode").play();
+                            playSound("explode");
                             expSoundPlaying = 5;
                         }
                         explode(this.x+Math.random()*6-3, this.y+Math.random()*6-3, 2);
@@ -429,7 +454,7 @@ tm.main(function() {
             e.clear = data.clear;
         }
         e.x = x;
-        e.y = y;
+        e.y = y + 8;
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);
@@ -450,7 +475,8 @@ tm.main(function() {
     var life = Labels.createLife();                 gameScene.addChild(life);
     var message = app.message = Labels.createMessage();
     var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
-    var fps = Labels.createFps();                   SHOW_FPS && gameScene.addChild(fps);
+    var fps = Labels.createFps();                   //SHOW_FPS && gameScene.addChild(fps);
+    var pauseButton = Labels.createPauseButton();   gameScene.addChild(pauseButton);
     var bossHp;
 
     // game main loop
@@ -458,6 +484,13 @@ tm.main(function() {
     var noGlowUpTime = 0;
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
+        if (mouse.getPointingEnd()) {
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+            if (pauseButton.isHitPointRect(px, py)) {
+                app.pushScene(app.pauseScene);
+            }
+        }
 
         // if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
 
@@ -553,7 +586,7 @@ tm.main(function() {
                         MUTEKI || player.damage();
                         break;
                     } else {
-                        app.bomb -= 1;
+                        app.bomb = 0;
                         app.autoBomber(player.x, player.y);
                         app.useBombCount += 1;
                         break;
@@ -576,7 +609,7 @@ tm.main(function() {
                     if (app.bomb < 1 || !settings["autoBomb"]) {
                         MUTEKI || player.damage();
                     } else {
-                        app.bomb -= 1;
+                        app.bomb = 0;
                         app.autoBomber(player.x, player.y);
                     }
                 }
@@ -600,6 +633,7 @@ tm.main(function() {
         scene._draw();
     };
 
+    // mouse or touch
     app.update = function() {
         mouse.doubleClick = false;
         if (mouse.getPointingEnd()) {
@@ -643,7 +677,7 @@ tm.main(function() {
 
         // bgm
         if (!MUTE_BGM) {
-            if (app.bgm) {
+            if (app.bgm && app.bgm.loaded) {
                 app.bgm.stop();
             }
             app.bgm = tm.sound.Sound(BGM["bgm" + stage]);
@@ -753,7 +787,7 @@ tm.main(function() {
                     app.incrScore(bonus, false);
                 } else if (scene.frame === t + 180*2) {
                     app.popScene();
-                    if (app.bgm) app.bgm.stop();
+                    if (app.bgm && app.bgm.loaded) app.bgm.stop();
                     this.removeEventListener("enterframe", arguments.callee);
                 }
             } else {
@@ -793,7 +827,7 @@ tm.main(function() {
 
     // game over
     app.gameOver = function() {
-        if (app.bgm) app.bgm.stop();
+        if (app.bgm && app.bgm.loaded) app.bgm.stop();
         app.replaceScene(gameOverScene);
     };
 

@@ -25,8 +25,6 @@
  */
 
 var Explosion = function(scene, texture) {
-    var Random = tm.util.Random;
-
     var particles = [];
     var explodePool = [];
     for (var i = 0; i < 600; i++) {
@@ -48,13 +46,13 @@ var Explosion = function(scene, texture) {
     }
 
     this.explode = function(x, y, scale) {
-        for (var i = Random.randint(1, 3); i--; ) {
+        for (var i = ~~(randfloat(1, 3)); i--; ) {
             var e = explodePool.pop();
             if (e === void 0) return;
             e.scaleX = e.scaleY = 0;
             e.alpha = 1;
-            e.x = x + Random.randfloat(-0.2, 0.2);
-            e.y = y + Random.randfloat(-0.2, 0.2);
+            e.x = x + randfloat(-0.2, 0.2);
+            e.y = y + randfloat(-0.2, 0.2);
             e.incrScale = scale * 0.2;
             scene.addChild(e);
         }
@@ -65,8 +63,8 @@ var Explosion = function(scene, texture) {
         if (e === void 0) return;
         e.scaleX = e.scaleY = 0;
         e.alpha = 0.6;
-        e.x = x + Random.randfloat(-0.2, 0.2);
-        e.y = y + Random.randfloat(-0.2, 0.2);
+        e.x = x + randfloat(-0.2, 0.2);
+        e.y = y + randfloat(-0.2, 0.2);
         e.incrScale = scale * 0.2;
         scene.addChild(e);
     };
@@ -118,9 +116,9 @@ var Explosion = function(scene, texture) {
             var readyCount = 0;
             for (var i = pool.length; i--; ) {
                 var p = pool[i];
-                p.radius = tm.util.Random.randfloat(0.0, 0.5);
+                p.radius = randfloat(0.0, 0.5);
                 p.angle = (Math.PI*2/12) * (i%12);
-                p.radiusD = tm.util.Random.randfloat(0.02, 0.05);
+                p.radiusD = randfloat(0.02, 0.05);
                 p.alpha = 1;
                 p.scaleX = p.scaleY = 0.5;
                 p.age = 0;
@@ -132,7 +130,7 @@ var Explosion = function(scene, texture) {
                 };
                 scene.addChild(p);
             }
-            MUTE_SE || tm.sound.WebAudioManager.get("bomb").play();
+            playSound("bomb");
             var check = function() {
                 if (readyCount === pool.length) {
                     callback();

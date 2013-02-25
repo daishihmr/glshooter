@@ -1,22 +1,19 @@
 <!doctype html>
-<html>
+<html manifest="glshooter.appcache">
 <head>
 <meta charset=UTF-8>
 <meta name="author" content="daishihmr">
-<meta name="viewport" content="width=device-width, user-scalable=no"> 
-<meta name="apple-mobile-web-app-capable" content="yes"> 
+<meta name="viewport" content="width=device-width, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link href='http://fonts.googleapis.com/css?family=Orbitron:400,900' rel='stylesheet' type='text/css'>
 
-<script src="lib/gl-matrix-min.js"></script>
-<script src="lib/bulletml.js"></script>
-<script src="lib/tmlib.js"></script>
+<script src="lib/tmlib.min.js"></script>
 <script src="lib/webaudio.js"></script>
-
 <script src="glshooter.min.js"></script>
 
 </head>
-<body style="margin:0;background:black">
+<body style="margin:0;background:#000011">
     <div id="loading" style="color:white;font-size:20px;font-family:Orbitron;text-align:center;margin-top:140px">Loading...</div>
     <canvas id="tm"></canvas>
     <canvas id="world"></canvas>

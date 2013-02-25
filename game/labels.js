@@ -45,7 +45,7 @@ var Labels = {};
         score.update = function(app) {
             var a = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             if (player.y < 0 && !player.disabled) {
-                this.alpha = ((player.y + 17) / 30)*a;
+                this.alpha = ((player.y + 24 + 5) / 30)*a;
             } else {
                 this.alpha = a;
             }
@@ -56,7 +56,7 @@ var Labels = {};
         };
         score.setBaseline("bottom");
         score.x = 2;
-        score.y = 320;
+        score.y = 480;
         score.width = 320;
 
         return score;
@@ -67,12 +67,12 @@ var Labels = {};
         highScore.setBaseline("bottom");
         highScore.width = 320;
         highScore.x = 4;
-        highScore.y = 320 - 32;
+        highScore.y = 480 - 32;
         var lastValue = null;
         highScore.update = function(app) {
             var a = Math.sin(app.frame * 0.1)*0.25 + 0.75;
             if (player.y < 0) {
-                this.alpha = ((player.y + 17) / 30)*a;
+                this.alpha = ((player.y + 24 + 5) / 30)*a;
             } else {
                 this.alpha = a;
             }
@@ -87,6 +87,12 @@ var Labels = {};
 
     Labels.createLife = function() {
         var life = MyLabel("", 12);
+        life.setAlign("left");
+        life.setBaseline("top");
+        life.width = 320;
+        life.x = 4;
+        life.y = 430;
+        life.rotation = -90;
         var lastValue = null;
         life.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
@@ -95,31 +101,18 @@ var Labels = {};
                 lastValue = app.zanki;
             }
         };
-        life.setBaseline("top");
-        life.x = 2;
-        life.y = 12;
-        life.width = 320;
 
         return life;
     };
 
-    Labels.createMessage = function() {
-        var message = tm.app.Label("", 50);
-        message.setFontFamily("Orbitron");
-        message.setAlign("center");
-        message.setBaseline("middle");
-        message.x = 160;
-        message.y = 160;
-        message.width = 320;
-        message.update = function(app) {
-            this.alpha = 0.1 + Math.sin(app.frame*0.12) * 0.1;
-        };
-
-        return message;
-    };
-
     Labels.createBomb = function() {
         var bomb = MyLabel("", 12);
+        bomb.setAlign("left");
+        bomb.setBaseline("top");
+        bomb.width = 320;
+        bomb.x = 4;
+        bomb.y = 370;
+        bomb.rotation = -90;
         var lastValue = null;
         bomb.update = function(app) {
             this.alpha = Math.sin(app.frame * 0.1)*0.25 + 0.75;
@@ -128,12 +121,34 @@ var Labels = {};
                 lastValue = app.bomb;
             }
         };
-        bomb.setBaseline("top");
-        bomb.x = 2;
-        bomb.y = 26;
-        bomb.width = 320;
 
         return bomb;
+    };
+
+    Labels.createPauseButton = function() {
+        var pause = MyLabel("pause", 12);
+        pause.setAlign("left");
+        pause.setBaseline("top");
+        pause.width = 320;
+        pause.x = 320 - 4;
+        pause.y = 32;
+        pause.rotation = 90;
+        return pause;
+    };
+
+    Labels.createMessage = function() {
+        var message = tm.app.Label("", 50);
+        message.setFontFamily("Orbitron");
+        message.setAlign("center");
+        message.setBaseline("middle");
+        message.x = 160;
+        message.y = 240;
+        message.width = 320;
+        message.update = function(app) {
+            this.alpha = 0.1 + Math.sin(app.frame*0.12) * 0.1;
+        };
+
+        return message;
     };
 
     Labels.createFps = function() {
@@ -166,7 +181,7 @@ var Labels = {};
             strokeStyle: "none"
         });
         bossHp.x = 300*0.5 + 5;
-        bossHp.y = 5;
+        bossHp.y = 25;
         var lastValue = null;
         bossHp.update = function(app) {
             if (this.visible && boss.damagePoint !== lastValue) {

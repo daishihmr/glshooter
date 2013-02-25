@@ -42,7 +42,6 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         this.roll = 0;
         this.speed = PLAYER_SPEED;
         this.rebirth = false;
-        this.disabled = false;
         this.power = 1;
         this.muteki = false;
     };
@@ -142,7 +141,6 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
         else if (3 < this.roll) this.roll = 3;
         this.texX = 3 + ~~(this.roll);
 
-        this.power = xPress ? 0.8 : 1.2;
         if (!this.disabled && scene.frame % 3 === 0 && !kb.getKey("c")) {
             if (xPress) {
                 fireWeapon(-0.05, 1.8, 0);

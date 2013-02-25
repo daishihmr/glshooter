@@ -45,7 +45,7 @@ var GLOW_BONUS_RATE = 0.012;
 
 var SHOW_FPS = false;
 var MUTEKI = false;
-var INITIAL_RANK = 0.5;
+var INITIAL_RANK = 0.7;
 var COLLISION_RADUIS = 0.2*0.2;
 
 var PLAYER_SPEED = 0.2;
@@ -428,7 +428,7 @@ tm.main(function() {
             e.clear = data.clear;
         }
         e.x = x;
-        e.y = y;
+        e.y = y + 8;
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);

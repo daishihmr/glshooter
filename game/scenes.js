@@ -213,13 +213,22 @@ var ContinueScene;
             p.y = Math.sin(p.dir) * 240;
             p.alpha = 0;
             p.blendMode = "lighter";
+            var self = this;
             p.update = function() {
                 this.alpha += 0.01;
-                this.x -= Math.cos(this.dir);
-                this.y -= Math.sin(this.dir);
-                this.scale.x += 0.01;
-                this.scale.y += 0.01;
-                if (this.x*this.x+this.y*this.y < 2) this.remove();
+                if (self.startFlag) {
+                    this.x += Math.cos(this.dir) * 5;
+                    this.y += Math.sin(this.dir) * 5;
+                    this.scale.x += 0.03;
+                    this.scale.y += 0.03;
+                } else {
+                    this.x -= Math.cos(this.dir) * 1.2;
+                    this.y -= Math.sin(this.dir) * 1.2;
+                    this.scale.x += 0.01;
+                    this.scale.y += 0.01;
+                }
+                var r = this.x*this.x+this.y*this.y;
+                if (r < 2 || 240*240 < r) this.remove();
             };
             this.bg.addChild(p);
         }

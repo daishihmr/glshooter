@@ -29,7 +29,7 @@ var MUTE_SE =  false; // if true, not play sounds.
 var MUTE_BGM = false; // if true, not play bgm.
 var FPS = 60;
 var BULLET_SPEED = 0.10;
-var DBL_CLICK_INTERVAL = 200;
+var DBL_CLICK_INTERVAL = 220;
 
 var BOMB_DAMAGE1 = 20;
 var BOMB_DAMAGE2 = 1;
@@ -45,7 +45,7 @@ var GLOW_BONUS_RATE = 0.012;
 
 var SHOW_FPS = false;
 var MUTEKI = false;
-var INITIAL_RANK = 0.5;
+var INITIAL_RANK = 0.7;
 var COLLISION_RADUIS = 0.2*0.2;
 
 var PLAYER_SPEED = 0.2;
@@ -59,13 +59,22 @@ var NUM_OF_STAGE = 3;
 var CLEAR_BONUS_ZANKI = 100000;
 var CLEAR_BONUS_BOMB = 10000;
 
-var LOAD_BGM_FROM_EXTERNAL_SITE = true;
+var LOAD_BGM_FROM_EXTERNAL_SITE = false;
 
-var BGM = {
-    "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
-    "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
-    "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
-};
+var BGM;
+if (LOAD_BGM_FROM_EXTERNAL_SITE) {
+    BGM = {
+        "bgm1": "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3",
+        "bgm2": "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3",
+        "bgm3": "http://static.dev7.jp/test/glshooter/sounds/nc52497.mp3",
+    };
+} else {
+    BGM = {
+        "bgm1": "sounds/nc28689.mp3",
+        "bgm2": "sounds/nc784.mp3",
+        "bgm3": "sounds/nc52497.mp3",
+    };
+}
 
 tm.preload(function() {
     tm.util.FileManager.load("vs", { url: "shaders/shader.vs", type: "GET" });
@@ -76,17 +85,7 @@ tm.preload(function() {
     tm.graphics.TextureManager.add("boss2", "images/boss2.png");
     tm.graphics.TextureManager.add("boss3", "images/boss3.png");
 
-    // if (LOAD_BGM_FROM_EXTERNAL_SITE) {
-    //     tm.sound.SoundManager.add("bgm1", "http://static.dev7.jp/test/glshooter/sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "http://static.dev7.jp/test/glshooter/sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "http://static.dev7.jp/test/glshooter/sounds/nc790.mp3", 1);
-    // } else {
-    //     tm.sound.SoundManager.add("bgm1", "sounds/nc28689.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm2", "sounds/nc784.mp3", 1);
-    //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
-    // }
-
-    if (!window.webkitAudioContext) {
+    if (!webkitAudioContext) {
         MUTE_SE = true;
         return;
     }
@@ -174,9 +173,9 @@ tm.main(function() {
     // input
     var keyboard = app.keyboard;
     if (tm.isMobile) {
-        var mouse = app.pointing = app.mouse = tm.input.Touch(glCanvas);
+        var mouse = app.pointing = app.mouse = tm.input.Touch(window);
     } else {
-        var mouse = app.pointing = app.mouse = tm.input.Mouse(glCanvas);
+        var mouse = app.pointing = app.mouse = tm.input.Mouse(window);
     }
     mouse.lastLeftUp = -1;
 
@@ -317,9 +316,9 @@ tm.main(function() {
         },
         "isInsideOfWorld": function(b) {
             if (b.isBullet && !b.isBit) {
-                return -16.5 < b.x && b.x < 16.5 && -16.5 < b.y && b.y < 16.5;
+                return -16.5 < b.x && b.x < 16.5 && -24.5 < b.y && b.y < 24.5;
             } else {
-                return -22 < b.x && b.x < 22 && -22 < b.y && b.y < 22;
+                return -(16.5+6) < b.x && b.x < (16.5+6) && -(24.5+6) < b.y && b.y < (24.5+6);
             }
         },
         "updateProperties": false,
@@ -429,7 +428,7 @@ tm.main(function() {
             e.clear = data.clear;
         }
         e.x = x;
-        e.y = y;
+        e.y = y + 8;
         enemyFlags[flag] = false;
         e.flag = flag;
         e.update = Patterns[pattern].createTicker(attackParam);
@@ -450,7 +449,8 @@ tm.main(function() {
     var life = Labels.createLife();                 gameScene.addChild(life);
     var message = app.message = Labels.createMessage();
     var bomb = Labels.createBomb();                 gameScene.addChild(bomb);
-    var fps = Labels.createFps();                   SHOW_FPS && gameScene.addChild(fps);
+    var fps = Labels.createFps();                   //SHOW_FPS && gameScene.addChild(fps);
+    var pauseButton = Labels.createPauseButton();   gameScene.addChild(pauseButton);
     var bossHp;
 
     // game main loop
@@ -458,6 +458,13 @@ tm.main(function() {
     var noGlowUpTime = 0;
     gameScene.update = function() {
         if (keyboard.getKeyDown("space") && !player.disabled) app.pushScene(app.pauseScene);
+        if (mouse.getPointingEnd()) {
+            var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+            var py = app.pointing.y * 480 / parseInt(app.element.style.height);
+            if (pauseButton.isHitPointRect(px, py)) {
+                app.pushScene(app.pauseScene);
+            }
+        }
 
         // if (keyboard.getKeyDown("q")) explodeL(function() { console.log("end")});
 
@@ -600,6 +607,7 @@ tm.main(function() {
         scene._draw();
     };
 
+    // mouse or touch
     app.update = function() {
         mouse.doubleClick = false;
         if (mouse.getPointingEnd()) {
@@ -643,7 +651,7 @@ tm.main(function() {
 
         // bgm
         if (!MUTE_BGM) {
-            if (app.bgm) {
+            if (app.bgm && app.bgm.loaded) {
                 app.bgm.stop();
             }
             app.bgm = tm.sound.Sound(BGM["bgm" + stage]);
@@ -753,7 +761,7 @@ tm.main(function() {
                     app.incrScore(bonus, false);
                 } else if (scene.frame === t + 180*2) {
                     app.popScene();
-                    if (app.bgm) app.bgm.stop();
+                    if (app.bgm && app.bgm.loaded) app.bgm.stop();
                     this.removeEventListener("enterframe", arguments.callee);
                 }
             } else {
@@ -793,7 +801,7 @@ tm.main(function() {
 
     // game over
     app.gameOver = function() {
-        if (app.bgm) app.bgm.stop();
+        if (app.bgm && app.bgm.loaded) app.bgm.stop();
         app.replaceScene(gameOverScene);
     };
 

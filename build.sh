@@ -7,9 +7,9 @@ java -jar compiler.jar --js_output_file glshooter.min.js \
     --warning_level QUIET \
     --language_in ECMASCRIPT5 \
     --compilation_level ADVANCED_OPTIMIZATIONS \
-    --externs lib/tmlib.js \
-    --externs lib/gl-matrix.js \
-    --externs lib/bulletml.js \
+    --externs lib/tmlib.min.js \
+    --externs lib/gl-matrix-min.js \
+    --externs lib/bulletml.min.js \
     --externs lib/webaudio.js \
     --js mylib/gls2d.js \
     --js mylib/bulletml.gl2d.js \
@@ -37,15 +37,19 @@ zip glshooter.zip \
     sounds/voice_gen-bomb.mp3 \
     sounds/effect0.mp3 \
     sounds/nc17909.mp3 \
+    sounds/nc28689.mp3 \
+    sounds/nc784.mp3 \
+    sounds/nc52497.mp3 \
     images/boss1.png \
     images/texture0.png \
     images/boss2.png \
     images/boss3.png \
     lib/gl-matrix-min.js \
-    lib/bulletml.js \
-    lib/tmlib.js \
+    lib/bulletml.min.js \
+    lib/tmlib.min.js \
     lib/webaudio.js \
-    glshooter.min.js
+    glshooter.min.js \
+    glshooter.appcache
 
 cp index-backup.html index.html
 rm index-backup.html

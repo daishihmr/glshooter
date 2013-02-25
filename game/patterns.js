@@ -45,7 +45,7 @@ var Patterns = {};
     var vertical         = bulletml.dsl.vertical;
 
     var pattern = function(dsl) {
-        return new AttackPattern(new bulletml.Root(dsl));
+        return new bulletml.AttackPattern(new bulletml.Root(dsl));
     };
 
     var zako1 = function(delay, dir) {

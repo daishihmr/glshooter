@@ -24,15 +24,56 @@
  * IN THE SOFTWARE.
  */
 
-var AttackPattern;
 (function() {
 
-    AttackPattern = function(bulletml) {
+    /** @constructor */
+    bulletml.BulletSpec = function() {};
+
+    /** @constructor */
+    bulletml.AttackParam = function() {
+        /** @type {function(bulletml.BulletSpec):glslib.Sprite} */
+        this.bulletFactory = function(spec) {
+            return null;
+        };
+
+        /** @type {function(glslib.Sprite):boolean} */
+        this.isInsideOfWorld = function(sprite) {
+            return true;
+        };
+
+        /** @type {function(glslib.Sprite)} */
+        this.onFire = function(bullet) {
+        };
+
+        /** @type {number} */
+        this.rank = 0.5;
+
+        /** @type {boolean} */
+        this.updateProperties = false;
+
+        /** @type {number} */
+        this.speedRate = 2.0;
+
+        /** @type {?glslib.Sprite} */
+        this.target = null;
+    };
+
+    /** 
+     * @constructor
+     * @param {bulletml.Root} bulletml
+     */
+    bulletml.AttackPattern = function(bulletml) {
         this._bulletml = bulletml;
     };
 
-    AttackPattern.prototype.createTicker = function(config, action) {
-        var topLabels = this._bulletml.getTopActionLabels()
+    /**
+     *
+     * @param {bulletml.AttackParam} config
+     * @param {(string|bulletml.Bullet)=} action
+     * @return {function}
+     */
+    bulletml.AttackPattern.prototype.createTicker = function(config, action) {
+        var topLabels = this._bulletml.getTopActionLabels();
         if (action === void 0 && topLabels.length > 0) {
             // top***対応.
             // actionラベルtop***が定義されていた場合、それらを同時に動かす.
@@ -44,7 +85,7 @@ var AttackPattern;
                 for ( var i = tickers.length; i--;) {
                     tickers[i].call(this);
                 }
-                if (parentTicker.compChildCount == tickers.length) {
+                if (parentTicker.compChildCount === tickers.length) {
                     parentTicker.complete = true;
                     if (this.oncompleteattack) this.oncompleteattack();
                 }
@@ -67,12 +108,18 @@ var AttackPattern;
             return this._createTicker(config, action);
         }
     };
-    AttackPattern.prototype._createTicker = function(config, action) {
-        var ticker = function() {
-            var conf = ticker.config;
-            var ptn = ticker._pattern;
 
-            if (!ptn) {
+    /**
+     * @param {bulletml.AttackParam} config
+     * @param {(string|bulletml.Bullet)=} action
+     * @return {function}
+     */
+    bulletml.AttackPattern.prototype._createTicker = function(config, action) {
+        /**
+         * @this {glslib.Sprite}
+         */
+        var ticker = function() {
+            if (!ticker._pattern) {
                 return;
             }
 
@@ -100,13 +147,14 @@ var AttackPattern;
             }
 
             // move sprite
-            this.x += Math.cos(ticker.direction) * ticker.speed * conf["speedRate"];
-            this.y += Math.sin(ticker.direction) * ticker.speed * conf["speedRate"];
-            this.x += ticker.speedH * conf["speedRate"];
-            this.y += ticker.speedV * conf["speedRate"];
+            this.x += Math.cos(ticker.direction) * ticker.speed * ticker.config.speedRate;
+            this.y += Math.sin(ticker.direction) * ticker.speed * ticker.config.speedRate;
+            this.x += ticker.speedH * ticker.config.speedRate;
+            this.y += ticker.speedV * ticker.config.speedRate;
 
             // test out of world
-            if (!conf["isInsideOfWorld"](this)) {
+            if (!ticker.config.isInsideOfWorld(this)) {
+                console.log(this);
                 if (this.parent) this.parent.removeChild(this);
                 ticker.completed = true;
                 if (ticker.parentTicker) {
@@ -118,8 +166,8 @@ var AttackPattern;
             }
 
             // set direction, speed to bullet
-            if (conf["updateProperties"]) {
-                this.direction = (ticker.direction + Math.PI / 2) * RAD_TO_DEG;
+            if (ticker.config.updateProperties) {
+                this.direction = (ticker.direction + Math.PI * 0.5) * RAD_TO_DEG;
                 this.speed = ticker.speed;
             }
 
@@ -131,7 +179,7 @@ var AttackPattern;
             while (cmd = ticker.walker.next()) {
                 switch (cmd.commandName) {
                 case "fire":
-                    ptn._fire.call(this, cmd, conf, ticker, ptn);
+                    ticker._pattern._fire.call(this, cmd, ticker.config, ticker, ticker._pattern);
                     break;
                 case "wait":
                     var v = 0;
@@ -144,16 +192,19 @@ var AttackPattern;
                     }
                     return;
                 case "changeDirection":
-                    ptn._changeDirection.call(this, cmd, conf, ticker);
+                    ticker._pattern._changeDirection.call(this, cmd, ticker.config, ticker);
                     break;
                 case "changeSpeed":
-                    ptn._changeSpeed.call(this, cmd, ticker);
+                    ticker._pattern._changeSpeed.call(this, cmd, ticker);
                     break;
                 case "accel":
-                    ptn._accel.call(this, cmd, ticker);
+                    ticker._pattern._accel.call(this, cmd, ticker);
                     break;
                 case "vanish":
                     if (this.parent) this.parent.removeChild(this);
+                    break;
+                case "notify":
+                    ticker._pattern._notify.call(this, cmd);
                     break;
                 }
             }
@@ -169,11 +220,11 @@ var AttackPattern;
 
         action = action || "top";
         if (typeof (action) === "string") {
-            ticker.walker = this._bulletml.getWalker(action, config["rank"]);
-        } else if (action instanceof BulletML.Bullet) {
-            ticker.walker = action.getWalker(config["rank"]);
+            ticker.walker = this._bulletml.getWalker(action, config.rank);
+        } else if (action instanceof bulletml.Bullet) {
+            ticker.walker = action.getWalker(config.rank);
         } else {
-            console.error(config, action);
+            window.console.error(config, action);
             throw new Error("引数が不正");
         }
 
@@ -202,26 +253,73 @@ var AttackPattern;
         ticker.isDanmaku = true;
         return ticker;
     };
-    AttackPattern.prototype._fire = function(cmd, config, ticker, pattern) {
-        var b = config["bulletFactory"]({
-            label : cmd.bullet.label
-        });
+
+    bulletml.AttackPattern.prototype._createSimpleTicker = function(config) {
+        /**
+         * @this {glslib.Sprite}
+         */
+        var ticker = function() {
+            // move sprite
+            this.x += ticker.deltaX;
+            this.y += ticker.deltaY;
+
+            // test out of world
+            if (!config.isInsideOfWorld(this)) {
+                if (this.parent) this.parent.removeChild(this);
+                ticker.completed = true;
+                if (ticker.parentTicker) {
+                    ticker.parentTicker.completeChild();
+                } else {
+                    if (this.oncompleteattack) this.oncompleteattack();
+                }
+                return;
+            }
+        };
+
+        ticker.config = config;
+        ticker.direction = 0;
+        ticker.speed = 0;
+        ticker.deltaX = 0;
+        ticker.deltaY = 0;
+
+        ticker.isDanmaku = true;
+        return ticker;
+    };
+
+    bulletml.AttackPattern.prototype._fire = function(cmd, config, ticker, pattern) {
+        var spec = { label: cmd.bullet.label };
+        for (var key in cmd.bullet.option) {
+            spec[key] = cmd.bullet.option[key];
+        }
+        var b = config.bulletFactory(spec);
         if (b === void 0) {
             return;
         }
 
-        var bt = pattern.createTicker(config, cmd.bullet);
+        // 等速直進弾?
+        var uniformLinearBullet = !!cmd.bullet.actions.length;
+
+        var bt = uniformLinearBullet ? (
+            pattern._createSimpleTicker(config)
+        ) : (
+            pattern.createTicker(config, cmd.bullet)
+        );
 
         var attacker = this;
+        var gunPosition = {
+            x: this.x + cmd.option.offsetX,
+            y: this.y + cmd.option.offsetY
+        };
+
         var calcDirection = function(d) {
             var dv = eval(d.value) * DEG_TO_RAD;
             // console.debug(d.type);
             switch (d.type) {
             case "aim":
-                if (config["target"]) {
-                    return angleAtoB(attacker, config["target"]) + dv;
+                if (cmd.option.autonomy) {
+                    return angleAtoB(gunPosition, config.target) + dv;
                 } else {
-                    return dv - Math.PI / 2;
+                    return angleAtoB(attacker, config.target) + dv;
                 }
             case "absolute":
                 return dv - Math.PI / 2; // 真上が0度
@@ -249,18 +347,31 @@ var AttackPattern;
         };
         ticker.lastSpeed = bt.speed = calcSpeed(cmd.speed || cmd.bullet.speed);
 
-        b.x = this.x + ((this.width || 0) - (b.width || 0)) / 2;
-        b.y = this.y + ((this.height || 0) - (b.height || 0)) / 2;
+        b.x = gunPosition.x;
+        b.y = gunPosition.y;
+
+        if (uniformLinearBullet) {
+            bt.deltaX = Math.cos(bt.direction) * bt.speed * config.speedRate;
+            bt.deltaY = Math.sin(bt.direction) * bt.speed * config.speedRate;
+        }
+
+        // set direction, speed to bullet
+        if (config.updateProperties || b.updateProperties) {
+            b.direction = (bt.direction + Math.PI * 0.5) * Math.RAD_TO_DEG;
+            b.speed = bt.speed;
+        }
 
         b.update = bt;
         if (this.parent !== null) this.parent.addChild(b);
+
+        config.onFire(b);
     };
-    AttackPattern.prototype._changeDirection = function(cmd, config, ticker) {
+    bulletml.AttackPattern.prototype._changeDirection = function(cmd, config, ticker) {
         var d = eval(cmd.direction.value) * DEG_TO_RAD;
         var t = eval(cmd.term);
         switch (cmd.direction.type) {
         case "aim":
-            var tar = config["target"];
+            var tar = config.target;
             if (!tar) {
                 return;
             }
@@ -282,7 +393,7 @@ var AttackPattern;
         }
         ticker.chDirEnd = this.age + t;
     };
-    AttackPattern.prototype._changeSpeed = function(cmd, ticker) {
+    bulletml.AttackPattern.prototype._changeSpeed = function(cmd, ticker) {
         var s = eval(cmd.speed.value);
         var t = eval(cmd.term);
         switch (cmd.speed.type) {
@@ -301,7 +412,7 @@ var AttackPattern;
         }
         ticker.chSpdEnd = this.age + t;
     };
-    AttackPattern.prototype._accel = function(cmd, ticker) {
+    bulletml.AttackPattern.prototype._accel = function(cmd, ticker) {
         var t = eval(cmd.term);
         ticker.aclEnd = this.age + t;
 
@@ -340,7 +451,17 @@ var AttackPattern;
             ticker.aclIncrV = 0;
             ticker.aclFinV = ticker.speedV;
         }
-    }
+    };
+
+    bulletml.AttackPattern.prototype._notify = function(cmd) {
+        var e = tm.event.Event(cmd.eventName);
+        if (cmd.params) {
+            for (var key in cmd.params) {
+                e[key] = cmd.params[key];
+            }
+        }
+        this.dispatchEvent(e);
+    };
 
     var RAD_TO_DEG = 180 / Math.PI;
     var DEG_TO_RAD = Math.PI / 180;

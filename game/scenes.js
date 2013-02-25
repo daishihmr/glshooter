@@ -159,7 +159,7 @@ var ContinueScene;
                         START_STAGE = 1;
                         NUM_OF_STAGE = 3;
                         app.practiceMode = false;
-                        MUTE_SE || tm.sound.WebAudioManager.get("effect0").play();
+                        playSound("effect0");
                         break;
                     case 1: // practice
                         app.pointing.button = 0; app.pointing.update();

@@ -29,6 +29,7 @@ java -jar compiler.jar --js_output_file glshooter.min.js \
 cp index.html index-backup.html
 cp index-deploy.html index.html
 
+cp glshooter.appcache.base glshooter.appcache
 echo "#"`date` >> glshooter.appcache
 
 zip glshooter.zip \

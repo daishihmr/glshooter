@@ -893,7 +893,7 @@ var setupStageData = function(app, stage) {
     var lastLaunchFrame = 0;
     StageData.next = function(frame, flags) {
         var result;
-        if (this[cursor] === void 0) {
+        if (this[cursor] === undefined) {
             return;
         } else if (lastLaunchFrame + this[cursor].frame === frame) {
             result = this[cursor];

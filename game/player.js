@@ -276,7 +276,7 @@ var setupPlayer = function(app, scene, weapons, mouse, texture) {
     }
     var fireWeapon = function(x, y, dir) {
         var w = weaponPool.pop();
-        if (w === void 0) return;
+        if (w === undefined) return;
         w.rotation = dir;
         var s = Math.sin((90 - dir)*Math.DEG_TO_RAD);
         var c = Math.cos((90 - dir)*Math.DEG_TO_RAD);

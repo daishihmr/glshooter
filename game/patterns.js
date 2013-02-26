@@ -50,7 +50,7 @@ var Patterns = {};
 
     var zako1 = function(delay, dir) {
         return pattern({
-            "top": action(
+            "top": action([
                 wait(delay + "+$rand*5"),
                 changeDirection(direction(20 * dir, "absolute"), 1),
                 changeSpeed(speed(4), 5),
@@ -59,13 +59,13 @@ var Patterns = {};
                 wait(10),
                 fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
                 wait(2),
-                repeat(4 ,action(
+                repeat(4, [
                     fire(direction(0, "sequence"), speed("2.2+($rank*3-1)"), bullet()),
-                    wait(2)
-                )),
+                    wait(2),
+                ]),
                 changeDirection(direction(160 * dir, "absolute"), 1),
-                changeSpeed(speed(4), 40)
-            )
+                changeSpeed(speed(4), 40),
+            ]),
         });
     };
 
@@ -75,20 +75,20 @@ var Patterns = {};
     Patterns["zako2d"] = zako1(45, -1);
 
     Patterns["zako3"] = pattern({
-        "top": action(
+        "top": action([
             wait("$rand*5"),
             changeDirection(direction(0, "aim"), 1),
             changeSpeed(speed(4), 40),
             wait(20),
-            repeat(3, action(
+            repeat(3, [
                 fire(direction("$rand*10-5"), speed("2+($rank*3-1)"), bullet()),
-                wait(5)
-            ))
-        )
+                wait(5),
+            ]),
+        ]),
     });
 
     Patterns["zako4"] = pattern({
-        "top": action(
+        "top": action([
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -96,22 +96,22 @@ var Patterns = {};
             changeSpeed(speed(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+            changeSpeed(speed(-3), 30),
+        ]),
+        "attack": action([
             wait("5+$rand*20"),
-            repeat(2, action(
+            repeat(2, [
                 fire(direction(-3*2, "aim"),      speed("1.4+($rank*3-1)"), bullet()),
                 fire(direction( 2*2, "sequence"), speed("1.5+($rank*3-1)"), bullet()),
                 fire(direction( 2*2, "sequence"), speed("1.6+($rank*3-1)"), bullet()),
                 fire(direction( 2*2, "sequence"), speed("1.7+($rank*3-1)"), bullet()),
-                wait(90)
-            ))
-        )
+                wait(90),
+            ]),
+        ]),
     });
 
     Patterns["zako4K"] = pattern({
-        "top": action(
+        "top": action([
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -120,20 +120,21 @@ var Patterns = {};
             wait(30),
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+        ]),
+        "attack": action([
             wait("5+$rand*20"),
-            repeat(2, action(
-                fire(direction(-3*2, "aim"),      speed("0.8+($rank*3-1)"), bullet()), fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
+            repeat(2, [
+                fire(direction(-3*2, "aim"),      speed("0.8+($rank*3-1)"), bullet()),
                 fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
                 fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
-                wait(90)
-            ))
-        )
+                fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
+                wait(90),
+            ]),
+        ]),
     });
 
     Patterns["zako5"] = pattern({
-        "top": action(
+        "top": action([
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -142,22 +143,22 @@ var Patterns = {};
             wait(30),
             actionRef("attack"),
             changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+        ]),
+        "attack": action([
             wait("5+$rand*20"),
-            repeat(2, action(
+            repeat(2, [
                 fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
-                repeat(12, action(
+                repeat(12, [
                     wait(3),
-                    fire(direction(0, "sequence"), speed(0.2, "sequence"), bullet())
-                )),
-                wait(80)
-            ))
-        )
+                    fire(direction(0, "sequence"), speed(0.2, "sequence"), bullet()),
+                ]),
+                wait(80),
+            ]),
+        ]),
     });
 
     Patterns["zako5K"] = pattern({
-        "top": action(
+        "top": action([
             wait("$rand*20"),
             changeDirection(direction(0, "absolute"), 1),
             changeSpeed(speed(3), 1),
@@ -165,16 +166,16 @@ var Patterns = {};
             changeSpeed(speed(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+            changeSpeed(speed(-3), 30),
+        ]),
+        "attack": action([
             wait("5+$rand*20"),
             fire(direction(-15*1.5), speed("0.6+($rank*3-1)"), bullet()),
-            repeat(4-1, action(
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet())
-            )),
-            wait(80)
-        )
+            repeat(4-1, [
+                fire(direction(15, "sequence"), speed(0, "sequence"), bullet()),
+            ]),
+            wait(80),
+        ]),
     });
 
     Patterns["zako6"] = pattern({

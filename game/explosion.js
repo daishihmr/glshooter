@@ -48,7 +48,7 @@ var Explosion = function(scene, texture) {
     this.explode = function(x, y, scale) {
         for (var i = ~~(randfloat(1, 3)); i--; ) {
             var e = explodePool.pop();
-            if (e === void 0) return;
+            if (e === undefined) return;
             e.scaleX = e.scaleY = 0;
             e.alpha = 1;
             e.x = x + randfloat(-0.2, 0.2);
@@ -60,7 +60,7 @@ var Explosion = function(scene, texture) {
 
     this.explodeS = function(x, y, scale) {
         var e = explodePool.pop();
-        if (e === void 0) return;
+        if (e === undefined) return;
         e.scaleX = e.scaleY = 0;
         e.alpha = 0.6;
         e.x = x + randfloat(-0.2, 0.2);

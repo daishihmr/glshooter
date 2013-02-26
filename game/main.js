@@ -290,11 +290,11 @@ tm.main(function() {
     attackParam.rank = INITIAL_RANK;
     attackParam.bulletFactory = function(spec) {
         var b = bulletPool.pop();
-        if (b === void 0) return;
+        if (b === undefined) return;
         b.alive = false;
         b.isBit = false;
         b.scaleX = b.scaleY = 0.8;
-        if (spec.label === null || spec.label === void 0) {
+        if (spec.label === null || spec.label === undefined) {
             b.texX = 3;
             b.texY = 1;
         } else if (spec.label === "g" || spec.label.indexOf("green") === 0) {
@@ -383,7 +383,7 @@ tm.main(function() {
             this.onkilled();
         }
         e.onkilled = function() {
-            if (this.flag !== void 0) {
+            if (this.flag !== undefined) {
                 enemyFlags[this.flag] = true;
             }
 
@@ -442,7 +442,7 @@ tm.main(function() {
         } else {
             var data = enemyData[enemyName];
             e = enemyPool.pop();
-            if (e === void 0) {
+            if (e === undefined) {
                 e = createEnemy();
                 enemies.push(e);
             }
@@ -501,14 +501,14 @@ tm.main(function() {
 
         // launch enemy
         var data = stageData.next(scene.frame, enemyFlags);
-        if (data !== void 0) {
+        if (data !== undefined) {
             var elist = data.enemies;
             for (var i = elist.length; i--; ) {
                 var e = elist[i];
                 launchEnemy(e[0], e[1], e[2], e[3], e[4]);
             }
             var msg = data.message;
-            if (msg !== void 0) {
+            if (msg !== undefined) {
                 var am = app.message;
                 am.text = msg.text;
                 am.fillStyle = msg.color;
@@ -696,7 +696,7 @@ tm.main(function() {
         }
 
         // boss
-        if (boss !== void 0) {
+        if (boss !== undefined) {
             scene.removeChild(boss);
             var index = enemies.indexOf(boss);
             if (index !== -1) enemies.splice(index, 1);

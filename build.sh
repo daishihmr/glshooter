@@ -9,6 +9,7 @@ java -jar compiler.jar --js_output_file glshooter.min.js \
     --compilation_level ADVANCED_OPTIMIZATIONS \
     --externs lib/tmlib.min.js \
     --externs lib/webaudio.js \
+    --js game/header.js \
     --js lib/bulletml.js \
     --js lib/bulletml.dsl.js \
     --js lib/bulletml.walker.js \

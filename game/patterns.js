@@ -26,45 +26,73 @@
 
 var Patterns = {};
 (function() {
-    // import bulletml.dsl namespace
+    /** @const */
     var action           = bulletml.dsl.action;
+    /** @const */
     var actionRef        = bulletml.dsl.actionRef;
+    /** @const */
     var bullet           = bulletml.dsl.bullet;
+    /** @const */
     var bulletRef        = bulletml.dsl.bulletRef;
+    /** @const */
     var fire             = bulletml.dsl.fire;
+    /** @const */
     var fireRef          = bulletml.dsl.fireRef;
+    /** @const */
     var changeDirection  = bulletml.dsl.changeDirection;
+    /** @const */
     var changeSpeed      = bulletml.dsl.changeSpeed;
+    /** @const */
     var accel            = bulletml.dsl.accel;
+    /** @const */
     var wait             = bulletml.dsl.wait;
+    /** @const */
     var vanish           = bulletml.dsl.vanish;
+    /** @const */
     var repeat           = bulletml.dsl.repeat;
-    var direction        = bulletml.dsl.direction;
-    var speed            = bulletml.dsl.speed;
+    /** @const */
+    var dir              = bulletml.dsl.direction;
+    /** @const */
+    var spd              = bulletml.dsl.speed;
+    /** @const */
     var horizontal       = bulletml.dsl.horizontal;
+    /** @const */
     var vertical         = bulletml.dsl.vertical;
+    /** @const */
+    var offsetX          = bulletml.dsl.offsetX;
+    /** @const */
+    var offsetY          = bulletml.dsl.offsetY;
+
+    /** @const */
+    var ABS = "absolute";
+    /** @const */
+    var SEQ = "sequence";
+    /** @const */
+    var AIM = "aim";
+    /** @const */
+    var REL = "relative";
 
     var pattern = function(dsl) {
         return new bulletml.AttackPattern(new bulletml.Root(dsl));
     };
 
-    var zako1 = function(delay, dir) {
+    var zako1 = function(delay, d) {
         return pattern({
             "top": action([
                 wait(delay + "+$rand*5"),
-                changeDirection(direction(20 * dir, "absolute"), 1),
-                changeSpeed(speed(4), 5),
+                changeDirection(dir(20 * d, ABS), 1),
+                changeSpeed(spd(4), 5),
                 wait(60),
-                changeSpeed(speed(0), 10),
+                changeSpeed(spd(0), 10),
                 wait(10),
-                fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5"), spd("2.2+($rank*3-1)"), bullet()),
                 wait(2),
                 repeat(4, [
-                    fire(direction(0, "sequence"), speed("2.2+($rank*3-1)"), bullet()),
+                    fire(dir(0, SEQ), spd("2.2+($rank*3-1)"), bullet()),
                     wait(2),
                 ]),
-                changeDirection(direction(160 * dir, "absolute"), 1),
-                changeSpeed(speed(4), 40),
+                changeDirection(dir(160 * d, ABS), 1),
+                changeSpeed(spd(4), 40),
             ]),
         });
     };
@@ -77,11 +105,11 @@ var Patterns = {};
     Patterns["zako3"] = pattern({
         "top": action([
             wait("$rand*5"),
-            changeDirection(direction(0, "aim"), 1),
-            changeSpeed(speed(4), 40),
+            changeDirection(dir(0, AIM), 1),
+            changeSpeed(spd(4), 40),
             wait(20),
             repeat(3, [
-                fire(direction("$rand*10-5"), speed("2+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5"), spd("2+($rank*3-1)"), bullet()),
                 wait(5),
             ]),
         ]),
@@ -90,21 +118,21 @@ var Patterns = {};
     Patterns["zako4"] = pattern({
         "top": action([
             wait("$rand*20"),
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.2), 30),
+            changeSpeed(spd(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30),
+            changeSpeed(spd(-3), 30),
         ]),
         "attack": action([
             wait("5+$rand*20"),
             repeat(2, [
-                fire(direction(-3*2, "aim"),      speed("1.4+($rank*3-1)"), bullet()),
-                fire(direction( 2*2, "sequence"), speed("1.5+($rank*3-1)"), bullet()),
-                fire(direction( 2*2, "sequence"), speed("1.6+($rank*3-1)"), bullet()),
-                fire(direction( 2*2, "sequence"), speed("1.7+($rank*3-1)"), bullet()),
+                fire(dir(-3*2, AIM), spd("1.4+($rank*3-1)"), bullet()),
+                fire(dir( 2*2, SEQ), spd("1.5+($rank*3-1)"), bullet()),
+                fire(dir( 2*2, SEQ), spd("1.6+($rank*3-1)"), bullet()),
+                fire(dir( 2*2, SEQ), spd("1.7+($rank*3-1)"), bullet()),
                 wait(90),
             ]),
         ]),
@@ -113,21 +141,21 @@ var Patterns = {};
     Patterns["zako4K"] = pattern({
         "top": action([
             wait("$rand*20"),
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.2), 30),
+            changeSpeed(spd(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
+            changeSpeed(spd(-3), 30)
         ]),
         "attack": action([
             wait("5+$rand*20"),
             repeat(2, [
-                fire(direction(-3*2, "aim"),      speed("0.8+($rank*3-1)"), bullet()),
-                fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
-                fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
-                fire(direction( 2*2, "sequence"), speed(0.1, "sequence"), bullet()),
+                fire(dir(-3*2, AIM), spd("0.8+($rank*3-1)"), bullet()),
+                fire(dir( 2*2, SEQ), spd(0.1, SEQ), bullet()),
+                fire(dir( 2*2, SEQ), spd(0.1, SEQ), bullet()),
+                fire(dir( 2*2, SEQ), spd(0.1, SEQ), bullet()),
                 wait(90),
             ]),
         ]),
@@ -136,21 +164,21 @@ var Patterns = {};
     Patterns["zako5"] = pattern({
         "top": action([
             wait("$rand*20"),
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.2), 30),
+            changeSpeed(spd(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
+            changeSpeed(spd(-3), 30)
         ]),
         "attack": action([
             wait("5+$rand*20"),
             repeat(2, [
-                fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5"), spd("2.2+($rank*3-1)"), bullet()),
                 repeat(12, [
                     wait(3),
-                    fire(direction(0, "sequence"), speed(0.2, "sequence"), bullet()),
+                    fire(dir(0, SEQ), spd(0.2, SEQ), bullet()),
                 ]),
                 wait(80),
             ]),
@@ -160,395 +188,395 @@ var Patterns = {};
     Patterns["zako5K"] = pattern({
         "top": action([
             wait("$rand*20"),
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.2), 30),
+            changeSpeed(spd(0.2), 30),
             wait(30),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30),
+            changeSpeed(spd(-3), 30),
         ]),
         "attack": action([
             wait("5+$rand*20"),
-            fire(direction(-15*1.5), speed("0.6+($rank*3-1)"), bullet()),
+            fire(dir(-15*1.5), spd("0.6+($rank*3-1)"), bullet()),
             repeat(4-1, [
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet()),
+                fire(dir(15, SEQ), spd(0, SEQ), bullet()),
             ]),
             wait(80),
         ]),
     });
 
     Patterns["zako6"] = pattern({
-        "top": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+        "top": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.3), 30),
+            changeSpeed(spd(0.3), 30),
             wait(45),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+            changeSpeed(spd(-3), 30),
+        ]),
+        "attack": action([
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90),
             repeat(8, actionRef("firebit", "$rand*360")),
-            wait(90)
-        ),
-        "firebit": action(
-            fire(direction("$1", "aim"), speed("0.5+$rand"), bulletRef("bit", "$1"))
-        ),
+            wait(90),
+        ]),
+        "firebit": action([
+            fire(dir("$1", AIM), spd("0.5+$rand"), bulletRef("bit", "$1")),
+        ]),
         "bit": bullet(
-            action(
+            action([
                 wait("10+$rank*3"),
-                fire(direction("$1*-1", "relative"), speed("3.4+($rank*3-1)"), bullet()),
-                vanish()
-            )
+                fire(dir("$1*-1", REL), spd("3.4+($rank*3-1)"), bullet()),
+                vanish(),
+            ])
         )
     });
 
     Patterns["zako6K"] = pattern({
-        "top": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+        "top": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait("5+$rand*20"),
-            changeSpeed(speed(0.3), 30),
+            changeSpeed(spd(0.3), 30),
             wait(45),
             actionRef("attack"),
-            changeSpeed(speed(-3), 30)
-        ),
-        "attack": action(
+            changeSpeed(spd(-3), 30),
+        ]),
+        "attack": action([
             repeat(8, actionRef("firebit", "$rand*360")),
             wait(90),
             repeat(8, actionRef("firebit", "$rand*360")),
-            wait(90)
-        ),
-        "firebit": action(
-            fire(direction("$1", "aim"), speed("0.5+$rand"), bulletRef("bit", "$1"))
-        ),
+            wait(90),
+        ]),
+        "firebit": action([
+            fire(dir("$1", AIM), spd("0.5+$rand"), bulletRef("bit", "$1")),
+        ]),
         "bit": bullet(
-            action(
+            action([
                 wait("10+$rank*3"),
-                fire(direction("$1*-1", "relative"), speed("0.8+($rank*3-1)"), bullet("g")),
-                vanish()
-            )
+                fire(dir("$1*-1", REL), spd("0.8+($rank*3-1)"), bullet("g")),
+                vanish(),
+            ])
         )
     });
 
     Patterns["zako7"] = pattern({
-        "top": action(
+        "top": action([
             wait("5+$rand*60"),
-            changeDirection(direction("0", "absolute"), 1),
+            changeDirection(dir("0", ABS), 1),
             wait(5),
-            changeDirection(direction("$rand*10-5"), 30),
-            changeSpeed("2.9+($rank*3-1)", 1),
+            changeDirection(dir("$rand*10-5"), 30),
+            changeSpeed(spd("2.9+($rank*3-1)"), 1),
             wait(15),
-            fire(direction("$rand*5-2.5"),speed("3.4+($rank*3-1)"), bullet()),
+            fire(dir("$rand*5-2.5"), spd("3.4+($rank*3-1)"), bullet()),
             wait(15),
-            changeDirection(direction(0), 30),
+            changeDirection(dir(0), 30),
             wait(15),
-            changeDirection(direction(0), 30)
-        )
+            changeDirection(dir(0), 30),
+        ])
     });
     Patterns["zako7f"] = pattern({
-        "top": action(
+        "top": action([
             wait("5+$rand*60"),
-            changeDirection(direction("0", "absolute"), 1),
+            changeDirection(dir("0", ABS), 1),
             wait(5),
-            changeDirection(direction("$rand*10-5"), 30),
-            changeSpeed("2.9+($rank*3-1)", 1),
+            changeDirection(dir("$rand*10-5"), 30),
+            changeSpeed(spd("2.9+($rank*3-1)"), 1),
             wait(5),
-            fire(direction("$rand*5-2.5"),speed("4.0+($rank*3-1)"), bullet()),
+            fire(dir("$rand*5-2.5"), spd("4.0+($rank*3-1)"), bullet()),
             wait(5),
-            fire(direction("$rand*5-2.5"),speed("4.0+($rank*3-1)"), bullet()),
+            fire(dir("$rand*5-2.5"), spd("4.0+($rank*3-1)"), bullet()),
             wait(5),
-            fire(direction("$rand*5-2.5"),speed("4.0+($rank*3-1)"), bullet()),
-            changeDirection(direction(0), 30),
+            fire(dir("$rand*5-2.5"), spd("4.0+($rank*3-1)"), bullet()),
+            changeDirection(dir(0), 30),
             wait(15),
-            changeDirection(direction(0), 30),
+            changeDirection(dir(0), 30),
             wait(15),
-            changeDirection(direction(0), 30)
-        )
+            changeDirection(dir(0), 30),
+        ])
     });
 
     Patterns["zako8"] = pattern({
-        "top1": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(5), 1),
+        "top1": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(5), 1),
             wait(20),
-            changeSpeed(speed(-0.2), 60),
+            changeSpeed(spd(-0.2), 60),
             wait(400),
-            changeSpeed(speed(-5), 30)
-        ),
-        "top2": action(
+            changeSpeed(spd(-5), 30),
+        ]),
+        "top2": action([
             wait(90),
-            fire(direction( 20, "absolute"), speed("2.2+($rank*3-1)"), bullet()),
-            repeat(300/6, action(
-                fire(direction(-0.5, "sequence"), speed("2.2+($rank*3-1)"), bullet()),
+            fire(dir( 20, ABS), spd("2.2+($rank*3-1)"), bullet()),
+            repeat(300/6, [
+                fire(dir(-0.5, SEQ), spd("2.2+($rank*3-1)"), bullet()),
                 wait(6)
-            ))
-        ),
-        "top3": action(
+            ]),
+        ]),
+        "top3": action([
             wait(90),
-            fire(direction(-20, "absolute"), speed("2.2+($rank*3-1)"), bullet()),
-            repeat(300/6, action(
-                fire(direction( 0.5, "sequence"), speed("2.2+($rank*3-1)"), bullet()),
-                wait(6)
-            ))
-        )
+            fire(dir(-20, ABS), spd("2.2+($rank*3-1)"), bullet()),
+            repeat(300/6, [
+                fire(dir( 0.5, SEQ), spd("2.2+($rank*3-1)"), bullet()),
+                wait(6),
+            ]),
+        ]),
     });
 
     var zakoG = function(height, attack) {
         return pattern({
-            "top": action(
+            "top": action([
                 wait("$rand*20"),
-                changeDirection(direction(0, "absolute"), 1),
-                changeSpeed(speed(4), 1),
+                changeDirection(dir(0, ABS), 1),
+                changeSpeed(spd(4), 1),
                 wait(height + "+$rand*15"),
-                changeSpeed(speed(0.2), 30),
+                changeSpeed(spd(0.2), 30),
                 actionRef("attack"),
-                changeSpeed(speed(-4), 30)
-            ),
-            "attack": attack
+                changeSpeed(spd(-4), 30),
+            ]),
+            "attack": attack,
         });
     };
 
     var zakoG1 = function(height) {
-        return zakoG(height, action(
+        return zakoG(height, action([
             wait(20),
-            fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
-            repeat(3, action(
+            fire(dir("$rand*10-5"), spd("2.2+($rank*3-1)"), bullet()),
+            repeat(3, [
                 wait(30),
-                fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet())
-            )),
-            wait(120)
-        ));
+                fire(dir("$rand*10-5"), spd("2.2+($rank*3-1)"), bullet()),
+            ]),
+            wait(120),
+        ]));
     };
     Patterns["zakoG1H"] = zakoG1( 0);
     Patterns["zakoG1M"] = zakoG1(35);
     Patterns["zakoG1L"] = zakoG1(70);
 
     var zakoG2 = function(height) {
-        return zakoG(height, action(
+        return zakoG(height, action([
             wait(20),
-            repeat("1+$rank*0.4", action(
-                fire(direction("$rand*10-5"), speed("2.2+($rank*3-1)"), bullet()),
-                repeat(2, action(
+            repeat("1+$rank*0.4", [
+                fire(dir("$rand*10-5"), spd("2.2+($rank*3-1)"), bullet()),
+                repeat(2, [
                     wait(3),
-                    fire(direction(0, "sequence"), speed(0, "sequence"), bullet())
-                )),
-                wait(40)
-            )),
-            wait(60)
-        ));
+                    fire(dir(0, SEQ), spd(0, SEQ), bullet()),
+                ]),
+                wait(40),
+            ]),
+            wait(60),
+        ]));
     };
     Patterns["zakoG2H"] = zakoG2( 0);
     Patterns["zakoG2M"] = zakoG2(35);
     Patterns["zakoG2L"] = zakoG2(70);
 
     var zakoG3 = function(height) {
-        return zakoG(height, action(
+        return zakoG(height, action([
             wait(20),
-            repeat(2, action(
-                fire(direction("$rand*5-2.5"), speed("2.2+($rank*3-1)"), bullet()),
-                fire(direction(-30, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction( 60, "sequence"), speed(0, "sequence"), bullet()),
-                wait(60)
-            )),
-            wait(60)
-        ));
+            repeat(2, [
+                fire(dir("$rand*5-2.5"), spd("2.2+($rank*3-1)"), bullet()),
+                fire(dir(-30, SEQ), spd(0, SEQ), bullet()),
+                fire(dir( 60, SEQ), spd(0, SEQ), bullet()),
+                wait(60),
+            ]),
+            wait(60),
+        ]));
     };
     Patterns["zakoG3H"] = zakoG3( 0);
     Patterns["zakoG3M"] = zakoG3(35);
     Patterns["zakoG3L"] = zakoG3(70);
 
     Patterns["bigger"] = pattern({
-        "top": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(2), 1),
+        "top": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(2), 1),
             wait(30),
-            changeDirection(direction(90, "absolute"), 1),
-            changeSpeed(speed(0.2), 1),
+            changeDirection(dir(90, ABS), 1),
+            changeSpeed(spd(0.2), 1),
             actionRef("attack"),
-            repeat(30, action(
-                changeDirection(direction(-90, "absolute"), 1),
+            repeat(30, [
+                changeDirection(dir(-90, ABS), 1),
                 actionRef("attack"),
                 actionRef("attack"),
-                changeDirection(direction(90, "absolute"), 1),
+                changeDirection(dir(90, ABS), 1),
                 actionRef("attack"),
-                actionRef("attack")
-            ))
-        ),
-        "attack": action(
-            repeat(2, action(
-                repeat("1+$rank*5", action(
-                    fire(direction(-30, "aim"), speed("2+($rank*3-1)"), bullet()),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet()),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet()),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet()),
-                    wait(5)
-                )),
+                actionRef("attack"),
+            ]),
+        ]),
+        "attack": action([
+            repeat(2, [
+                repeat("1+$rank*5", [
+                    fire(dir(-30, AIM), spd("2+($rank*3-1)"), bullet()),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet()),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet()),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet()),
+                    wait(5),
+                ]),
                 wait(10),
-                repeat("1+$rank*5", action(
-                    fire(direction(-40, "aim"), speed("2+($rank*3-1)"), bullet("g")),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet("g")),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet("g")),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet("g")),
-                    fire(direction(20, "sequence"), speed("2+($rank*3-1)"), bullet("g")),
-                    wait(5)
-                )),
-                wait(10)
-            ))
-        )
+                repeat("1+$rank*5", [
+                    fire(dir(-40, AIM), spd("2+($rank*3-1)"), bullet("g")),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet("g")),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet("g")),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet("g")),
+                    fire(dir( 20, SEQ), spd("2+($rank*3-1)"), bullet("g")),
+                    wait(5),
+                ]),
+                wait(10),
+            ]),
+        ]),
     });
 
      Patterns["bigger2"] = pattern({
-        "top": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(2), 1),
+        "top": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(2), 1),
             wait(30),
-            repeat(999, action(
-                changeDirection(direction(90, "absolute"), 1),
-                changeSpeed(speed(0.6), 1),
+            repeat(999, [
+                changeDirection(dir(90, ABS), 1),
+                changeSpeed(spd(0.6), 1),
                 wait(60),
 
-                changeDirection(direction(-90, "absolute"), 1),
+                changeDirection(dir(-90, ABS), 1),
                 actionRef("attack1", 5),
                 wait(30),
                 actionRef("attack2", 4),
                 wait(90),
 
-                changeDirection(direction(90, "absolute"), 1),
+                changeDirection(dir(90, ABS), 1),
                 actionRef("attack1", 5),
                 wait(30),
                 actionRef("attack2", 4),
                 wait(90),
 
-                changeDirection(direction(-90, "absolute"), 1),
+                changeDirection(dir(-90, ABS), 1),
                 actionRef("attack1", 7),
                 wait(30),
                 actionRef("attack2", 6),
                 wait(90),
 
-                changeDirection(direction(90, "absolute"), 1),
+                changeDirection(dir(90, ABS), 1),
                 actionRef("attack1", 9),
                 wait(30),
                 actionRef("attack2", 8),
                 wait(90),
 
-                changeDirection(direction(-90, "absolute"), 1),
+                changeDirection(dir(-90, ABS), 1),
                 actionRef("attack1", 11),
                 wait(30),
                 actionRef("attack2", 10),
                 wait(30),
 
-                changeSpeed(speed(0), 1),
+                changeSpeed(spd(0), 1),
                 wait(30),
-                actionRef("attack3")
-            ))
-        ),
-        "attack1": action(
-            fire(direction(-135, "absolute"), speed(20), bulletRef("bit1", "$1")),
-            fire(direction( -45, "absolute"), speed(20), bulletRef("bit1", "$1")),
-            fire(direction(  45, "absolute"), speed(20), bulletRef("bit1", "$1")),
-            fire(direction( 135, "absolute"), speed(20), bulletRef("bit1", "$1"))
-        ),
-        "attack2": action(
-            fire(direction(-135, "absolute"), speed(20), bulletRef("bit2", "$1")),
-            fire(direction( -45, "absolute"), speed(20), bulletRef("bit2", "$1")),
-            fire(direction(  45, "absolute"), speed(20), bulletRef("bit2", "$1")),
-            fire(direction( 135, "absolute"), speed(20), bulletRef("bit2", "$1"))
-        ),
-        "bit1": bullet(action(
+                actionRef("attack3"),
+            ]),
+        ]),
+        "attack1": action([
+            fire(dir(-135, ABS), spd(20), bulletRef("bit1", "$1")),
+            fire(dir( -45, ABS), spd(20), bulletRef("bit1", "$1")),
+            fire(dir(  45, ABS), spd(20), bulletRef("bit1", "$1")),
+            fire(dir( 135, ABS), spd(20), bulletRef("bit1", "$1")),
+        ]),
+        "attack2": action([
+            fire(dir(-135, ABS), spd(20), bulletRef("bit2", "$1")),
+            fire(dir( -45, ABS), spd(20), bulletRef("bit2", "$1")),
+            fire(dir(  45, ABS), spd(20), bulletRef("bit2", "$1")),
+            fire(dir( 135, ABS), spd(20), bulletRef("bit2", "$1")),
+        ]),
+        "bit1": bullet(action([
             wait(1),
-            changeSpeed(speed(0), 1),
-            fire(direction(-90/2, "aim"), speed("3+($rank*3-1)"), bullet()),
-            repeat(5, action(
-                repeat("$1", action(
-                    fire(direction("90/$1", "sequence"), speed("3+($rank*3-1)"), bullet())
-                )),
+            changeSpeed(spd(0), 1),
+            fire(dir(-90/2, AIM), spd("3+($rank*3-1)"), bullet()),
+            repeat(5, [
+                repeat("$1", [
+                    fire(dir("90/$1", SEQ), spd("3+($rank*3-1)"), bullet()),
+                ]),
                 wait(2),
-                fire(direction(-90, "sequence"), speed("3+($rank*3-1)"), bullet())
-            )),
-            vanish()
-        )),
-        "bit2": bullet(action(
+                fire(dir(-90, SEQ), spd("3+($rank*3-1)"), bullet()),
+            ]),
+            vanish(),
+        ])),
+        "bit2": bullet(action([
             wait(1),
-            changeSpeed(speed(0), 1),
-            fire(direction(-80/2, "aim"), speed("3.5+($rank*3-1)"), bullet("g")),
-            repeat(5, action(
-                repeat("$1", action(
-                    fire(direction("80/$1", "sequence"), speed("3.5+($rank*3-1)"), bullet("g"))
-                )),
+            changeSpeed(spd(0), 1),
+            fire(dir(-80/2, AIM), spd("3.5+($rank*3-1)"), bullet("g")),
+            repeat(5, [
+                repeat("$1", [
+                    fire(dir("80/$1", SEQ), spd("3.5+($rank*3-1)"), bullet("g")),
+                ]),
                 wait(2),
-                fire(direction(-80, "sequence"), speed("3.5+($rank*3-1)"), bullet("g"))
-            )),
-            vanish()
-        )),
-        "attack3": action(
+                fire(dir(-80, SEQ), spd("3.5+($rank*3-1)"), bullet("g")),
+            ]),
+            vanish(),
+        ])),
+        "attack3": action([
             actionRef("fire3r", 14,  1),
             actionRef("fire3g", 12, -1),
             actionRef("fire3r", 10,  1),
-            actionRef("fire3g",  8, -1)
-        ),
-        "fire3r": action(
-            fire(direction("$1*$2", "absolute"), speed("3+($rank*3-1)"), bullet("l")),
-            repeat("360/$1-2", action(
-                repeat(3, action(
-                    fire(direction(90, "sequence"), speed(0, "sequence"), bullet("l"))
-                )),
+            actionRef("fire3g",  8, -1),
+        ]),
+        "fire3r": action([
+            fire(dir("$1*$2", ABS), spd("3+($rank*3-1)"), bullet("l")),
+            repeat("360/$1-2", [
+                repeat(3, [
+                    fire(dir(90, SEQ), spd(0, SEQ), bullet("l")),
+                ]),
                 wait(3),
-                fire(direction("90+$1*$2", "sequence"), speed(0, "sequence"), bullet("l"))
-            )),
-            repeat(3, action(
-                fire(direction(90, "sequence"), speed(0, "sequence"), bullet("l"))
-            ))
-        ),
-        "fire3g": action(
-            fire(direction("$1*$2", "absolute"), speed("3+($rank*3-1)"), bullet("l")),
-            repeat("360/$1-2", action(
-                repeat(3, action(
-                    fire(direction(90, "sequence"), speed(0, "sequence"), bullet("lg"))
-                )),
+                fire(dir("90+$1*$2", SEQ), spd(0, SEQ), bullet("l")),
+            ]),
+            repeat(3, [
+                fire(dir(90, SEQ), spd(0, SEQ), bullet("l")),
+            ]),
+        ]),
+        "fire3g": action([
+            fire(dir("$1*$2", ABS), spd("3+($rank*3-1)"), bullet("l")),
+            repeat("360/$1-2", [
+                repeat(3, [
+                    fire(dir(90, SEQ), spd(0, SEQ), bullet("lg")),
+                ]),
                 wait(3),
-                fire(direction("90+$1*$2", "sequence"), speed(0, "sequence"), bullet("lg"))
-            )),
-            repeat(3, action(
-                fire(direction(90, "sequence"), speed(0, "sequence"), bullet("lg"))
-            ))
-        )
+                fire(dir("90+$1*$2", SEQ), spd(0, SEQ), bullet("lg")),
+            ]),
+            repeat(3, [
+                fire(dir(90, SEQ), spd(0, SEQ), bullet("lg")),
+            ]),
+        ]),
     });
 
-    var tank1 = function(delay, dir) {
+    var tank1 = function(delay, d) {
         return pattern({
-            "top": action(
+            "top": action([
                 wait(delay),
-                changeDirection(direction(dir, "absolute"), 1),
-                changeSpeed(speed(0.5), 1),
+                changeDirection(dir(d, ABS), 1),
+                changeSpeed(spd(0.5), 1),
                 wait("60+$rand*100"),
-                repeat(30, action(
-                    fire(speed("1.5+($rank*3-1)"), bullet("lg")),
-                    wait("60+$rand*100")
-                ))
-            )
+                repeat(30, [
+                    fire(spd("1.5+($rank*3-1)"), bullet("lg")),
+                    wait("60+$rand*100"),
+                ]),
+            ])
         });
     };
-    var tank2 = function(delay, turnDelay, dir) {
+    var tank2 = function(delay, turnDelay, d) {
         return pattern({
-            "top1": action(
+            "top1": action([
                 wait(delay),
-                changeDirection(direction(dir, "absolute"), 1),
-                changeSpeed(speed(0.8), 1),
+                changeDirection(dir(d, ABS), 1),
+                changeSpeed(spd(0.8), 1),
                 wait(turnDelay),
-                changeDirection(direction(dir*0.5, "absolute"), 60)
-            ),
-            "top2": action(
+                changeDirection(dir(d*0.5, ABS), 60),
+            ]),
+            "top2": action([
                 wait(turnDelay*0.5),
                 wait("20+$rand*10"),
-                repeat(30, action(
-                    fire(direction("$rand*10-5"), speed("1.5+($rank*3-1)"), bullet("lg")),
+                repeat(30, [
+                    fire(dir("$rand*10-5"), spd("1.5+($rank*3-1)"), bullet("lg")),
                     wait("120+(40-$rank*40)+$rand*10")
-                ))
-            )
+                ]),
+            ])
         });
     };
 
@@ -579,65 +607,65 @@ var Patterns = {};
     Patterns["tank4L3"] = tank2( 90, 180,  150);
     Patterns["tank4L4"] = tank2(120, 180,  150);
 
-    var middle = function(delay, dir) {
+    var middle = function(delay, d) {
         return pattern({
-            "top": action(
+            "top": action([
                 wait(delay),
-                changeDirection(direction(dir, "absolute"), 1),
-                changeSpeed(speed(0.8), 1),
+                changeDirection(dir(d, ABS), 1),
+                changeSpeed(spd(0.8), 1),
                 wait(140),
-                changeDirection(direction(dir*2, "absolute"), 60),
-                repeat(2, action(
-                    fire(direction(-90, "aim"), speed(4), bulletRef("bit", 60)),
-                    fire(direction(-90, "aim"), speed(2), bulletRef("bit", 80)),
-                    fire(direction(90, "aim"), speed(2), bulletRef("bit", -80)),
-                    fire(direction(90, "aim"), speed(4), bulletRef("bit", -60)),
-                    wait(60)
-                ))
-            ),
+                changeDirection(dir(d*2, ABS), 60),
+                repeat(2, [
+                    fire(dir(-90, AIM), spd(4), bulletRef("bit", 60)),
+                    fire(dir(-90, AIM), spd(2), bulletRef("bit", 80)),
+                    fire(dir(90, AIM), spd(2), bulletRef("bit", -80)),
+                    fire(dir(90, AIM), spd(4), bulletRef("bit", -60)),
+                    wait(60),
+                ]),
+            ]),
             "bit": bullet(
-                action(
+                action([
                     wait(2),
                     changeSpeed(0, 1),
-                    fire(direction("$1", "relative"), speed("2.5+($rank*3-1)"), bullet("g")),
-                    repeat("1+$rank*10", action(
+                    fire(dir("$1", REL), spd("2.5+($rank*3-1)"), bullet("g")),
+                    repeat("1+$rank*10", [
                         wait(1),
-                        fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
-                    )),
-                    vanish()
-                )
-            )
+                        fire(dir(0, SEQ), spd(0, SEQ), bullet("g")),
+                    ]),
+                    vanish(),
+                ])
+            ),
         });
     };
 
-    var middle2 = function(delay, dir) {
+    var middle2 = function(delay, d) {
         return pattern({
-            "top": action(
+            "top": action([
                 wait(delay),
-                changeDirection(direction(dir, "absolute"), 1),
-                changeSpeed(speed(0.8), 1),
+                changeDirection(dir(d, ABS), 1),
+                changeSpeed(spd(0.8), 1),
                 wait(140),
-                changeDirection(direction(dir*12, "absolute"), 60),
-                repeat(2, action(
-                    fire(direction(-90, "aim"), speed(4), bulletRef("bit", 110)),
-                    fire(direction(-90, "aim"), speed(2), bulletRef("bit",  90)),
-                    fire(direction( 90, "aim"), speed(2), bulletRef("bit", -90)),
-                    fire(direction( 90, "aim"), speed(4), bulletRef("bit",-110)),
-                    wait(60)
-                ))
-            ),
+                changeDirection(dir(d*12, ABS), 60),
+                repeat(2, [
+                    fire(dir(-90, AIM), spd(4), bulletRef("bit", 110)),
+                    fire(dir(-90, AIM), spd(2), bulletRef("bit",  90)),
+                    fire(dir( 90, AIM), spd(2), bulletRef("bit", -90)),
+                    fire(dir( 90, AIM), spd(4), bulletRef("bit",-110)),
+                    wait(60),
+                ]),
+            ]),
             "bit": bullet(
-                action(
+                action([
                     wait(2),
                     changeSpeed(0, 1),
-                    fire(direction("$1", "relative"), speed("2.1+($rank*3-1)"), bullet("g")),
-                    repeat("1+$rank*10", action(
+                    fire(dir("$1", REL), spd("2.1+($rank*3-1)"), bullet("g")),
+                    repeat("1+$rank*10", [
                         wait(1),
-                        fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g"))
-                    )),
-                    vanish()
-                )
-            )
+                        fire(dir(0, SEQ), spd(0, SEQ), bullet("g")),
+                    ]),
+                    vanish(),
+                ])
+            ),
         });
     };
 
@@ -653,23 +681,23 @@ var Patterns = {};
     Patterns["middle2R3"] = middle2(150,  -5);
     Patterns["middle2R4"] = middle2(200,  -5);
 
-    var middle3 = function(delay, dir, dir2) {
+    var middle3 = function(delay, d1, d2) {
         return pattern({
-            "topmove": action(
+            "topmove": action([
                 wait(delay),
-                changeDirection(direction(dir, "absolute"), 1),
-                changeSpeed(speed(1.8), 1),
+                changeDirection(dir(d1, ABS), 1),
+                changeSpeed(spd(1.8), 1),
                 wait(100),
-                changeSpeed(speed(0.3), 120),
-                changeDirection(direction(dir2, "absolute"), 120),
-                repeat(2, action(
-                    fire(direction(-90, "aim"), speed(4), bulletRef("bit", 60)),
-                    fire(direction(-90, "aim"), speed(2), bulletRef("bit", 80)),
-                    fire(direction( 90, "aim"), speed(2), bulletRef("bit", -80)),
-                    fire(direction( 90, "aim"), speed(4), bulletRef("bit", -60)),
-                    wait(60)
-                ))
-            ),
+                changeSpeed(spd(0.3), 120),
+                changeDirection(dir(d2, ABS), 120),
+                repeat(2, [
+                    fire(dir(-90, AIM), spd(4), bulletRef("bit", 60)),
+                    fire(dir(-90, AIM), spd(2), bulletRef("bit", 80)),
+                    fire(dir( 90, AIM), spd(2), bulletRef("bit", -80)),
+                    fire(dir( 90, AIM), spd(4), bulletRef("bit", -60)),
+                    wait(60),
+                ])
+            ]),
             "topattack": action(function() {
                 var a = [];
                 a[a.length] = wait(delay + 150);
@@ -677,129 +705,129 @@ var Patterns = {};
                     for (var i = 0; i < 360; i++) {
                         var t = Math.sin(i*Math.DEG_TO_RAD*2) * 60;
                         if (i%30 < 10) {
-                            a[a.length] = fire(direction(-90, "absolute"), speed(5), bulletRef("bit", t, -1));
-                            a[a.length] = fire(direction( 90, "absolute"), speed(5), bulletRef("bit", t,  1));
+                            a[a.length] = fire(dir(-90, ABS), spd(5), bulletRef("bit", t, -1));
+                            a[a.length] = fire(dir( 90, ABS), spd(5), bulletRef("bit", t,  1));
                         }
                         a[a.length] = wait(1);
                     }
                 }
                 return a;
             }),
-            "bit": bullet(action(
+            "bit": bullet(action([
                 wait(3),
                 changeSpeed(0, 1),
-                fire(direction("$1*$2-15", "absolute"), speed("1.2+($rank*3-1)"), bullet()),
-                fire(direction("$1*$2+15", "absolute"), speed("1.2+($rank*3-1)"), bullet()),
-                vanish()
-            ))
+                fire(dir("$1*$2-15", ABS), spd("1.2+($rank*3-1)"), bullet()),
+                fire(dir("$1*$2+15", ABS), spd("1.2+($rank*3-1)"), bullet()),
+                vanish(),
+            ]))
         });
     };
     Patterns["middle3L0"] = middle3(0,  80, 0);
     Patterns["middle3R0"] = middle3(0, -80, 0);
 
     Patterns["middleKR"] = pattern({
-        "top": action(
-            changeDirection(direction(-90, "absolute"), 1),
-            changeSpeed(speed(4), 1),
+        "top": action([
+            changeDirection(dir(-90, ABS), 1),
+            changeSpeed(spd(4), 1),
             wait(5),
-            changeSpeed(speed(0), 70),
+            changeSpeed(spd(0), 70),
             wait(70),
-            changeDirection(direction(-70, "absolute"), 1),
-            changeSpeed(speed(0.1), 1),
-            repeat(3, action(
-                repeat(5, action(
-                    fire(direction(-90, "absolute"), speed(1), bulletRef("bit", -1)),
-                    fire(direction( 90, "absolute"), speed(1), bulletRef("bit",  1)),
-                    wait(10)
-                )),
+            changeDirection(dir(-70, ABS), 1),
+            changeSpeed(spd(0.1), 1),
+            repeat(3, [
+                repeat(5, [
+                    fire(dir(-90, ABS), spd(1), bulletRef("bit", -1)),
+                    fire(dir( 90, ABS), spd(1), bulletRef("bit",  1)),
+                    wait(10),
+                ]),
                 actionRef("wshot", -72-12),
                 actionRef("wshot", -24-12),
                 actionRef("wshot",  24-12),
                 actionRef("wshot",  72-12),
                 wait(40),
-                repeat(5, action(
-                    fire(direction(-90, "absolute"), speed(1), bulletRef("bit", -1)),
-                    fire(direction( 90, "absolute"), speed(1), bulletRef("bit",  1)),
-                    wait(10)
-                )),
+                repeat(5, [
+                    fire(dir(-90, ABS), spd(1), bulletRef("bit", -1)),
+                    fire(dir( 90, ABS), spd(1), bulletRef("bit",  1)),
+                    wait(10),
+                ]),
                 actionRef("wshot", -48-12),
                 actionRef("wshot",   0-12),
                 actionRef("wshot",  48-12),
-                wait(40)
-            ))
-        ),
+                wait(40),
+            ]),
+        ]),
         "bit": bullet(
-            action(
+            action([
                 wait(5),
-                changeDirection(direction(-70, "absolute"), 1),
-                changeSpeed(speed(0.1), 1),
-                fire(direction("-2*$1", "absolute"), speed("0.001+$rank*0.01"), bulletRef("greenAccel")),
-                repeat(90/7, action(
+                changeDirection(dir(-70, ABS), 1),
+                changeSpeed(spd(0.1), 1),
+                fire(dir("-2*$1", ABS), spd("0.001+$rank*0.01"), bulletRef("greenAccel")),
+                repeat(90/7, [
                     wait(5),
-                    fire(direction("7*$1", "sequence"), speed(0.1, "sequence"), bulletRef("greenAccel"))
-                )),
-                vanish()
-            )
+                    fire(dir("7*$1", SEQ), spd(0.1, SEQ), bulletRef("greenAccel")),
+                ]),
+                vanish(),
+            ])
         ),
         "greenAccel": bullet(
-            action(
-                changeSpeed(speed("0.7+($rank*3-1)", "relative"), 300)
-            )
+            action([
+                changeSpeed(spd("0.7+($rank*3-1)", REL), 300),
+            ])
         ),
-        "wshot": action(
-            fire(direction("$1"), speed("1.1+($rank*3-1)"), bullet("b")),
-            fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
-            fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
-            fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
-            repeat(3, action(
-                fire(direction(8, "sequence"), speed( 0.3, "sequence"), bullet("b")),
-                fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
-                fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b")),
-                fire(direction(0, "sequence"), speed(-0.1, "sequence"), bullet("b"))
-            ))
-        )
+        "wshot": action([
+            fire(dir("$1"), spd("1.1+($rank*3-1)"), bullet("b")),
+            fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+            fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+            fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+            repeat(3, [
+                fire(dir(8, SEQ), spd( 0.3, SEQ), bullet("b")),
+                fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+                fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+                fire(dir(0, SEQ), spd(-0.1, SEQ), bullet("b")),
+            ]),
+        ]),
     });
 
     Patterns["cannon"] = pattern({
-        "top1": action(
+        "top1": action([
             wait(100),
-            repeat(100, action(
-                changeDirection(direction(180, "relative"), 600),
-                repeat(30, action(
-                    fire(direction(0, "relative"), speed("1.0+($rank*3-1)"), bullet("g")),
-                    fire(direction(90, "sequence"), speed("1.0+($rank*3-1)"), bullet("g")),
-                    fire(direction(90, "sequence"), speed("1.0+($rank*3-1)"), bullet("g")),
-                    fire(direction(90, "sequence"), speed("1.0+($rank*3-1)"), bullet("g")),
-                    wait(20)
-                ))
-            ))
-        ),
-        "top2": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(0.2), 1)
-        )
+            repeat(100, [
+                changeDirection(dir(180, REL), 600),
+                repeat(30, [
+                    fire(dir( 0, REL), spd("1.0+($rank*3-1)"), bullet("g")),
+                    fire(dir(90, SEQ), spd("1.0+($rank*3-1)"), bullet("g")),
+                    fire(dir(90, SEQ), spd("1.0+($rank*3-1)"), bullet("g")),
+                    fire(dir(90, SEQ), spd("1.0+($rank*3-1)"), bullet("g")),
+                    wait(20),
+                ]),
+            ]),
+        ]),
+        "top2": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(0.2), 1),
+        ])
     });
 
     Patterns["cannon2"] = pattern({
-        "top1": action(
+        "top1": action([
             wait(100),
-            repeat(100, action(
-                repeat(30, action(
-                    changeDirection(direction(90, "relative"), 20),
-                    repeat(5, action(
-                        fire(direction(  0, "relative"), speed("0.6+($rank*3-1)"), bullet("g")),
-                        fire(direction(120, "sequence"), speed("0.6+($rank*3-1)"), bullet("g")),
-                        fire(direction(120, "sequence"), speed("0.6+($rank*3-1)"), bullet("g")),
-                        wait(2)
-                    )),
-                    wait(30)
-                ))
-            ))
-        ),
-        "top2": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(0.2), 1)
-        )
+            repeat(100, [
+                repeat(30, [
+                    changeDirection(dir(90, REL), 20),
+                    repeat(5, [
+                        fire(dir(  0, REL), spd("0.6+($rank*3-1)"), bullet("g")),
+                        fire(dir(120, SEQ), spd("0.6+($rank*3-1)"), bullet("g")),
+                        fire(dir(120, SEQ), spd("0.6+($rank*3-1)"), bullet("g")),
+                        wait(2),
+                    ]),
+                    wait(30),
+                ]),
+            ]),
+        ]),
+        "top2": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(0.2), 1),
+        ]),
     });
 
     Patterns["cannon3"] = pattern({
@@ -809,183 +837,176 @@ var Patterns = {};
         "top2": action(
             actionRef("attack",  1)
         ),
-        "attack": action(
-            changeDirection(direction(0, "absolute"), 100),
+        "attack": action([
+            changeDirection(dir(0, ABS), 100),
             wait(100),
-            repeat(100, action(
-                changeDirection(direction("10*$1", "relative"), 100),
-                repeat(100/30, action(
-                    fire(direction(  0, "relative"), speed("0.5+($rank*3-1)"), bullet("g")),
-                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
-                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
-                    fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("g")),
+            repeat(100, [
+                changeDirection(dir("10*$1", REL), 100),
+                repeat(100/30, [
+                    fire(dir(  0, REL), spd("0.5+($rank*3-1)"), bullet("g")),
+                    fire(dir( 90, SEQ), spd(0, SEQ), bullet("g")),
+                    fire(dir( 90, SEQ), spd(0, SEQ), bullet("g")),
+                    fire(dir( 90, SEQ), spd(0, SEQ), bullet("g")),
                     wait(30)
-                ))
-            ))
-        ),
-        "top3": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(0.2), 1)
-        )
+                ]),
+            ]),
+        ]),
+        "top3": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(0.2), 1)
+        ]),
     });
 
     Patterns["boss11"] = pattern({
-        "top": action(
+        "top": action([
             actionRef("launch"),
-            repeat(900, action(
+            repeat(900, [
                 actionRef("attack1"),
                 actionRef("move2"),
                 actionRef("attack2"),
                 actionRef("move2"),
                 actionRef("attack3"),
                 actionRef("move2")
-            ))
-        ),
-        "launch": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(3), 1),
+            ]),
+        ]),
+        "launch": action([
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(3), 1),
             wait(15),
-            changeSpeed(speed(-0.5), 140),
+            changeSpeed(spd(-0.5), 140),
             wait(140),
-            changeSpeed(speed(0), 10)
-        ),
-        "attack1": action(
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1,  30, 4)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1, -30, 4)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1,  30, 4)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1, -30, 4)),
+            changeSpeed(spd(0), 10),
+        ]),
+        "attack1": action([
+            fire(dir(-125, ABS), spd(4), bulletRef("bit1", -1, 4)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit1", -1, 4)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit1",  1, 4)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit1",  1, 4)),
             wait(30),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1,  30, 2)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit1", -1, -30, 2)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1,  30, 2)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit1",  1, -30, 2)),
-            wait(34)
-        ),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit1",  1, 2)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit1",  1, 2)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit1", -1, 2)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit1", -1, 2)),
+            wait(34),
+        ]),
         "bit1": bullet(
-            action(
+            action([
                 wait(12),
                 changeSpeed(0, 1),
-                fire(direction("$2"), speed("0.5+($rank*3-1)"), bullet()),
-                repeat("360*$3/10", action(
-                    fire(direction("10*$1", "sequence"), speed(0.02, "sequence"), bullet()),
-                    wait(2)
-                )),
-                vanish()
-            )
+                fire(dir(0), spd("0.5+($rank*3-1)"), bullet()),
+                repeat("36*$2", [
+                    fire(dir("10*$1", SEQ), spd(0.02, SEQ), bullet()),
+                    wait(2),
+                ]),
+                vanish(),
+            ])
         ),
-        "move2": action(
-            changeSpeed(speed(1), 100),
+        "move2": action([
+            changeSpeed(spd(1), 100),
             wait(60),
-            changeSpeed(speed(-1), 100),
+            changeSpeed(spd(-1), 100),
             wait(66),
-            changeSpeed(speed(0), 100),
-            wait(100)
-        ),
+            changeSpeed(spd(0), 100),
+            wait(100),
+        ]),
         "attack2": action(function() {
             var result = [];
             for (var i = 0; i < 8; i++) {
-                result.push(fire(direction(-125, "absolute"), speed(4), bulletRef("bit2", i* 10, i*0.3)));
+                result.push(fire(dir(-125, ABS), spd(4), bulletRef("bit2", i* 10, i*0.3)));
                 result.push(wait(60-i*5));
-                result.push(fire(direction( 125, "absolute"), speed(4), bulletRef("bit2", i*-10, i*0.3)));
+                result.push(fire(dir( 125, ABS), spd(4), bulletRef("bit2", i*-10, i*0.3)));
                 result.push(wait(60-i*5));
             }
             return result;
         }),
         "bit2": bullet(
-            action(
+            action([
                 wait(12),
                 changeSpeed(0, 1),
-                repeat(3, action(
+                repeat(3, [
                     actionRef("fire1", "$1+-80", "$2"),
                     actionRef("fire1", "$1+-40", "$2"),
                     actionRef("fire1", "$1+  0", "$2"),
                     actionRef("fire1", "$1+ 40", "$2"),
                     actionRef("fire1", "$1+ 80", "$2"),
-                    wait(5)
-                )),
-                vanish()
-            )
+                    wait(5),
+                ]),
+                vanish(),
+            ])
         ),
-        "fire1": action(
-            fire(direction("$1-10", "absolute"), speed("2+$rank+$2"), bullet()),
-            repeat(4, action(
-                fire(direction(5, "sequence"), speed(0, "sequence"), bullet())
-            ))
-        ),
-        "attack3": action(
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit3",  0)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit3", "160*(1.1-$rank)/2")),
-            repeat(12, action(
-                fire(direction(0, "aim"), speed("0.8+($rank*3-1)"), bullet("g")),
-                fire(direction(0, "sequence"), speed("0.9+($rank*3-1)"), bullet("g")),
-                repeat(35, action(
-                    fire(direction(10, "sequence"), speed("0.8+($rank*3-1)"), bullet("g")),
-                    fire(direction(0, "sequence"), speed("0.9+($rank*3-1)"), bullet("g"))
-                )),
-                wait(40)
-            )),
-            repeat(12, action(
-                fire(direction(0, "aim"), speed("0.8+($rank*3-1)"), bullet("g")),
-                fire(direction(5, "sequence"), speed("0.9+($rank*3-1)"), bullet("g")),
-                repeat(35, action(
-                    fire(direction(10, "sequence"), speed("0.8+($rank*3-1)"), bullet("g")),
-                    fire(direction(0, "sequence"), speed("0.9+($rank*3-1)"), bullet("g"))
-                )),
-                wait(40)
-            ))
-        ),
+        "fire1": action([
+            fire(dir("$1-10", ABS), spd("2+$rank+$2"), bullet()),
+            repeat(4, [
+                fire(dir(5, SEQ), spd(0, SEQ), bullet()),
+            ]),
+        ]),
+        "attack3": action([
+            fire(dir(-125, ABS), spd(4), bulletRef("bit3",  0)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit3", 50)),
+            repeat(24, [
+                fire(dir(0, AIM), spd("0.8+($rank*3-1)"), bullet("g"), offsetX(-3)),
+                repeat(35, [
+                    fire(dir(10, SEQ), spd(0, SEQ), bullet("g"), offsetX(-3)),
+                ]),
+                fire(dir(0, AIM), spd(0, SEQ), bullet("g"), offsetX( 3)),
+                repeat(35, [
+                    fire(dir(10, SEQ), spd(0, SEQ), bullet("g"), offsetX( 3)),
+                ]),
+                wait(40),
+            ]),
+        ]),
         "bit3": bullet(
-            action(
+            action([
                 wait(12),
-                changeSpeed(speed(0), 1),
+                changeSpeed(spd(0), 1),
                 wait("$1"),
-                repeat("6/(1.1-$rank)", action(
-                    fire(direction("$rand*30-15"), bullet()),
-                    fire(direction("$rand*30-15"), bullet()),
-                    fire(direction("$rand*30-15"), bullet()),
-                    wait("160*(1.1-$rank)")
-                )),
-                vanish()
-            )
+                repeat(12, [
+                    fire(dir("$rand*30-15"), bullet()),
+                    fire(dir(-5, SEQ), bullet()),
+                    fire(dir(10, SEQ), bullet()),
+                    wait(100),
+                ]),
+                vanish(),
+            ])
         )
     });
 
     Patterns["boss12"] = pattern({
-        "top": action(
-            changeDirection(direction(0, "absolute"), 1),
+        "top": action([
+            changeDirection(dir(0, ABS), 1),
             actionRef("move"),
-            repeat(300, action(
+            repeat(300, [
                 actionRef("attack4"),
                 actionRef("move"),
                 actionRef("attack1"),
                 actionRef("move"),
                 actionRef("attack2"),
-                actionRef("move")
-            ))
-        ),
+                actionRef("move"),
+            ]),
+        ]),
         "move": action(
-            changeSpeed(speed(1), 100),
+            changeSpeed(spd(1), 100),
             wait(60),
-            changeSpeed(speed(-1), 100),
+            changeSpeed(spd(-1), 100),
             wait(64),
-            changeSpeed(speed(0), 100),
+            changeSpeed(spd(0), 100),
             wait(100)
         ),
         "attack1": action(
-            fire(speed(0), bulletRef("bit10")),
-            fire(speed(0), bulletRef("bit12")),
+            fire(spd(0), bulletRef("bit10")),
+            fire(spd(0), bulletRef("bit12")),
             wait(1500)
         ),
         "bit10": bullet(
             action(
                 repeat(120, action(
-                    fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit11")),
-                    // fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit11")),
-                    fire(direction( -45, "absolute"), speed(2.7), bulletRef("bit11")),
-                    // fire(direction( 180, "absolute"), speed(2.5), bulletRef("bit11")),
-                    fire(direction(  45, "absolute"), speed(2.7), bulletRef("bit11")),
-                    // fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit11")),
-                    fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit11")),
+                    fire(dir( -90, ABS), spd(5.0), bulletRef("bit11")),
+                    // fire(dir(-125, ABS), spd(4.0), bulletRef("bit11")),
+                    fire(dir( -45, ABS), spd(2.7), bulletRef("bit11")),
+                    // fire(dir( 180, ABS), spd(2.5), bulletRef("bit11")),
+                    fire(dir(  45, ABS), spd(2.7), bulletRef("bit11")),
+                    // fire(dir( 125, ABS), spd(4.0), bulletRef("bit11")),
+                    fire(dir(  90, ABS), spd(5.0), bulletRef("bit11")),
                     wait(10)
                 )),
                 vanish()
@@ -994,33 +1015,33 @@ var Patterns = {};
         "bit11": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
-                fire(direction("$rand*10-5+ -150"), speed("0.4+($rank*3-1)"), bullet()),
-                fire(direction("$rand*10-5+  -90"), speed("0.4+($rank*3-1)"), bullet()),
-                fire(direction("$rand*10-5+  -30"), speed("0.4+($rank*3-1)"), bullet()),
-                fire(direction("$rand*10-5+   30"), speed("0.4+($rank*3-1)"), bullet()),
-                fire(direction("$rand*10-5+   90"), speed("0.4+($rank*3-1)"), bullet()),
-                fire(direction("$rand*10-5+  150"), speed("0.4+($rank*3-1)"), bullet()),
+                changeSpeed(spd(0), 1),
+                fire(dir("$rand*10-5+ -150"), spd("0.4+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5+  -90"), spd("0.4+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5+  -30"), spd("0.4+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5+   30"), spd("0.4+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5+   90"), spd("0.4+($rank*3-1)"), bullet()),
+                fire(dir("$rand*10-5+  150"), spd("0.4+($rank*3-1)"), bullet()),
                 vanish()
             )
         ),
         "bit12": bullet(
             action(function() {
                 var a = [];
-                a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 1)));
+                a.push(fire(dir(-125, ABS), spd(4.0), bulletRef("bit13", 1)));
                 a.push(wait(120));
-                a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 1)));
+                a.push(fire(dir( 125, ABS), spd(4.0), bulletRef("bit13", 1)));
                 a.push(wait(120));
                 for (var i = 100; 5 < i; i -= 10) {
-                    a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(fire(dir(-125, ABS), spd(4.0), bulletRef("bit13", 2)));
                     a.push(wait(i+5));
-                    a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(fire(dir( 125, ABS), spd(4.0), bulletRef("bit13", 2)));
                     a.push(wait(i));
                 }
                 for (var i = 0; i < 5; i++) {
-                    a.push(fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(fire(dir(-125, ABS), spd(4.0), bulletRef("bit13", 2)));
                     a.push(wait(5));
-                    a.push(fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit13", 2)));
+                    a.push(fire(dir( 125, ABS), spd(4.0), bulletRef("bit13", 2)));
                     a.push(wait(5));
                 }
                 a.push(vanish());
@@ -1030,41 +1051,41 @@ var Patterns = {};
         "bit13": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
-                fire(direction("$rand*4-2"), speed("1.5+$rank+$1"), bullet("g")),
+                changeSpeed(spd(0), 1),
+                fire(dir("$rand*4-2"), spd("1.5+$rank+$1"), bullet("g")),
                 repeat(20, action(
                     wait(1),
-                    fire(direction(0, "sequence"), speed(0.3, "sequence"), bullet("g"))
+                    fire(dir(0, SEQ), spd(0.3, SEQ), bullet("g"))
                 )),
                 vanish()
             )
         ),
         "attack2": action(
-            fire(direction( -90, "absolute"), speed(5.0), bulletRef("bit21",  1)),
-            fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit20", -1)),
-            fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit20",  1)),
-            fire(direction(  90, "absolute"), speed(5.0), bulletRef("bit21", -1)),
+            fire(dir( -90, ABS), spd(5.0), bulletRef("bit21",  1)),
+            fire(dir(-125, ABS), spd(4.0), bulletRef("bit20", -1)),
+            fire(dir( 125, ABS), spd(4.0), bulletRef("bit20",  1)),
+            fire(dir(  90, ABS), spd(5.0), bulletRef("bit21", -1)),
             wait(800)
         ),
         "bit20": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
+                changeSpeed(spd(0), 1),
                 repeat(4, action(
-                    changeDirection(direction("70*$1", "relative"), "60+$rank*40"),
+                    changeDirection(dir("70*$1", REL), "60+$rank*40"),
                     repeat(70/9, action(
-                        fire(direction(  0, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction( 90, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction(180, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction(270, "relative"), speed("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(  0, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir( 90, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(180, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(270, REL), spd("0.8+($rank*3-1)"), bullet()),
                         wait(9)
                     )),
-                    changeDirection(direction("-70*$1", "relative"), "60+$rank*40"),
+                    changeDirection(dir("-70*$1", REL), "60+$rank*40"),
                     repeat(70/9, action(
-                        fire(direction(  0, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction( 90, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction(180, "relative"), speed("0.8+($rank*3-1)"), bullet()),
-                        fire(direction(270, "relative"), speed("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(  0, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir( 90, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(180, REL), spd("0.8+($rank*3-1)"), bullet()),
+                        fire(dir(270, REL), spd("0.8+($rank*3-1)"), bullet()),
                         wait(9)
                     ))
                 )),
@@ -1075,12 +1096,12 @@ var Patterns = {};
             action(function() {
                 var a = [];
                 a.push(wait(12));
-                a.push(changeSpeed(speed(0), 1));
+                a.push(changeSpeed(spd(0), 1));
                 for (var i = -35; i < -10; i++) {
-                    a.push(fire(direction(i + "*$1", "aim"), speed("2.4+($rank*3-1)"), bullet("g")));
+                    a.push(fire(dir(i + "*$1", AIM), spd("2.4+($rank*3-1)"), bullet("g")));
                     for (var j = 0; j < 3; j++) {
                         a.push(wait(1));
-                        a.push(fire(direction(0, "sequence"), speed(0, "sequence"), bullet("g")));
+                        a.push(fire(dir(0, SEQ), spd(0, SEQ), bullet("g")));
                     }
                     a.push(wait(15));
                 }
@@ -1089,30 +1110,30 @@ var Patterns = {};
             })
         ),
         "attack4": action(
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 180)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 150)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1, 120)),
-            fire(direction(-125, "absolute"), speed(4), bulletRef("bit4", -1,  90)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1,  90)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 120)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 150)),
-            fire(direction( 125, "absolute"), speed(4), bulletRef("bit4",  1, 180)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit4", -1, 180)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit4", -1, 150)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit4", -1, 120)),
+            fire(dir(-125, ABS), spd(4), bulletRef("bit4", -1,  90)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit4",  1,  90)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit4",  1, 120)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit4",  1, 150)),
+            fire(dir( 125, ABS), spd(4), bulletRef("bit4",  1, 180)),
             repeat(600/40, action(
-                fire(direction(-125, "absolute"), speed(4), bulletRef("bit42")),
+                fire(dir(-125, ABS), spd(4), bulletRef("bit42")),
                 wait(40/2),
-                fire(direction( 125, "absolute"), speed(4), bulletRef("bit42")),
+                fire(dir( 125, ABS), spd(4), bulletRef("bit42")),
                 wait(40/2)
             ))
         ),
         "bit4": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
-                changeDirection(direction("$2*$1", "absolute"), 1),
+                changeSpeed(spd(0), 1),
+                changeDirection(dir("$2*$1", ABS), 1),
                 wait(5),
-                changeDirection(direction("($2-100)*$1", "absolute"), 600),
+                changeDirection(dir("($2-100)*$1", ABS), 600),
                 repeat(150, action(
-                    fire(direction(0, "relative"), speed(5), bullet("g")),
+                    fire(dir(0, REL), spd(5), bullet("g")),
                     wait(4)
                 )),
                 vanish()
@@ -1121,10 +1142,10 @@ var Patterns = {};
         "bit42": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
-                fire(direction("$rand*10-2"), speed("0.8+($rank*3-1)"), bullet()),
-                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction(1, "sequence"), speed(0, "sequence"), bullet()),
+                changeSpeed(spd(0), 1),
+                fire(dir("$rand*10-2"), spd("0.8+($rank*3-1)"), bullet()),
+                fire(dir(1, SEQ), spd(0, SEQ), bullet()),
+                fire(dir(1, SEQ), spd(0, SEQ), bullet()),
                 vanish()
             )
         )
@@ -1140,15 +1161,15 @@ var Patterns = {};
             ))
         ),
         "initPosition": action(
-            changeDirection(direction(158, "absolute"), 1),
-            changeSpeed(speed(0.6), 1),
+            changeDirection(dir(158, ABS), 1),
+            changeSpeed(spd(0.6), 1),
             wait(5),
-            fire(direction(0, "relative"), speed(0.6), bulletRef("bit11")),
-            fire(direction(0, "relative"), speed(0.6), bulletRef("bit13")),
+            fire(dir(0, REL), spd(0.6), bulletRef("bit11")),
+            fire(dir(0, REL), spd(0.6), bulletRef("bit13")),
             wait(500),
-            changeSpeed(speed(0), 60),
+            changeSpeed(spd(0), 60),
             wait(60),
-            changeDirection(direction(0, "absolute"), 1),
+            changeDirection(dir(0, ABS), 1),
             wait(120)
         ),
         "bit11": bullet(
@@ -1167,37 +1188,37 @@ var Patterns = {};
             )
         ),
         "bit11Action": action(
-            fire(direction(0, "absolute"), bulletRef("bit12", "$1", "$3")),
+            fire(dir(0, ABS), bulletRef("bit12", "$1", "$3")),
             repeat(24-1, action(
-                fire(direction(360/24, "sequence"), bulletRef("bit12", "$1", "$3"))
+                fire(dir(360/24, SEQ), bulletRef("bit12", "$1", "$3"))
             )),
             wait("45*$2")
         ),
         "bit12": bullet(
             action(
                 wait("10+$rank*20"),
-                fire(direction("155+$1", "absolute"), speed(1.7), bulletRef("blueC", "$2")),
+                fire(dir("155+$1", ABS), spd(1.7), bulletRef("blueC", "$2")),
                 vanish()
             )
         ),
         "blueC": bullet(
             action(
                 wait("$1"),
-                fire(direction(0), speed("2+($rank*3-1)"), bullet("r")),
+                fire(dir(0), spd("2+($rank*3-1)"), bullet("r")),
                 vanish()
             )
         ),
         "bit13": bullet(action(
             wait(120),
             repeat(500/57, action(
-                fire(direction(-25), speed("1.5+($rank*3-1)"), bullet("g")),
+                fire(dir(-25), spd("1.5+($rank*3-1)"), bullet("g")),
                 repeat(5, action(
-                    fire(direction(-2, "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir(-2, SEQ), spd(0, SEQ), bullet("g"))
                 )),
                 repeat(5, action(
-                    fire(direction(-50, "sequence"), speed("1.5+($rank*3-1)"), bullet("g")),
+                    fire(dir(-50, SEQ), spd("1.5+($rank*3-1)"), bullet("g")),
                     repeat(5, action(
-                        fire(direction(-2, "sequence"), speed(0, "sequence"), bullet("g"))
+                        fire(dir(-2, SEQ), spd(0, SEQ), bullet("g"))
                     ))
                 )),
                 wait(57)
@@ -1205,41 +1226,41 @@ var Patterns = {};
             vanish()
         )),
         "attack2": action(
-            fire(speed(0), bulletRef("bit21")),
-            fire(speed(0), bulletRef("bit22")),
+            fire(spd(0), bulletRef("bit21")),
+            fire(spd(0), bulletRef("bit22")),
             wait(900)
         ),
         "bit21": bullet(action(
             repeat(8, action(
-                fire(direction(-20/2-50), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2-50), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
-                fire(direction(-20/2), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
-                fire(direction(-20/2+50), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2+50), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
                 wait(65),
 
-                fire(direction(-20/2-75), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2-75), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
-                fire(direction(-20/2-25), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2-25), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
-                fire(direction(-20/2+25), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2+25), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
-                fire(direction(-20/2+75), speed("1.8+($rank*3-1)"), bullet("g")),
+                fire(dir(-20/2+75), spd("1.8+($rank*3-1)"), bullet("g")),
                 repeat(7, action(
-                    fire(direction("20/(6+$rank*2)", "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir("20/(6+$rank*2)", SEQ), spd(0, SEQ), bullet("g"))
                 )),
                 wait(65)
             )),
@@ -1247,28 +1268,28 @@ var Patterns = {};
         )),
         "bit22": bullet(action(
             wait(20),
-            fire(direction(-90, "absolute"), speed(2), bulletRef("bit221")),
+            fire(dir(-90, ABS), spd(2), bulletRef("bit221")),
             wait(60),
-            fire(direction( 90, "absolute"), speed(2), bulletRef("bit221")),
+            fire(dir( 90, ABS), spd(2), bulletRef("bit221")),
             vanish()
         )),
         "bit221": bullet(action(
             wait(30),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             repeat(8, action(
-                fire(direction(-120/2),        speed(0), bulletRef("bullet22", 0, "2.2+($rank*3-1)")),
-                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22", 5, "2.2+($rank*3-1)")),
-                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",10, "2.2+($rank*3-1)")),
-                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",15, "2.2+($rank*3-1)")),
-                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",20, "2.2+($rank*3-1)")),
-                fire(direction(0, "sequence"), speed(0), bulletRef("bullet22",25, "2.2+($rank*3-1)")),
+                fire(dir(-120/2),        spd(0), bulletRef("bullet22", 0, "2.2+($rank*3-1)")),
+                fire(dir(0, SEQ), spd(0), bulletRef("bullet22", 5, "2.2+($rank*3-1)")),
+                fire(dir(0, SEQ), spd(0), bulletRef("bullet22",10, "2.2+($rank*3-1)")),
+                fire(dir(0, SEQ), spd(0), bulletRef("bullet22",15, "2.2+($rank*3-1)")),
+                fire(dir(0, SEQ), spd(0), bulletRef("bullet22",20, "2.2+($rank*3-1)")),
+                fire(dir(0, SEQ), spd(0), bulletRef("bullet22",25, "2.2+($rank*3-1)")),
                 repeat(8, action(
-                    fire(direction("120/(6+$rank*4)", "sequence"), speed(0), bulletRef("bullet22", 0, "2.2+($rank*3-1)")),
-                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22", 5, "2.2+($rank*3-1)")),
-                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",10, "2.2+($rank*3-1)")),
-                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",15, "2.2+($rank*3-1)")),
-                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",20, "2.2+($rank*3-1)")),
-                    fire(direction(0, "sequence"),     speed(0), bulletRef("bullet22",25, "2.2+($rank*3-1)"))
+                    fire(dir("120/(6+$rank*4)", SEQ), spd(0), bulletRef("bullet22", 0, "2.2+($rank*3-1)")),
+                    fire(dir(0, SEQ),     spd(0), bulletRef("bullet22", 5, "2.2+($rank*3-1)")),
+                    fire(dir(0, SEQ),     spd(0), bulletRef("bullet22",10, "2.2+($rank*3-1)")),
+                    fire(dir(0, SEQ),     spd(0), bulletRef("bullet22",15, "2.2+($rank*3-1)")),
+                    fire(dir(0, SEQ),     spd(0), bulletRef("bullet22",20, "2.2+($rank*3-1)")),
+                    fire(dir(0, SEQ),     spd(0), bulletRef("bullet22",25, "2.2+($rank*3-1)"))
                 )),
                 wait(117)
             )),
@@ -1276,21 +1297,21 @@ var Patterns = {};
         )),
         "bullet22": bullet(action(
             wait("$1"),
-            changeSpeed(speed("$1*0.05+$2"), 1)
+            changeSpeed(spd("$1*0.05+$2"), 1)
         )),
         "attack3": action(function() {
             var a = [];
             for (var i = 0; i < 30; i++) {
-                a[a.length] = fire(direction("-45-$rand*120", "absolute"), speed("1.5+$rand*6"), bulletRef("blue3alive", i*0.5));
+                a[a.length] = fire(dir("-45-$rand*120", ABS), spd("1.5+$rand*6"), bulletRef("blue3alive", i*0.5));
                 a[a.length] = wait(2);
-                a[a.length] = fire(direction(" 45+$rand*120", "absolute"), speed("1.5+$rand*6"), bulletRef("blue3alive", i*0.5));
+                a[a.length] = fire(dir(" 45+$rand*120", ABS), spd("1.5+$rand*6"), bulletRef("blue3alive", i*0.5));
                 a[a.length] = wait(2);
             }
             a[a.length] = wait(120);
             for (var i = 0; i < 30; i++) {
-                a[a.length] = fire(direction("-45-$rand*120", "absolute"), speed("1.5+$rand*6"), bulletRef("blue3alive", i*-0.5));
+                a[a.length] = fire(dir("-45-$rand*120", ABS), spd("1.5+$rand*6"), bulletRef("blue3alive", i*-0.5));
                 a[a.length] = wait(2);
-                a[a.length] = fire(direction(" 45+$rand*120", "absolute"), speed("1.5+$rand*6"), bulletRef("blue3alive", i*-0.5));
+                a[a.length] = fire(dir(" 45+$rand*120", ABS), spd("1.5+$rand*6"), bulletRef("blue3alive", i*-0.5));
                 a[a.length] = wait(2);
             }
             a[a.length] = wait(220);
@@ -1298,22 +1319,22 @@ var Patterns = {};
         }),
         "blue3alive": bullet(action(
             wait("10+$rand*5"),
-            changeSpeed(speed(0), 20),
+            changeSpeed(spd(0), 20),
             wait(180),
-            fire(direction("$1-2", "absolute"), speed("4.5+($rank*3-1)"), bullet("b")),
-            fire(direction("$1+2", "absolute"), speed("4.5+($rank*3-1)"), bullet("b")),
-            fire(direction("$1-1", "absolute"), speed("4.5+($rank*3-1)"), bullet("b")),
-            fire(direction("$1+1", "absolute"), speed("4.5+($rank*3-1)"), bullet("b")),
-            fire(direction("$1", "absolute"), speed("4+($rank*3-1)"), bullet("b")),
+            fire(dir("$1-2", ABS), spd("4.5+($rank*3-1)"), bullet("b")),
+            fire(dir("$1+2", ABS), spd("4.5+($rank*3-1)"), bullet("b")),
+            fire(dir("$1-1", ABS), spd("4.5+($rank*3-1)"), bullet("b")),
+            fire(dir("$1+1", ABS), spd("4.5+($rank*3-1)"), bullet("b")),
+            fire(dir("$1", ABS), spd("4+($rank*3-1)"), bullet("b")),
             repeat(10, action(
-                fire(direction(0, "sequence"), speed(0.2, "sequence"), bullet("b"))
+                fire(dir(0, SEQ), spd(0.2, SEQ), bullet("b"))
             )),
             vanish()
         )),
         "attack4": action(
             repeat(4, action(
-                fire(direction(-125, "absolute"), speed(4.0), bulletRef("bit40", -1)),
-                fire(direction( 125, "absolute"), speed(4.0), bulletRef("bit40",  1)),
+                fire(dir(-125, ABS), spd(4.0), bulletRef("bit40", -1)),
+                fire(dir( 125, ABS), spd(4.0), bulletRef("bit40",  1)),
                 wait(170)
             )),
             wait(100)
@@ -1321,38 +1342,38 @@ var Patterns = {};
         "bit40": bullet(
             action(
                 wait(12),
-                changeSpeed(speed(0), 1),
-                changeDirection(direction("170*$1+$rand*10", "relative"), "60+$rank*50"),
+                changeSpeed(spd(0), 1),
+                changeDirection(dir("170*$1+$rand*10", REL), "60+$rank*50"),
                 repeat(70/5, action(
-                    fire(direction(  0, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction( 90, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction(180, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction(270, "relative"), speed("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(  0, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir( 90, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(180, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(270, REL), spd("1.2+($rank*3-1)"), bullet()),
                     wait(5)
                 )),
                 repeat(2, action(
-                    fire(direction("$rand*40-20"), speed("1.2+($rank*3-1)"), bullet("g")),
+                    fire(dir("$rand*40-20"), spd("1.2+($rank*3-1)"), bullet("g")),
                     repeat(10, action(
                         repeat(7, action(
-                            fire(direction(360/7, "sequence"), speed(0, "sequence"), bullet("g"))
+                            fire(dir(360/7, SEQ), spd(0, SEQ), bullet("g"))
                         )),
                         wait(1)
                     ))
                 )),
 
-                changeDirection(direction("-170*$1", "relative"), "60+$rank*50"),
+                changeDirection(dir("-170*$1", REL), "60+$rank*50"),
                 repeat(70/5, action(
-                    fire(direction(  0, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction( 90, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction(180, "relative"), speed("1.2+($rank*3-1)"), bullet()),
-                    fire(direction(270, "relative"), speed("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(  0, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir( 90, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(180, REL), spd("1.2+($rank*3-1)"), bullet()),
+                    fire(dir(270, REL), spd("1.2+($rank*3-1)"), bullet()),
                     wait(5)
                 )),
                 repeat(2, action(
-                    fire(direction("$rand*40-20"), speed("1.2+($rank*3-1)"), bullet("g")),
+                    fire(dir("$rand*40-20"), spd("1.2+($rank*3-1)"), bullet("g")),
                     repeat(10, action(
                         repeat(7, action(
-                            fire(direction(360/7, "sequence"), speed(0, "sequence"), bullet("g"))
+                            fire(dir(360/7, SEQ), spd(0, SEQ), bullet("g"))
                         )),
                         wait(1)
                     ))
@@ -1373,50 +1394,50 @@ var Patterns = {};
         "attack1": action(function() {
             var a = [];
             var s = 2;
-            a[a.length] = changeDirection(direction(90, "absolute"), 1);
-            a[a.length] = changeSpeed(speed(s), 40);
+            a[a.length] = changeDirection(dir(90, ABS), 1);
+            a[a.length] = changeSpeed(spd(s), 40);
             a[a.length] = wait(20);
-            a[a.length] = changeSpeed(speed(0), 40);
+            a[a.length] = changeSpeed(spd(0), 40);
             a[a.length] = wait(20);
             for (var i = 0; i < 6; i++) {
-                a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
-                a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
+                a[a.length] = fire(dir(-115, ABS), spd(10), bulletRef("bit1",  0, -1, i));
+                a[a.length] = fire(dir( 115, ABS), spd(10), bulletRef("bit1",  0,  1, i));
                 a[a.length] = wait(40);
-                a[a.length] = changeSpeed(speed((i%2)?s:-s), 80);
+                a[a.length] = changeSpeed(spd((i%2)?s:-s), 80);
                 a[a.length] = wait(40);
-                a[a.length] = changeSpeed(speed(0), 80);
+                a[a.length] = changeSpeed(spd(0), 80);
                 a[a.length] = wait(40);
             }
-            a[a.length] = fire(direction(-115, "absolute"), speed(10), bulletRef("bit1",  0, -1, i));
-            a[a.length] = fire(direction( 115, "absolute"), speed(10), bulletRef("bit1",  0,  1, i));
+            a[a.length] = fire(dir(-115, ABS), spd(10), bulletRef("bit1",  0, -1, i));
+            a[a.length] = fire(dir( 115, ABS), spd(10), bulletRef("bit1",  0,  1, i));
             a[a.length] = wait(40);
-            a[a.length] = changeSpeed(speed((i%2)?s:-s), 40);
+            a[a.length] = changeSpeed(spd((i%2)?s:-s), 40);
             a[a.length] = wait(20);
-            a[a.length] = changeSpeed(speed(0), 40);
+            a[a.length] = changeSpeed(spd(0), 40);
             a[a.length] = wait(60);
             return a;
         }),
         "bit1": bullet(action(
             wait(5),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait("5+$1"),
-            fire(direction("-120*$2"), speed("1.0+$rank+$3*0.2"), bullet()),
+            fire(dir("-120*$2"), spd("1.0+$rank+$3*0.2"), bullet()),
             repeat("240 / (24-$rank*12)", action(
-                fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction("-30 + (24-$rank*12)*$2", "sequence"), speed(0, "sequence"), bullet()),
+                fire(dir(+30, SEQ), spd(0, SEQ), bullet()),
+                fire(dir("-30 + (24-$rank*12)*$2", SEQ), spd(0, SEQ), bullet()),
                 wait(1)
             )),
-            fire(direction("+120*$2"), speed(0, "sequence"), bullet()),
+            fire(dir("+120*$2"), spd(0, SEQ), bullet()),
             repeat("240 / (24-$rank*12)", action(
-                fire(direction(+30, "sequence"), speed(0, "sequence"), bullet()),
-                fire(direction("-30 + -(24-$rank*12)*$2", "sequence"), speed(0, "sequence"), bullet()),
+                fire(dir(+30, SEQ), spd(0, SEQ), bullet()),
+                fire(dir("-30 + -(24-$rank*12)*$2", SEQ), spd(0, SEQ), bullet()),
                 wait(1)
             )),
             vanish()
         )),
         "attack2": action(
-            fire(direction(0), speed(0), bulletRef("bithori")),
-            fire(direction(0), speed(0), bulletRef("bitvert")),
+            fire(dir(0), spd(0), bulletRef("bithori")),
+            fire(dir(0), spd(0), bulletRef("bitvert")),
             wait(1220)
         ),
         "bitvert": bullet(action(function() {
@@ -1450,17 +1471,17 @@ var Patterns = {};
         )),
         "fireBlueBit": action(
             repeat(3, action(
-                fire(direction(-90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
-                fire(direction( 90, "absolute"), speed(8), bulletRef("blueBitalive", "$1")),
+                fire(dir(-90, ABS), spd(8), bulletRef("blueBitalive", "$1")),
+                fire(dir( 90, ABS), spd(8), bulletRef("blueBitalive", "$1")),
                 wait(40)
             ))
         ),
         "blueBitalive": bullet(action(
             wait(5),
-            changeSpeed(speed(0), 25),
+            changeSpeed(spd(0), 25),
             wait(30),
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(1.5), 10),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(1.5), 10),
             repeat(999, action(
                 wait("$1"),
                 actionRef("fireBigBulletG", -90),
@@ -1468,47 +1489,47 @@ var Patterns = {};
             ))
         )),
         "fireBigBulletR": action(
-            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("redBB", "$1")),
+            fire(dir("$rand*90", ABS), spd(1), bulletRef("redBB", "$1")),
             repeat(360/30-1, action(
-                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("redBB", "$1"))
+                fire(dir(30, SEQ), spd(0, SEQ), bulletRef("redBB", "$1"))
             ))
         ),
         "redBB": bullet(action(
             wait(10),
-            fire(direction("$1", "absolute"), speed("1+($rank*3-1)"), bullet()),
+            fire(dir("$1", ABS), spd("1+($rank*3-1)"), bullet()),
             vanish()
         )),
         "fireBigBulletG": action(
-            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("greenBB", "$1")),
+            fire(dir("$rand*90", ABS), spd(1), bulletRef("greenBB", "$1")),
             repeat(360/30-1, action(
-                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("greenBB", "$1"))
+                fire(dir(30, SEQ), spd(0, SEQ), bulletRef("greenBB", "$1"))
             ))
         ),
         "greenBB": bullet(action(
             wait(10),
-            fire(direction("$1", "absolute"), speed("1+($rank*3-1)"), bullet("g")),
+            fire(dir("$1", ABS), spd("1+($rank*3-1)"), bullet("g")),
             vanish()
         )),
         "fireBigBulletB": action(
-            fire(direction("$rand*90", "absolute"), speed(1), bulletRef("blueBB", "$1")),
+            fire(dir("$rand*90", ABS), spd(1), bulletRef("blueBB", "$1")),
             repeat(360/30-1, action(
-                fire(direction(30, "sequence"), speed(0, "sequence"), bulletRef("blueBB", "$1"))
+                fire(dir(30, SEQ), spd(0, SEQ), bulletRef("blueBB", "$1"))
             ))
         ),
         "blueBB": bullet(action(
             wait(10),
-            fire(direction("$1", "absolute"), speed("1+($rank*3-1)"), bullet("b")),
+            fire(dir("$1", ABS), spd("1+($rank*3-1)"), bullet("b")),
             vanish()
         ))
     });
 
     var boss3Gun = [
-        function(bullet) { return fire(direction(-112, "absolute"), speed(68), bullet); },
-        function(bullet) { return fire(direction( -85, "absolute"), speed(60), bullet); },
-        function(bullet) { return fire(direction( -68, "absolute"), speed(52), bullet); },
-        function(bullet) { return fire(direction(  68, "absolute"), speed(52), bullet); },
-        function(bullet) { return fire(direction(  85, "absolute"), speed(60), bullet); },
-        function(bullet) { return fire(direction( 112, "absolute"), speed(68), bullet); },
+        function(bullet) { return fire(dir(-112, ABS), spd(68), bullet); },
+        function(bullet) { return fire(dir( -85, ABS), spd(60), bullet); },
+        function(bullet) { return fire(dir( -68, ABS), spd(52), bullet); },
+        function(bullet) { return fire(dir(  68, ABS), spd(52), bullet); },
+        function(bullet) { return fire(dir(  85, ABS), spd(60), bullet); },
+        function(bullet) { return fire(dir( 112, ABS), spd(68), bullet); },
     ];
     Patterns["boss31"] = pattern({
         "top": action(
@@ -1524,12 +1545,12 @@ var Patterns = {};
             ))
         ),
         "launch": action(
-            changeDirection(direction(0, "absolute"), 1),
-            changeSpeed(speed(2), 1),
+            changeDirection(dir(0, ABS), 1),
+            changeSpeed(spd(2), 1),
             wait(15),
-            changeSpeed(speed(-0.5), 140),
+            changeSpeed(spd(-0.5), 140),
             wait(140),
-            changeSpeed(speed(0), 10)
+            changeSpeed(spd(0), 10)
         ),
         "attack1": action(
             boss3Gun[0](bulletRef("bit11",  1)),
@@ -1539,27 +1560,27 @@ var Patterns = {};
         ),
         "bit11": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
-            fire(direction(0, "absolute"), speed("1.0+($rank*3-1)"), bullet("l")),
+            changeSpeed(spd(0), 1),
+            fire(dir(0, ABS), spd("1.0+($rank*3-1)"), bullet("l")),
             repeat((360*3)/11, action(
-                fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("l")),
-                fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("l")),
-                fire(direction( 90, "sequence"), speed(0, "sequence"), bullet("l")),
+                fire(dir( 90, SEQ), spd(0, SEQ), bullet("l")),
+                fire(dir( 90, SEQ), spd(0, SEQ), bullet("l")),
+                fire(dir( 90, SEQ), spd(0, SEQ), bullet("l")),
                 wait(3),
-                fire(direction("13*$1", "sequence"), speed(0, "sequence"), bullet("l"))
+                fire(dir("13*$1", SEQ), spd(0, SEQ), bullet("l"))
             )),
             vanish()
         )),
         "attack3": action(
-            changeDirection(direction("30*$1", "absolute"), 1),
+            changeDirection(dir("30*$1", ABS), 1),
             wait(1),
-            changeSpeed(speed( 1), 60),
+            changeSpeed(spd( 1), 60),
             boss3Gun[1](bulletRef("bit30", "30*$1", -1)),
             boss3Gun[2](bulletRef("bit30", "30*$1", -1)),
             boss3Gun[3](bulletRef("bit30", "30*$1",  1)),
             boss3Gun[4](bulletRef("bit30", "30*$1",  1)),
             wait(150),
-            changeSpeed(speed( 0), 60),
+            changeSpeed(spd( 0), 60),
             wait(150),
             boss3Gun[0](bulletRef("bit31", "30*$1", -1)),
             boss3Gun[1](bulletRef("bit31", "30*$1", -1)),
@@ -1569,54 +1590,54 @@ var Patterns = {};
             boss3Gun[5](bulletRef("bit31", "30*$1",  1)),
             boss3Gun[0](bulletRef("bit32", "30*$1")),
             boss3Gun[5](bulletRef("bit32", "30*$1")),
-            changeSpeed(speed(-0.25), 60),
+            changeSpeed(spd(-0.25), 60),
             wait(600),
-            changeSpeed(speed( 0), 60),
+            changeSpeed(spd( 0), 60),
             wait(150)
         ),
         "bit30": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait(1),
-            changeDirection(direction("$1", "absolute"), 1),
-            changeSpeed(speed(1), 60),
+            changeDirection(dir("$1", ABS), 1),
+            changeSpeed(spd(1), 60),
             wait(1),
             repeat(150/5, action(
-                fire(direction("($rand*40-20)-30*$2", "absolute"), speed("1+($rank*3-1)"), bullet()),
+                fire(dir("($rand*40-20)-30*$2", ABS), spd("1+($rank*3-1)"), bullet()),
                 wait(5)
             )),
             vanish()
         )),
         "bit31": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait(1),
-            changeDirection(direction("$1", "absolute"), 1),
-            changeSpeed(speed(-0.25), 60),
+            changeDirection(dir("$1", ABS), 1),
+            changeSpeed(spd(-0.25), 60),
             wait(1),
-            fire(direction(-60), speed(8), bullet()),
+            fire(dir(-60), spd(8), bullet()),
             repeat(600/2, action(
-                fire(direction( +40, "sequence"), speed(8), bullet()),
-                fire(direction( +40, "sequence"), speed(8), bullet()),
-                fire(direction( +40, "sequence"), speed(8), bullet()),
-                fire(direction("-120+0.1*$2", "sequence"), speed(8), bullet()),
+                fire(dir( +40, SEQ), spd(8), bullet()),
+                fire(dir( +40, SEQ), spd(8), bullet()),
+                fire(dir( +40, SEQ), spd(8), bullet()),
+                fire(dir("-120+0.1*$2", SEQ), spd(8), bullet()),
                 wait(2)
             )),
             vanish()
         )),
         "bit32": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait(1),
-            changeDirection(direction("$1", "absolute"), 1),
-            changeSpeed(speed(-0.25), 60),
+            changeDirection(dir("$1", ABS), 1),
+            changeSpeed(spd(-0.25), 60),
             wait(1),
             repeat(600/60, action(
-                fire(direction("($rand*10-5)-40"), speed("1.2+($rank*3-1)"), bullet("g")),
-                fire(direction(+20, "sequence"), speed(0, "sequence"), bullet("g")),
-                fire(direction(+20, "sequence"), speed(0, "sequence"), bullet("g")),
-                fire(direction(+20, "sequence"), speed(0, "sequence"), bullet("g")),
-                fire(direction(+20, "sequence"), speed(0, "sequence"), bullet("g")),
+                fire(dir("($rand*10-5)-40"), spd("1.2+($rank*3-1)"), bullet("g")),
+                fire(dir(+20, SEQ), spd(0, SEQ), bullet("g")),
+                fire(dir(+20, SEQ), spd(0, SEQ), bullet("g")),
+                fire(dir(+20, SEQ), spd(0, SEQ), bullet("g")),
+                fire(dir(+20, SEQ), spd(0, SEQ), bullet("g")),
                 wait(60)
             )),
             vanish()
@@ -1646,33 +1667,33 @@ var Patterns = {};
         }),
         "bit41": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait(1),
-            fire(direction("(60-$1)*$2"), speed(5), bulletRef("blueVanish", "$1")),
+            fire(dir("(60-$1)*$2"), spd(5), bulletRef("blueVanish", "$1")),
             wait(1),
             vanish()
         )),
         "bit42": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
+            changeSpeed(spd(0), 1),
             wait(1),
-            fire(direction("(60-$1)*$2"), speed(5), bulletRef("blueBomb", "$1")),
+            fire(dir("(60-$1)*$2"), spd(5), bulletRef("blueBomb", "$1")),
             wait(1),
             vanish()
         )),
         "blueVanish": bullet(action(
             wait("10+$1"),
-            changeSpeed(speed(0), 5),
+            changeSpeed(spd(0), 5),
             wait(300),
             vanish()
         )),
         "blueBomb": bullet(action(
             wait("10+$1"),
-            changeSpeed(speed(0), 5),
+            changeSpeed(spd(0), 5),
             wait(300),
-            fire(direction(0, "absolute"), speed("0.2+($rank*3-1)"), bullet("sg")),
+            fire(dir(0, ABS), spd("0.2+($rank*3-1)"), bullet("sg")),
             repeat(20-1, action(
-                fire(direction(360/20, "sequence"), speed(0, "sequence"), bullet("sg"))
+                fire(dir(360/20, SEQ), spd(0, SEQ), bullet("sg"))
             )),
             vanish()
         ))
@@ -1692,14 +1713,14 @@ var Patterns = {};
         ),
         "attack2": action(function() {
             var a = [];
-            a[a.length] = changeDirection(direction(90, "absolute"), 1);
-            a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
+            a[a.length] = changeDirection(dir(90, ABS), 1);
+            a[a.length] = changeSpeed(spd("-0.5*$1"), 30);
             a[a.length] = wait(15 * 7);
             for (var i = 0; i < 14; i++) {
                 if (i === 0) {
-                    a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
+                    a[a.length] = changeSpeed(spd(" 0.5*$1"), 30);
                 } else if (i === 7) {
-                    a[a.length] = changeSpeed(speed("-0.5*$1"), 30);
+                    a[a.length] = changeSpeed(spd("-0.5*$1"), 30);
                 }
                 a[a.length] = boss3Gun[1](bulletRef("bit21"));
                 a[a.length] = boss3Gun[4](bulletRef("bit21"));
@@ -1708,25 +1729,25 @@ var Patterns = {};
                 a[a.length] = boss3Gun[4](bulletRef("bit22"));
                 a[a.length] = wait(15);
             }
-            a[a.length] = changeSpeed(speed(" 0.5*$1"), 30);
+            a[a.length] = changeSpeed(spd(" 0.5*$1"), 30);
             a[a.length] = wait(15 * 8.5);
-            a[a.length] = changeSpeed(speed(0), 1);
+            a[a.length] = changeSpeed(spd(0), 1);
             a[a.length] = wait(100);
             return a;
         }),
         "bit21": bullet(action(
             wait(1),
-            fire(direction(0, "absolute"), speed("0.5+($rank*3-1)"), bullet("g")),
+            fire(dir(0, ABS), spd("0.5+($rank*3-1)"), bullet("g")),
             repeat(360/15-1, action(
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("g"))
+                fire(dir(15, SEQ), spd(0, SEQ), bullet("g"))
             )),
             vanish()
         )),
         "bit22": bullet(action(
             wait(1),
-            fire(direction(0, "absolute"), speed("0.8+($rank*3-1)"), bullet("b")),
+            fire(dir(0, ABS), spd("0.8+($rank*3-1)"), bullet("b")),
             repeat(360/15-1, action(
-                fire(direction(15, "sequence"), speed(0, "sequence"), bullet("b"))
+                fire(dir(15, SEQ), spd(0, SEQ), bullet("b"))
             )),
             vanish()
         )),
@@ -1753,8 +1774,8 @@ var Patterns = {};
         "bit51": bullet(action(
             wait(1),
             changeSpeed(0, 1),
-            fire(direction("$1*$2-15", "absolute"), speed("1.8+($rank*3-1)"), bullet()),
-            fire(direction("$1*$2+15", "absolute"), speed("1.8+($rank*3-1)"), bullet()),
+            fire(dir("$1*$2-15", ABS), spd("1.8+($rank*3-1)"), bullet()),
+            fire(dir("$1*$2+15", ABS), spd("1.8+($rank*3-1)"), bullet()),
             vanish()
         )),
         "attack6": action(function() {
@@ -1778,33 +1799,33 @@ var Patterns = {};
         }),
         "bit61": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
-            fire(direction(-80/2), speed("2.2+($rank*3-1)+$1"), bullet("g")),
+            changeSpeed(spd(0), 1),
+            fire(dir(-80/2), spd("2.2+($rank*3-1)+$1"), bullet("g")),
             repeat(4, action(
                 repeat(80/8, action(
-                    fire(direction(8, "sequence"), speed(0, "sequence"), bullet("g"))
+                    fire(dir(8, SEQ), spd(0, SEQ), bullet("g"))
                 )),
                 wait(3),
-                fire(direction(-80, "sequence"), speed(0, "sequence"), bullet("g"))
+                fire(dir(-80, SEQ), spd(0, SEQ), bullet("g"))
             )),
             repeat(80/8, action(
-                fire(direction(8, "sequence"), speed(0, "sequence"), bullet("g"))
+                fire(dir(8, SEQ), spd(0, SEQ), bullet("g"))
             )),
             vanish()
         )),
         "bit62": bullet(action(
             wait(1),
-            changeSpeed(speed(0), 1),
-            fire(direction(-63/2), speed("1.8+($rank*3-1)+$1"), bullet()),
+            changeSpeed(spd(0), 1),
+            fire(dir(-63/2), spd("1.8+($rank*3-1)+$1"), bullet()),
             repeat(4, action(
                 repeat(63/7, action(
-                    fire(direction(7, "sequence"), speed(0, "sequence"), bullet())
+                    fire(dir(7, SEQ), spd(0, SEQ), bullet())
                 )),
                 wait(3),
-                fire(direction(-63, "sequence"), speed(0, "sequence"), bullet())
+                fire(dir(-63, SEQ), spd(0, SEQ), bullet())
             )),
             repeat(63/7, action(
-                fire(direction(7, "sequence"), speed(0, "sequence"), bullet())
+                fire(dir(7, SEQ), spd(0, SEQ), bullet())
             )),
             vanish()
         ))

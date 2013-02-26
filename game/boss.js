@@ -55,7 +55,7 @@ var createBoss = function(app, attackParam, explosion, stage, texture) {
                 }
                 if (scene.frame === t+75) {
                     var dx = 0 - this.x;
-                    var dy = 16 - this.y;
+                    var dy = 12 - this.y;
                     var sf = scene.frame;
                     this.update = function() {
                         this.x += dx / 120;

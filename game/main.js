@@ -71,7 +71,7 @@ var PLAYER_SPEED = 0.2;
 /** @const */
 var PLAYER_SCALE = 1.5;
 /** @const */
-var WEAPON_SCALE = 1.0;
+var WEAPON_SCALE = 1.5;
 /** @const */
 var MUTEKI_TIME = 90;
 

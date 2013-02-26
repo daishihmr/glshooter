@@ -261,7 +261,7 @@ var ContinueScene;
             }
 
             this.addEventListener("enter", function() {
-                this.selection = -1;
+                this.selection = 0;
             });
         },
         update: function(app) {
@@ -608,6 +608,15 @@ var ContinueScene;
                 }
             }
             if (app.pointing.getPointingEnd()) {
+                if (tm.isMobile) {
+                    var px = app.pointing.x * 320 / parseInt(app.element.style.width);
+                    var py = app.pointing.y * 320 / parseInt(app.element.style.height);
+                    for (var i = this.menuItem.length; i--; ) {
+                        if (this.menuItem[i].isHitPointRect(px, py)) {
+                            this.selection = i;
+                        }
+                    }
+                }
                 switch (this.selection) {
                 case 2: // autoBomb
                     app.settings["autoBomb"] = !app.settings["autoBomb"];

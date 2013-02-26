@@ -293,7 +293,7 @@ tm.main(function() {
         if (b === void 0) return;
         b.alive = false;
         b.isBit = false;
-        b.scaleX = b.scaleY = 0.6;
+        b.scaleX = b.scaleY = 0.8;
         if (spec.label === null || spec.label === void 0) {
             b.texX = 3;
             b.texY = 1;
@@ -318,24 +318,24 @@ tm.main(function() {
         }
 
         if (spec.label === "s") {
-            b.scaleX = b.scaleY = 0.4;
+            b.scaleX = b.scaleY = 0.6;
         } else if (spec.label === "sg") {
-            b.scaleX = b.scaleY = 0.4;
+            b.scaleX = b.scaleY = 0.6;
             b.texX = 2;
             b.texY = 1;
         } else if (spec.label === "sb") {
-            b.scaleX = b.scaleY = 0.4;
+            b.scaleX = b.scaleY = 0.6;
             b.texX = 1;
             b.texY = 1;
         }
         if (spec.label === "l") {
-            b.scaleX = b.scaleY = 0.8;
+            b.scaleX = b.scaleY = 1.0;
         } else if (spec.label === "lg") {
-            b.scaleX = b.scaleY = 0.8;
+            b.scaleX = b.scaleY = 1.0;
             b.texX = 2;
             b.texY = 1;
         } else if (spec.label === "lb") {
-            b.scaleX = b.scaleY = 0.8;
+            b.scaleX = b.scaleY = 1.0;
             b.texX = 1;
             b.texY = 1;
         }

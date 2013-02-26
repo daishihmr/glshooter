@@ -64,7 +64,7 @@ var enemyData = {
     },
     "bigger2": {
         frameIndex: 23,
-        hp: 3000,
+        hp: 2000,
         scale: 5,
         score: 1000,
         clear: true,

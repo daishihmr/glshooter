@@ -24,14 +24,41 @@
  * IN THE SOFTWARE.
  */
 
-// 通常ショットと収束ショットとマウス・キーボード操作
-//  -> 通常ショットは広範囲に弾をばらまく
-//  -> 収束ショットは自機正面に低威力の弾をたくさん撃つ
-//  -> GLOWは敵に弾がヒットすることによって上昇するため、収束ショットの方が有利になる
-//  -> マウス操作の場合、回避に圧倒的なアドバンテージがある分、収束ショットを撃つことができないデメリットがある
-
 var setupPlayer = function(app, scene, weapons, mouse, texture) {
     var player = new glslib.Sprite(texture);
+    player._draw = function(canvas, ctx) {
+        if (this.visible) {
+            var bkup = ctx.globalCompositeOperation;
+            ctx.globalCompositeOperation = "source-over";
+
+            var x = (this.x + 16) * ctx.scale;
+            var y = (24 - this.y) * ctx.scale;
+            var w = 2 * this.scaleX * ctx.scale;
+            var h = 2 * this.scaleY * ctx.scale;
+
+            if (this.texture != null) {
+                ctx.save();
+                ctx.globalAlpha = 1;
+                ctx.translate(x, y);
+                ctx.rotate(this.rotation*Math.DEG_TO_RAD);
+                ctx.drawImage(this.texture,
+                    this.texX*64, this.texY*64, 64*this.texScale, 64*this.texScale,
+                    -w*0.5, -h*0.5, w, h);
+
+                if (this.glow > 0) {
+                    w *= 2;
+                    h *= 2;
+                    ctx.globalAlpha = this.glow * 0.5;
+                    ctx.globalCompositeOperation = "lighter";
+                    ctx.drawImage(glslib.Sprite.glowTexture, -w*0.5, -h*0.5, w, h);
+                }
+                ctx.restore();
+            }
+
+            ctx.globalCompositeOperation = bkup;
+        }
+    };
+    
     player.scaleX = player.scaleY = PLAYER_SCALE;
     player.level = 1;
     player.reset = function() {

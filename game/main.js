@@ -28,7 +28,7 @@
 /** @const */
 var MUTE_SE =  false; // if true, not play sounds.
 /** @const */
-var MUTE_BGM = false; // if true, not play bgm.
+var MUTE_BGM = tm.isMobile; // if true, not play bgm.
 /** @const */
 var FPS = 60;
 /** @const */

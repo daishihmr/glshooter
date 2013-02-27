@@ -35,6 +35,7 @@ echo "#"`date` >> glshooter.appcache
 
 zip glshooter.zip \
     index.html \
+    font/Orbitron-Regular.ttf \
     shaders/shader.vs \
     shaders/shader.fs \
     sounds/se_maoudamashii_explosion05.mp3 \

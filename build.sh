@@ -52,8 +52,7 @@ zip glshooter.zip \
     images/boss3.png \
     lib/tmlib.min.js \
     lib/webaudio.js \
-    glshooter.min.js \
-    glshooter.appcache
+    glshooter.min.js
 
 cp index-backup.html index.html
 rm index-backup.html

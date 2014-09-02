@@ -86,7 +86,15 @@ tm.preload(function() {
     //     tm.sound.SoundManager.add("bgm3", "sounds/nc790.mp3", 1);
     // }
 
-    if (!webkitAudioContext) {
+    var webaudio = false;
+    if (tm.global.webkitAudioContext) {
+        webaudio = true;
+    } else if (tm.global.mozAudioContext) {
+        webaudio = true;
+    } else if (tm.global.AudioContext) {
+        webaudio = true;
+    }
+    if (!webaudio) {
         MUTE_SE = true;
         return;
     }

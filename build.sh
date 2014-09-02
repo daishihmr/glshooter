@@ -11,7 +11,7 @@ java -jar compiler.jar --js_output_file glshooter.min.js \
     --externs lib/gl-matrix.js \
     --externs lib/bulletml.js \
     --externs lib/webaudio.js \
-    --js mylib/gls2d.js \
+    --js mylib/glslib.js \
     --js mylib/bulletml.gl2d.js \
     --js game/background.js \
     --js game/bomb.js \
